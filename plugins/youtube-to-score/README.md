@@ -5,15 +5,15 @@ YouTube 피아노 연주 영상에서 악보(MIDI, MusicXML, PDF)를 자동 생�
 ## 설치
 
 ```bash
-git clone https://github.com/elon-jang/youtube-to-score.git
-cd youtube-to-score
+git clone https://github.com/elon-jang/claude-plugins.git
+cd claude-plugins/plugins/youtube-to-score
 ./scripts/setup.sh
 ```
 
 ### Claude Plugin으로 설치
 
 ```bash
-/plugins marketplace add elon-jang/youtube-to-score
+/plugin marketplace add elon-jang/claude-plugins
 ```
 
 ## 사용법

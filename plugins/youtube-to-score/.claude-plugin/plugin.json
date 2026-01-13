@@ -5,8 +5,8 @@
     "author": {
         "name": "elon-jang"
     },
-    "repository": "https://github.com/elon-jang/youtube-to-score",
-    "homepage": "https://github.com/elon-jang/youtube-to-score",
+    "repository": "https://github.com/elon-jang/claude-plugins",
+    "homepage": "https://github.com/elon-jang/claude-plugins/tree/master/plugins/youtube-to-score",
     "license": "MIT",
     "keywords": [
         "youtube",

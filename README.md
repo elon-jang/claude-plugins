@@ -1,4 +1,4 @@
-# elon-plugins
+# claude-plugins
 
 [AI-Native Product Team](AI_NATIVE_PRODUCT_TEAM.md)을 위한 Claude Code 플러그인 마켓플레이스입니다.
 
@@ -7,14 +7,14 @@
 ### 1. Marketplace 추가
 
 ```bash
-/plugin marketplace add elon-jang/youtube-to-score
+/plugin marketplace add elon-jang/claude-plugins
 ```
 
 ### 2. 원하는 플러그인 설치
 
 ```bash
 # YouTube 피아노 영상 → 악보 변환
-/plugin install youtube-to-score@elon-plugins
+/plugin install youtube-to-score@claude-plugins
 ```
 
 ## Plugins
@@ -40,7 +40,7 @@ YouTube 피아노 연주 영상에서 악보(MIDI, MusicXML, PDF)를 자동 생�
 ## Marketplace 구조
 
 ```
-elon-plugins/
+claude-plugins/
 ├── .claude-plugin/
 │   └── marketplace.json
 ├── plugins/

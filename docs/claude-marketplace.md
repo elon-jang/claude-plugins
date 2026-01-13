@@ -8,8 +8,8 @@ Claude Code 플러그인 마켓플레이스에 대한 설명입니다.
 
 ## 구조
 
-```
-elon-plugins/
+```bash
+claude-plugins/
 ├── .claude-plugin/
 │   └── marketplace.json    # 플러그인 레지스트리
 ├── plugins/
@@ -24,7 +24,7 @@ elon-plugins/
 
 ```json
 {
-    "name": "elon-plugins",
+    "name": "claude-plugins",
     "owner": { "name": "...", "email": "..." },
     "description": "...",
     "version": "1.0.0",
@@ -34,6 +34,6 @@ elon-plugins/
 
 ## 플러그인 목록
 
-| 플러그인 | 설명 |
-|---------|------|
+| 플러그인         | 설명                                         |
+| ---------------- | -------------------------------------------- |
 | youtube-to-score | YouTube 피아노 연주 영상에서 악보를 자동 생성 |

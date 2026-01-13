@@ -12,20 +12,20 @@ YouTube 피아노 연주 영상의 오디오를 분석하여 악보(MIDI, MusicX
 
 ## Technology Stack
 
-| 구성 요소 | 기술 | 비고 |
-|----------|------|------|
-| Language | Python 3.12+ | macOS 전용 |
-| Audio Extraction | `yt-dlp` + FFmpeg | 최고 품질 WAV |
-| Transcription | `basic-pitch` (Spotify AI) | ONNX 백엔드 |
-| Score Processing | `music21` | MusicXML 출력 |
-| PDF Rendering | LilyPond | 선택적 (미설치 시 경고만) |
-| Inference | ONNX Runtime | `nmp.onnx` 모델 |
+| 구성 요소       | 기술                      | 비고                    |
+| -------------- | ------------------------- | ----------------------- |
+| Language       | Python 3.12+              | macOS 전용              |
+| Audio Extraction| `yt-dlp` + FFmpeg         | 최고 품질 WAV           |
+| Transcription  | `basic-pitch` (Spotify AI) | ONNX 백엔드             |
+| Score Processing| `music21`                 | MusicXML 출력           |
+| PDF Rendering  | LilyPond                  | 선택적 (미설치 시 경고) |
+| Inference      | ONNX Runtime              | `nmp.onnx` 모델         |
 
 ## Architecture
 
 ### Pipeline Flow
 
-```
+```mermaid
 YouTube URL → Downloader → Transcriber → Renderer → Output Files
                  ↓              ↓             ↓
             downloads/       output/       output/
@@ -78,12 +78,12 @@ YouTube URL → Downloader → Transcriber → Renderer → Output Files
 
 한글로 사용자 친화적 오류 메시지 제공:
 
-| 오류 유형 | 메시지 예시 |
-|----------|------------|
+| 오류 유형   | 메시지 예시                         |
+| ----------- | ----------------------------------- |
 | 저작권 차단 | "이 영상은 저작권으로 인해 다운로드할 수 없습니다." |
-| 지역 제한 | "이 영상은 현재 지역에서 이용할 수 없습니다." |
-| URL 오류 | "올바른 YouTube URL을 입력해주세요." |
-| 네트워크 오류 | "네트워크 연결을 확인해주세요." |
+| 지역 제한   | "이 영상은 현재 지역에서 이용할 수 없습니다."       |
+| URL 오류    | "올바른 YouTube URL을 입력해주세요."              |
+| 네트워크 오류| "네트워크 연결을 확인해주세요."                   |
 
 ### PDF 렌더링 실패
 
@@ -95,7 +95,7 @@ YouTube URL → Downloader → Transcriber → Renderer → Output Files
 
 ### Claude Code 명령
 
-```
+```bash
 /youtube-to-score <youtube_url>
 ```
 
@@ -108,6 +108,7 @@ python skills/youtube-to-score/scripts/main.py "YOUTUBE_URL"
 ### 진행 상황 표시
 
 현재 단계만 간단히 표시:
+
 ```
 === Phase 1: Downloading Audio ===
 Audio downloaded: downloads/피아노커버.wav
@@ -174,7 +175,7 @@ brew install ffmpeg lilypond
 ## File Structure
 
 ```
-youtube-to-score/
+claude-plugins/
 ├── .claude-plugin/
 │   └── plugin.json               # Claude 플러그인 설정
 ├── commands/
