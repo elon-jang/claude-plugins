@@ -44,12 +44,24 @@ YouTube URL → Downloader → Transcriber → Renderer → Output Files
    - basic-pitch AI로 오디오 → MIDI 변환
    - 피아노 전용 (다른 악기 미지원)
    - scipy.signal.gaussian 호환성 패치 포함
-   - basic-pitch 기본 파라미터 사용 (균형 잡힌 설정)
+   - **개선된 오디오 전처리**:
+     - 하이패스 필터 (30Hz) - 저주파 노이즈 제거
+     - 노이즈 제거 (noisereduce)
+     - 오디오 정규화 (librosa)
+   - **튜닝된 basic-pitch 파라미터**:
+     - onset_threshold: 0.5
+     - frame_threshold: 0.3
+     - minimum_note_length: 58ms
 
 3. **Renderer** (`scripts/renderer.py`)
    - MIDI → MusicXML 변환 (music21)
    - PDF 렌더링 시도 (LilyPond)
    - LilyPond 미설치 시 경고만 표시하고 XML/MIDI만 출력
+   - **개선된 MIDI 후처리**:
+     - 퀀타이즈 (16분음표, 셋잇단음표 그리드)
+     - 옥타브 오류 수정
+     - 피아노 범위 외 노트 필터링 (A0~C8)
+     - 짧은 노트 필터링 (32분음표 이하)
 
 ## Input/Output Specifications
 
@@ -58,7 +70,7 @@ YouTube URL → Downloader → Transcriber → Renderer → Output Files
 - **형식**: YouTube URL만 지원 (로컬 파일 미지원)
 - **길이 제한**: 최대 10분
   - 초과 시: 자동으로 첫 10분만 처리하고 안내 메시지 표시
-- **처리 방식**: 노이즈/배경음 전처리 없이 원본 그대로 전달
+- **처리 방식**: 오디오 전처리 적용 (하이패스 필터, 노이즈 제거, 정규화)
 
 ### Output
 
@@ -151,6 +163,11 @@ basic-pitch
 music21
 onnxruntime
 scipy<1.15
+librosa          # 오디오 전처리
+soundfile        # 오디오 I/O
+noisereduce      # 노이즈 제거
+numpy
+pretty_midi      # MIDI 처리
 ```
 
 버전 고정 없이 유연하게 관리 (scipy만 예외)
@@ -166,11 +183,13 @@ brew install ffmpeg lilypond
 
 ## Future Plans
 
-> 현재 버전에는 미포함. 향후 개선 예정.
+> 향후 개선 예정.
 
-- 음질 전처리로 채보 품질 향상
+- ~~음질 전처리로 채보 품질 향상~~ ✅ 구현됨
+- ~~basic-pitch 파라미터 최적화~~ ✅ 구현됨
 - 조표/박자 자동 추정
-- basic-pitch 파라미터 최적화
+- 소스 분리 (spleeter/demucs) - 혼합 오디오에서 피아노 분리
+- 앙상블 모델 - 복수 모델 결합으로 정확도 향상
 
 ## File Structure
 

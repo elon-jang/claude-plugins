@@ -1,0 +1,18 @@
+# YouTube-to-Score 플러그인 의존성
+# 피아노 추출 정확도 개선 버전
+
+# 핵심 패키지
+yt-dlp                    # YouTube 오디오 추출
+basic-pitch               # Spotify AI 채보 엔진
+music21                   # 악보 처리 및 MusicXML 변환
+onnxruntime               # ONNX 모델 추론
+pretty_midi               # MIDI 파일 처리
+
+# 오디오 전처리 (피아노 추출 개선)
+librosa                   # 오디오 분석 및 처리
+soundfile                 # 오디오 파일 I/O
+noisereduce               # 노이즈 제거 (선택적)
+numpy                     # 수치 계산
+
+# scipy 호환성 (basic-pitch용)
+scipy<1.15                # deprecated gaussian 함수 필요
