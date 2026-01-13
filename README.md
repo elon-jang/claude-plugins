@@ -14,7 +14,7 @@
 
 ```bash
 # YouTube 피아노 영상 → 악보 변환
-/plugin install youtube-to-score@claude-plugins
+/plugin install youtube-to-score@elon-plugin-hub
 ```
 
 ## Plugins

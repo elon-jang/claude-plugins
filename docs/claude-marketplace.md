@@ -24,7 +24,7 @@ claude-plugins/
 
 ```json
 {
-    "name": "claude-plugins",
+    "name": "elon-plugin-hub",
     "owner": { "name": "...", "email": "..." },
     "description": "...",
     "version": "1.0.0",
