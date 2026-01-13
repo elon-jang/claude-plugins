@@ -16,7 +16,7 @@ YouTube 동영상의 음악을 분석하여 자동으로 악보(PDF, MusicXML, M
 
 ```bash
 # GitHub 저장소에서 직접 설치
-/plugins marketplace add yourname/youtube-to-score
+/plugins marketplace add elon-jang/youtube-to-score
 ```
 
 ### 로컬 설치
@@ -61,7 +61,7 @@ git add .
 git commit -m "Initial commit: YouTube-to-Score plugin"
 
 # GitHub 저장소 연결
-git remote add origin https://github.com/yourname/youtube-to-score.git
+git remote add origin https://github.com/elon-jang/youtube-to-score.git
 git push -u origin main
 ```
 
@@ -75,11 +75,11 @@ git push -u origin main
   "version": "1.0.0",
   "description": "YouTube 피아노 연주 영상에서 악보를 자동 생성",
   "author": {
-    "name": "Your Name",
-    "email": "your@email.com"
+    "name": "elon-jang",
+    "email": "elon.jang@example.com"
   },
-  "repository": "https://github.com/yourname/youtube-to-score",
-  "homepage": "https://github.com/yourname/youtube-to-score",
+  "repository": "https://github.com/elon-jang/youtube-to-score",
+  "homepage": "https://github.com/elon-jang/youtube-to-score",
   "license": "MIT",
   "keywords": ["youtube", "piano", "sheet-music", "midi"]
 }
@@ -91,10 +91,10 @@ git push -u origin main
 
 ```bash
 # GitHub에서 설치
-/plugins marketplace add yourname/youtube-to-score
+/plugins marketplace add elon-jang/youtube-to-score
 
 # GitLab 또는 다른 Git 호스트
-/plugins marketplace add https://gitlab.com/yourname/youtube-to-score.git
+/plugins marketplace add https://gitlab.com/elon-jang/youtube-to-score.git
 ```
 
 ### 4. 버전 관리
@@ -131,8 +131,8 @@ my-marketplace/
 {
   "name": "my-marketplace",
   "owner": {
-    "name": "Your Name",
-    "email": "your@email.com"
+    "name": "elon-jang",
+    "email": "elon.jang@example.com"
   },
   "plugins": [
     {
