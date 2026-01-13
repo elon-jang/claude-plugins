@@ -1,5 +1,15 @@
+#!/usr/bin/env python3
+"""오디오 채보 모듈: WAV → MIDI 변환 (basic-pitch AI)"""
+
 import os
 import sys
+import warnings
+
+# 불필요한 경고 억제
+warnings.filterwarnings('ignore', category=FutureWarning)
+warnings.filterwarnings('ignore', category=UserWarning)
+warnings.filterwarnings('ignore', category=DeprecationWarning)
+
 import scipy.signal
 import scipy.signal.windows
 
@@ -9,7 +19,17 @@ if not hasattr(scipy.signal, 'gaussian'):
 
 from basic_pitch.inference import predict_and_save
 
+
 def transcribe_audio_to_midi(audio_path, output_dir='output'):
+    """오디오 파일을 MIDI로 변환
+
+    Args:
+        audio_path: 입력 오디오 파일 경로 (WAV)
+        output_dir: 출력 디렉토리 (기본: output/)
+
+    Returns:
+        str: 생성된 MIDI 파일 경로
+    """
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
@@ -21,7 +41,7 @@ def transcribe_audio_to_midi(audio_path, output_dir='output'):
         bp_path = os.path.dirname(basic_pitch.__file__)
         onnx_model_path = os.path.join(bp_path, 'saved_models', 'icassp_2022', 'nmp.onnx')
     except Exception:
-        onnx_model_path = 'venv/lib/python3.12/site-packages/basic_pitch/saved_models/icassp_2022/nmp.onnx'
+        onnx_model_path = None
 
     # basic-pitch 추론
     predict_and_save(
@@ -39,10 +59,10 @@ def transcribe_audio_to_midi(audio_path, output_dir='output'):
     midi_path = os.path.join(output_dir, f"{base_name}_basic_pitch.mid")
     return midi_path
 
+
 if __name__ == "__main__":
-    import sys
     if len(sys.argv) < 2:
-        print("사용법: python transcriber.py <audio_file_path>")
+        print("사용법: python transcriber.py <audio_file>")
     else:
         path = sys.argv[1]
         midi_file = transcribe_audio_to_midi(path)

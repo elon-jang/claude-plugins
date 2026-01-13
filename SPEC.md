@@ -93,7 +93,13 @@ YouTube URL → Downloader → Transcriber → Renderer → Output Files
 
 ## CLI Interface
 
-### 기본 사용법
+### Claude Code 명령
+
+```
+/youtube-to-score <youtube_url>
+```
+
+### 직접 실행
 
 ```bash
 python skills/youtube-to-score/scripts/main.py "YOUTUBE_URL"
@@ -171,6 +177,8 @@ brew install ffmpeg lilypond
 youtube-to-score/
 ├── .claude-plugin/
 │   └── plugin.json               # Claude 플러그인 설정
+├── commands/
+│   └── youtube-to-score.md       # /youtube-to-score 명령 정의
 ├── scripts/
 │   └── setup.sh                  # 설치 스크립트
 ├── skills/youtube-to-score/

@@ -18,14 +18,20 @@ cd youtube-to-score
 
 ## 사용법
 
-Claude Code에서 자연어로 요청:
+### 명령어
+
+```
+/youtube-to-score <youtube_url>
+```
+
+### 자연어 요청
 
 ```
 "이 유튜브 피아노 영상을 악보로 만들어줘: https://youtube.com/watch?v=..."
 "YouTube에서 피아노 채보해줘"
 ```
 
-또는 직접 실행:
+### 직접 실행
 
 ```bash
 source venv/bin/activate
