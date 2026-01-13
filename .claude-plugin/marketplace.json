@@ -1,0 +1,23 @@
+{
+    "name": "elon-plugins",
+    "owner": {
+        "name": "Elon",
+        "email": "contact@elon.dev"
+    },
+    "description": "A collection of Claude Code plugins for AI-Native Product Items",
+    "version": "1.0.0",
+    "plugins": [
+        {
+            "name": "youtube-to-score",
+            "source": "./plugins/youtube-to-score",
+            "description": "YouTube 피아노 연주 영상에서 악보(MIDI, MusicXML, PDF)를 자동 생성하는 도구",
+            "keywords": [
+                "youtube",
+                "piano",
+                "sheet-music",
+                "midi",
+                "transcription"
+            ]
+        }
+    ]
+}

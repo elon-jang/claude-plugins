@@ -1,58 +1,34 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to Claude Code when working with this monorepo.
 
-## Project Overview
+## Overview
 
-YouTube 피아노 연주 영상 → 악보(MIDI, MusicXML, PDF) 자동 생성 CLI 도구 및 Claude Code 플러그인.
+Claude Code 플러그인 모음 (AI-Native Product Items)
 
-## Commands
+## Plugins
 
-```bash
-# Setup
-./scripts/setup.sh
+| 플러그인 | 설명 | 경로 |
+|---------|------|------|
+| youtube-to-score | YouTube 피아노 → 악보 변환 | `./plugins/youtube-to-score/` |
 
-# Run (CLI)
-source venv/bin/activate
-python skills/youtube-to-score/scripts/main.py "YOUTUBE_URL"
+## Rules
 
-# Run (Claude Code command)
-/youtube-to-score <youtube_url>
-```
+- 각 플러그인은 `plugins/<plugin-name>/` 폴더에 위치
+- 플러그인별 상세 가이드는 각 폴더의 `CLAUDE.md` 참조
+- 새 플러그인 추가 시 `.claude-plugin/marketplace.json`에 등록 필수
 
-## Architecture
-
-선형 3단계 파이프라인: `Downloader → Transcriber → Renderer`
-
-| 스크립트 | 역할 | 라이브러리 |
-|---------|------|-----------|
-| `downloader.py` | YouTube → WAV | `yt-dlp` |
-| `transcriber.py` | WAV → MIDI | `basic-pitch` |
-| `renderer.py` | MIDI → XML/PDF | `music21`, LilyPond |
-
-## Key Implementation Details
-
-- **경고 억제**: `warnings.filterwarnings` + `no_warnings` 옵션
-- **10분 제한**: `download_audio()` → `(filepath, is_trimmed)` 튜플 반환
-- **한글 오류**: `_get_korean_error_message()`로 yt-dlp 오류 변환
-- **SciPy 패치**: `scipy.signal.gaussian` 호환성 패치
-- **PDF 렌더링**: MuseScore → LilyPond 폴백
-
-## Constraints
-
-피아노 전용 · macOS 전용 · YouTube URL만 · 최대 10분
-
-## Plugin Structure
+## Structure
 
 ```
-.claude-plugin/plugin.json
-commands/youtube-to-score.md      # /youtube-to-score 명령
-scripts/setup.sh                   # 설치 스크립트
-skills/youtube-to-score/
-├── SKILL.md
-└── scripts/
-    ├── main.py
-    ├── downloader.py
-    ├── transcriber.py
-    └── renderer.py
+├── .claude-plugin/marketplace.json  # 플러그인 레지스트리
+├── plugins/                          # 개별 플러그인들
+├── docs/                             # 문서
+└── assets/                           # 공유 에셋
 ```
+
+## Documentation
+
+- [플러그인 추가](./docs/adding-plugin.md)
+- [플러그인 수정](./docs/modifying-plugin.md)
+- [Marketplace 소개](./docs/claude-marketplace.md)

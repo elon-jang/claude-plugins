@@ -1,56 +1,58 @@
-# YouTube-to-Score
+# elon-plugins
 
-YouTube 피아노 연주 영상에서 악보(MIDI, MusicXML, PDF)를 자동 생성하는 Claude Code 플러그인입니다.
+[AI-Native Product Team](AI_NATIVE_PRODUCT_TEAM.md)을 위한 Claude Code 플러그인 마켓플레이스입니다.
 
 ## 설치
 
-```bash
-git clone https://github.com/elon-jang/youtube-to-score.git
-cd youtube-to-score
-./scripts/setup.sh
-```
-
-### Claude Plugin으로 설치
+### 1. Marketplace 추가
 
 ```bash
-/plugins marketplace add elon-jang/youtube-to-score
+/plugin marketplace add elon-jang/youtube-to-score
 ```
 
-## 사용법
-
-### 명령어
-
-```
-/youtube-to-score <youtube_url>
-```
-
-### 자연어 요청
-
-```
-"이 유튜브 피아노 영상을 악보로 만들어줘: https://youtube.com/watch?v=..."
-"YouTube에서 피아노 채보해줘"
-```
-
-### 직접 실행
+### 2. 원하는 플러그인 설치
 
 ```bash
-source venv/bin/activate
-python skills/youtube-to-score/scripts/main.py "YOUTUBE_URL"
+# YouTube 피아노 영상 → 악보 변환
+/plugin install youtube-to-score@elon-plugins
 ```
 
-## 결과물
+## Plugins
 
-| 폴더 | 파일 |
-|------|------|
-| `downloads/` | 추출된 오디오 (`.wav`) |
-| `output/` | 악보 (`.mid`, `.xml`, `.pdf`) |
+### [youtube-to-score](plugins/youtube-to-score/skills/youtube-to-score/SKILL.md)
 
-## 제한 사항
+YouTube 피아노 연주 영상에서 악보(MIDI, MusicXML, PDF)를 자동 생성하는 스킬입니다.
+
+**사용법**: `/youtube-to-score <youtube_url>`
+
+**주요 기능**:
+
+- YouTube 영상에서 오디오 추출 (yt-dlp)
+- 오디오를 MIDI로 변환 (basic-pitch)
+- MIDI를 MusicXML/PDF 악보로 렌더링 (music21, LilyPond)
+
+**제약사항**:
 
 - 피아노 전용
 - macOS 전용
-- 최대 10분
+- 최대 10분 영상
+
+## Marketplace 구조
+
+```
+elon-plugins/
+├── .claude-plugin/
+│   └── marketplace.json
+├── plugins/
+│   └── youtube-to-score/
+│       ├── .claude-plugin/
+│       │   └── plugin.json
+│       └── skills/youtube-to-score/
+│           ├── SKILL.md
+│           └── scripts/
+└── README.md
+```
 
 ## 라이선스
 
-MIT License
+MIT
