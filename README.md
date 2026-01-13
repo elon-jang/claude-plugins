@@ -147,26 +147,38 @@ my-marketplace/
 
 ## 수동 설치 및 실행
 
-### 1. 시스템 의존성 설치 (macOS)
+### 자동 설치 (권장)
 
 ```bash
-brew install ffmpeg lilypond
+git clone https://github.com/elon-jang/youtube-to-score.git
+cd youtube-to-score
+./scripts/setup.sh
 ```
 
-### 2. 프로젝트 설정
+설치 스크립트가 자동으로 다음을 수행합니다:
+- Homebrew 확인 및 설치
+- ffmpeg, lilypond 설치
+- Python 가상환경 생성
+- 필요한 패키지 설치
+
+### 수동 설치
 
 ```bash
-# 가상환경 생성 및 활성화
+# 1. 시스템 의존성 설치 (macOS)
+brew install ffmpeg lilypond
+
+# 2. 가상환경 생성 및 활성화
 python3 -m venv venv
 source venv/bin/activate
 
-# 패키지 설치
+# 3. 패키지 설치
 pip install yt-dlp basic-pitch music21 onnxruntime "scipy<1.15"
 ```
 
-### 3. 실행
+### 실행
 
 ```bash
+source venv/bin/activate
 python skills/youtube-to-score/scripts/main.py "YOUR_YOUTUBE_URL"
 ```
 

@@ -171,6 +171,8 @@ brew install ffmpeg lilypond
 youtube-to-score/
 ├── .claude-plugin/
 │   └── plugin.json               # Claude 플러그인 설정
+├── scripts/
+│   └── setup.sh                  # 설치 스크립트
 ├── skills/youtube-to-score/
 │   ├── SKILL.md                  # Claude 스킬 정의
 │   └── scripts/

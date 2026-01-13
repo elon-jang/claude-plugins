@@ -9,10 +9,13 @@ YouTube 피아노 연주 영상 → 악보(MIDI, MusicXML, PDF) 자동 생성 CL
 ## Commands
 
 ```bash
-# Setup
+# Setup (자동)
+./scripts/setup.sh
+
+# Setup (수동)
+brew install ffmpeg lilypond
 python3 -m venv venv && source venv/bin/activate
 pip install yt-dlp basic-pitch music21 onnxruntime "scipy<1.15"
-brew install ffmpeg lilypond
 
 # Run
 python skills/youtube-to-score/scripts/main.py "YOUTUBE_URL"
