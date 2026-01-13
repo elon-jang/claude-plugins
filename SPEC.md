@@ -34,19 +34,19 @@ YouTube URL → Downloader → Transcriber → Renderer → Output Files
 
 ### Module Responsibilities
 
-1. **Downloader** (`downloader.py`)
+1. **Downloader** (`scripts/downloader.py`)
    - YouTube URL에서 오디오 추출
    - 최고 품질 WAV로 변환
    - 10분 초과 시 첫 10분만 추출
    - `noplaylist: True`로 플레이리스트 방지
 
-2. **Transcriber** (`transcriber.py`)
+2. **Transcriber** (`scripts/transcriber.py`)
    - basic-pitch AI로 오디오 → MIDI 변환
    - 피아노 전용 (다른 악기 미지원)
    - scipy.signal.gaussian 호환성 패치 포함
    - basic-pitch 기본 파라미터 사용 (균형 잡힌 설정)
 
-3. **Renderer** (`renderer.py`)
+3. **Renderer** (`scripts/renderer.py`)
    - MIDI → MusicXML 변환 (music21)
    - PDF 렌더링 시도 (LilyPond)
    - LilyPond 미설치 시 경고만 표시하고 XML/MIDI만 출력
@@ -96,7 +96,7 @@ YouTube URL → Downloader → Transcriber → Renderer → Output Files
 ### 기본 사용법
 
 ```bash
-python main.py "YOUTUBE_URL"
+python skills/youtube-to-score/scripts/main.py "YOUTUBE_URL"
 ```
 
 ### 진행 상황 표시
@@ -169,15 +169,19 @@ brew install ffmpeg lilypond
 
 ```
 youtube-to-score/
-├── main.py           # 파이프라인 통합 진입점
-├── downloader.py     # YouTube 오디오 추출
-├── transcriber.py    # AI MIDI 변환
-├── renderer.py       # 악보 렌더링
-├── downloads/        # 다운로드된 WAV 파일
-├── output/           # 생성된 MIDI, XML, PDF
-├── venv/             # Python 가상환경
-├── README.md         # 사용자 가이드 (한글)
-├── SPEC.md           # 이 문서
-├── Plan.md           # 개발 진행 상황
-└── CLAUDE.md         # Claude Code 가이드
+├── .claude-plugin/
+│   └── plugin.json               # Claude 플러그인 설정
+├── skills/youtube-to-score/
+│   ├── SKILL.md                  # Claude 스킬 정의
+│   └── scripts/
+│       ├── main.py               # 파이프라인 통합 진입점
+│       ├── downloader.py         # YouTube 오디오 추출
+│       ├── transcriber.py        # AI MIDI 변환
+│       └── renderer.py           # 악보 렌더링
+├── downloads/                    # 다운로드된 WAV 파일
+├── output/                       # 생성된 MIDI, XML, PDF
+├── venv/                         # Python 가상환경
+├── README.md                     # 사용자 가이드
+├── SPEC.md                       # 이 문서
+└── CLAUDE.md                     # Claude Code 가이드
 ```
