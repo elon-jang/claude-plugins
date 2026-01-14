@@ -1,0 +1,12 @@
+{
+  "name": "add-prompt",
+  "version": "0.1.0",
+  "description": "Add new AI prompts to the prompts repository and push to Github",
+  "author": {
+    "name": "Elon"
+  },
+  "keywords": ["prompts", "workflow", "git", "automation"],
+  "repository": "https://github.com/elon-jang/claude-plugins",
+  "license": "MIT",
+  "homepage": "https://github.com/elon-jang/claude-plugins/tree/main/plugins/add-prompt"
+}

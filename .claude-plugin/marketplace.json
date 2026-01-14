@@ -8,6 +8,17 @@
     "version": "1.0.0",
     "plugins": [
         {
+            "name": "add-prompt",
+            "source": "./plugins/add-prompt",
+            "description": "Add new AI prompts to the prompts repository and push to Github",
+            "keywords": [
+                "prompts",
+                "workflow",
+                "git",
+                "automation"
+            ]
+        },
+        {
             "name": "youtube-to-score",
             "source": "./plugins/youtube-to-score",
             "description": "YouTube 피아노 연주 영상에서 악보(MIDI, MusicXML, PDF)를 자동 생성하는 도구",

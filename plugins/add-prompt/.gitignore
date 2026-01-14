@@ -1,0 +1,6 @@
+# Claude Code plugin gitignore
+.DS_Store
+node_modules/
+*.log
+.env
+.env.local
