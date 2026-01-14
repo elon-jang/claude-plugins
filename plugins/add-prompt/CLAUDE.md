@@ -4,7 +4,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-This is a Claude Code plugin that automates adding new AI prompts to the prompts repository (`/Users/elon/elon/ai/prompts`). The plugin handles interactive prompt collection, file creation, README updates, and automatic git commit/push operations.
+This is a Claude Code plugin that automates adding new AI prompts to any Git repository. The plugin handles interactive prompt collection, file creation, README updates, and automatic git commit/push operations.
+
+**Key Features**:
+- **Repository-agnostic**: Works with any Git repository (auto-detects root)
+- **Dynamic categories**: Auto-detects categories from directory structure
+- **Auto-branching**: Pushes to current Git branch automatically
+- **Flexible README**: Adapts to different README section formats
 
 ## Plugin Architecture
 
@@ -21,42 +27,63 @@ This is a Claude Code plugin that automates adding new AI prompts to the prompts
   - `allowed-tools`: List of Claude Code tools the command can use
 - Markdown body contains detailed workflow instructions that Claude follows
 
-**Target Repository**: All operations execute against `/Users/elon/elon/ai/prompts` (not this plugin repo)
+**Target Repository**: Auto-detects the Git repository where the user runs the command (uses `git rev-parse --show-toplevel`)
 
 ## Command Workflow
 
 The `/add-prompt` command follows this sequence:
 
-1. **Single AskUserQuestion call** with 4 questions (category, title, description, content)
+0. **Auto-detect repository configuration**:
+   - Git repository root: `git rev-parse --show-toplevel`
+   - Available categories: Scan top-level directories
+   - Current branch: `git branch --show-current`
+1. **Single AskUserQuestion call** with dynamically generated category options
 2. **Filename generation**: Convert title to kebab-case (e.g., "AWS EC2" → `aws-ec2-management.md`)
 3. **Duplicate handling**: Check for existing files, append `-2`, `-3`, etc. if needed
-4. **File creation**: Write prompt to `/Users/elon/elon/ai/prompts/{category}/{filename}.md`
-5. **README update**: Insert alphabetically sorted entry in appropriate category section
-6. **Git operations**: `git add`, `git commit -m "Add new prompt: {title}"`, `git push`
+4. **File creation**: Write prompt to `{REPO_ROOT}/{category}/{filename}.md`
+5. **README update**: Insert alphabetically sorted entry (auto-creates section if missing)
+6. **Git operations**: `git add`, `git commit`, `git push origin {CURRENT_BRANCH}`
 
 **Critical Implementation Details**:
-- AskUserQuestion must collect all 4 inputs in one call (not separate calls)
+- Must be run from within a Git repository
+- Categories are auto-detected from directory structure (not hardcoded)
 - README entries must be alphabetically sorted by filename (not title)
-- Category is "Infrastructure" or "Development" (user input), but paths use lowercase
+- README sections are detected flexibly (supports multiple formats and languages)
 - Exact commit message format: `"Add new prompt: {title}"` (uses title, not filename)
-- Git commands must cd to `/Users/elon/elon/ai/prompts` first
+- Pushes to current branch (not hardcoded main/master)
 
 ## Testing the Plugin
 
 **Local Development**:
 ```bash
 # Test plugin loading
-cc --plugin-dir ~/elon/ai/claude-code/add-prompt
+cc --plugin-dir ~/elon/ai/claude-code/claude-plugins/plugins/add-prompt
+
+# Or from marketplace
+/plugin install add-prompt@ai-plugins
+```
+
+**Integration Testing**:
+```bash
+# Create test repository
+mkdir test-prompts && cd test-prompts
+git init
+mkdir infrastructure development
+echo "# Test Prompts" > README.md
+git add . && git commit -m "Initial commit"
 
 # Inside Claude Code session
 /add-prompt
 ```
 
-**Integration Testing**:
+**Test Cases**:
+- Test with different directory structures
 - Test with duplicate filenames (should append `-2`)
 - Test README alphabetical insertion
-- Test both infrastructure and development categories
+- Test auto-creating new README sections
+- Test with different Git branches
 - Test git push failures (graceful error handling)
+- Test non-Git directory (should fail gracefully)
 
 ## Plugin Development Notes
 
@@ -69,10 +96,12 @@ cc --plugin-dir ~/elon/ai/claude-code/add-prompt
 - `Bash` - Git operations
 
 **Key Constraints**:
-- Plugin operates on a different repository (`/Users/elon/elon/ai/prompts`)
+- **Must run from within a Git repository** (fails if not in Git repo)
+- **Requires README.md** in repository root (creates sections if missing)
 - Must preserve existing README formatting
 - Must maintain alphabetical order in README
 - Git push failures should not rollback file creation
+- Category directories must exist (or use default "general" category)
 
 ## Marketplace Registration
 
