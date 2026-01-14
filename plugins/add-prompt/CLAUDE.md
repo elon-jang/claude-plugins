@@ -112,7 +112,7 @@ claude-plugins/
 **Update marketplace.json**:
 ```json
 {
-  "name": "elon-hub",
+  "name": "ai-plugins",
   "owner": {
     "name": "Elon",
     "email": "contact@elon.dev"
@@ -157,7 +157,7 @@ Ensure `.claude-plugin/plugin.json` contains complete metadata:
 
 **Install plugin**:
 ```bash
-/plugin install add-prompt@elon-hub
+/plugin install add-prompt@ai-plugins
 ```
 
 **Use plugin**:

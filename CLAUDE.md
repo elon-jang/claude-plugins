@@ -10,6 +10,7 @@ Claude Code 플러그인 모음 (AI-Native Product Items)
 
 | 플러그인 | 설명 | 경로 |
 |---------|------|------|
+| add-prompt | AI 프롬프트 자동 추가 및 Git 푸시 | `./plugins/add-prompt/` |
 | youtube-to-score | YouTube 피아노 → 악보 변환 | `./plugins/youtube-to-score/` |
 
 ## Rules
