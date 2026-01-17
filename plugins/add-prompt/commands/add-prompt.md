@@ -48,7 +48,7 @@ CURRENT_BRANCH=$(git branch --show-current)
 
 ### 1. Collect Information
 
-Use AskUserQuestion tool to gather all required information in a single call with 4 questions.
+Use AskUserQuestion tool to gather all required information in a single call with 4 questions (maximum allowed).
 
 **IMPORTANT**: Dynamically build the category options from the detected categories in Step 0.
 
@@ -60,7 +60,7 @@ For each detected category directory, create an option:
 }
 ```
 
-Example question structure (with dynamically detected categories):
+**First AskUserQuestion call** (4 questions - Category, Title, Description, Tags):
 ```json
 {
   "questions": [
@@ -116,6 +116,44 @@ Example question structure (with dynamically detected categories):
       ]
     },
     {
+      "question": "Enter tags (comma-separated, e.g., aws, cloud, automation)",
+      "header": "Tags",
+      "multiSelect": false,
+      "options": [
+        {
+          "label": "Enter custom tags",
+          "description": "Comma-separated tags for categorization"
+        },
+        {
+          "label": "Skip",
+          "description": "No tags"
+        }
+      ]
+    }
+  ]
+}
+```
+
+**Second AskUserQuestion call** (2 questions - Usage, Content):
+```json
+{
+  "questions": [
+    {
+      "question": "Enter usage example or guide (optional)",
+      "header": "Usage",
+      "multiSelect": false,
+      "options": [
+        {
+          "label": "Enter usage guide",
+          "description": "How to use this prompt"
+        },
+        {
+          "label": "Skip",
+          "description": "No usage guide"
+        }
+      ]
+    },
+    {
       "question": "Paste the full prompt content (markdown format)",
       "header": "Content",
       "multiSelect": false,
@@ -135,11 +173,12 @@ Example question structure (with dynamically detected categories):
 ```
 
 **Important**:
-- Call AskUserQuestion once with all 4 questions
-- User will select "Other" option to enter custom text for title, description, and content
-- Extract answers from the response
+- Call AskUserQuestion twice (first with 4 questions, then with 2 questions)
+- User will select "Other" option to enter custom text for title, description, tags, usage, and content
+- Extract answers from both responses
 - Category answer will be one of the detected directory names (lowercase)
-- Title, Description, and Content will be user's custom input text
+- Title, Description, Tags, Usage, and Content will be user's custom input text
+- If user selects "Skip" for Tags or Usage, use empty value
 
 ### 2. Generate Filename
 
@@ -174,7 +213,37 @@ Example:
 Use Write to create the prompt file:
 
 **Path**: `{REPO_ROOT}/{category}/{filename}.md`
-**Content**: The prompt content provided by the user (exactly as entered)
+
+**Content**: Use the following markdown template:
+
+````markdown
+# {Title}
+
+## Description
+
+{Description}
+
+## Tags
+
+{Tags}
+
+## Usage
+
+{Usage}
+
+## Prompt
+
+```
+{Content}
+```
+````
+
+**Template field values**:
+- `{Title}`: The title provided by the user
+- `{Description}`: The description provided by the user
+- `{Tags}`: The tags provided by the user (comma-separated), or empty if skipped
+- `{Usage}`: The usage guide provided by the user, or empty if skipped
+- `{Content}`: The prompt content provided by the user (exactly as entered)
 
 Where `{REPO_ROOT}` is the Git repository root detected in Step 0.
 
