@@ -15,7 +15,7 @@ allowed-tools:
 ## Usage
 
 ```bash
-/shortcut:delete <app_name> <shortcut>
+/shortcut:shortcut-delete <app_name> <shortcut>
 ```
 
 ## Arguments
@@ -26,7 +26,7 @@ allowed-tools:
 ## Example
 
 ```bash
-/shortcut:delete vscode "Cmd+D"
+/shortcut:shortcut-delete vscode "Cmd+D"
 ```
 
 ## Notes

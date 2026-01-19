@@ -14,7 +14,7 @@ allowed-tools:
 ## Usage
 
 ```bash
-/shortcut:list
+/shortcut:shortcut-list
 ```
 
 ## Output
@@ -26,7 +26,7 @@ allowed-tools:
 ## Example
 
 ```bash
-/shortcut:list
+/shortcut:shortcut-list
 ```
 
 ## Implementation

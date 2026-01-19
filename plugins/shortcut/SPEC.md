@@ -70,7 +70,7 @@ shortcuts-repo/                    # 사용자가 지정하는 저장소
 - 일반 키: 대문자 (`P`, `D`, `/`)
 - 구분자: `+` (공백 없음)
 - 예시: `Cmd+Shift+P`, `Ctrl+Alt+Delete`
-- `/shortcut:add` 시 자동으로 표준화
+- `/shortcut:shortcut-add` 시 자동으로 표준화
 
 ### Learning Progress Format (JSON)
 
@@ -132,7 +132,7 @@ Box 1 (자주 복습)     Box 2 (보통)        Box 3 (드물게 복습)
    - 저장소 초기화 (새 저장소 또는 기존 저장소 지정)
    - `.shortcut-master/` 폴더 생성
    - `.gitignore` 설정 (learning-progress.json 제외)
-   - 앱 이름 변경 기능 (`/shortcut:rename`)
+   - 앱 이름 변경 기능 (`/shortcut:shortcut-rename`)
 
 2. **Shortcut Parser** (`scripts/parser.py`)
    - Markdown 테이블 파싱 (캐싱 없음 - 매번 파싱)
@@ -183,38 +183,38 @@ Box 1 (자주 복습)     Box 2 (보통)        Box 3 (드물게 복습)
 
 ```bash
 # 저장소 초기화
-/shortcut:init [repo_path]
+/shortcut:shortcut-init [repo_path]
 
 # 단축키 추가 (대화형, 카테고리 자동완성 제공)
-/shortcut:add
+/shortcut:shortcut-add
 
 # 단축키 삭제 (파일과 학습 진도 모두 제거)
-/shortcut:delete <app_name> <shortcut>
+/shortcut:shortcut-delete <app_name> <shortcut>
 
 # 앱 이름 변경 (파일명과 학습 진도 데이터 일괄 변경)
-/shortcut:rename <old_app_name> <new_app_name>
+/shortcut:shortcut-rename <old_app_name> <new_app_name>
 
 # 검색
-/shortcut:search <keyword> [--section=<section_name>]
+/shortcut:shortcut-search <keyword> [--section=<section_name>]
 
 # 학습 모드 시작
-/shortcut:learn [app_name] [--mode=flash|quick|typing] [--all]
+/shortcut:shortcut-learn [app_name] [--mode=flash|quick|typing] [--all]
 
 # 통계 보기
-/shortcut:stats [app_name]
+/shortcut:shortcut-stats [app_name]
 
 # 앱 목록 보기
-/shortcut:list
+/shortcut:shortcut-list
 ```
 
 ### 명령어 상세 설명
 
-#### `/shortcut:init [repo_path]`
+#### `/shortcut:shortcut-init [repo_path]`
 
 저장소 초기화. 새 디렉토리 생성 또는 기존 디렉토리 지정.
 
 ```bash
-/shortcut:init ~/shortcuts
+/shortcut:shortcut-init ~/shortcuts
 
 # Creates:
 # ~/shortcuts/.shortcut-master/config.json
@@ -224,7 +224,7 @@ Box 1 (자주 복습)     Box 2 (보통)        Box 3 (드물게 복습)
 # Initializes git repo
 ```
 
-#### `/shortcut:add`
+#### `/shortcut:shortcut-add`
 
 대화형 단축키 추가. 자동완성 및 표기법 정규화 제공.
 
@@ -240,36 +240,36 @@ Description: Select next occurrence
 
 **중복 감지**: 동일한 단축키가 이미 존재하면 에러 표시 후 거부.
 
-#### `/shortcut:delete <app> <shortcut>`
+#### `/shortcut:shortcut-delete <app> <shortcut>`
 
 단축키 삭제. 파일과 학습 진도 모두 제거.
 
 ```bash
-/shortcut:delete vscode "Cmd+D"
+/shortcut:shortcut-delete vscode "Cmd+D"
 
 # Removes from vscode_shortcuts.md
 # Removes from learning-progress.json
 # Auto-commits: Delete shortcut: Cmd+D
 ```
 
-#### `/shortcut:rename <old> <new>`
+#### `/shortcut:shortcut-rename <old> <new>`
 
 앱 이름 변경. 파일명과 학습 진도 키를 일괄 변경.
 
 ```bash
-/shortcut:rename vscode vscode-insiders
+/shortcut:shortcut-rename vscode vscode-insiders
 
 # Renames: vscode_shortcuts.md → vscode-insiders_shortcuts.md
 # Updates all keys in learning-progress.json
 # Auto-commits: Rename app: vscode → vscode-insiders
 ```
 
-#### `/shortcut:search <keyword>`
+#### `/shortcut:shortcut-search <keyword>`
 
 키워드 검색. 앱별 그룹핑 표시.
 
 ```bash
-/shortcut:search "comment"
+/shortcut:shortcut-search "comment"
 
 === Search Results for "comment" ===
 
@@ -285,27 +285,27 @@ Found 3 shortcuts across 2 apps.
 
 **섹션 필터링**:
 ```bash
-/shortcut:search "toggle" --section=Editing
+/shortcut:shortcut-search "toggle" --section=Editing
 
 # Only searches within ## Editing sections
 ```
 
-#### `/shortcut:learn [app] [--mode] [--all]`
+#### `/shortcut:shortcut-learn [app] [--mode] [--all]`
 
 학습 모드 시작.
 
 ```bash
 # Flash Mode (기본) - 오늘 복습할 카드만
-/shortcut:learn vscode
+/shortcut:shortcut-learn vscode
 
 # Quick Mode
-/shortcut:learn vscode --mode=quick
+/shortcut:shortcut-learn vscode --mode=quick
 
 # Typing Mode (동시 누름만 지원)
-/shortcut:learn vscode --mode=typing
+/shortcut:shortcut-learn vscode --mode=typing
 
 # 강제로 모든 카드 복습
-/shortcut:learn vscode --all
+/shortcut:shortcut-learn vscode --all
 ```
 
 **복습 카드 선택 로직**:
@@ -317,12 +317,12 @@ Found 3 shortcuts across 2 apps.
 - quizSize=10인데 카드가 7개면: 7개만 출제
 - "오늘은 7문제로 진행합니다" 안내
 
-#### `/shortcut:stats [app]`
+#### `/shortcut:shortcut-stats [app]`
 
 학습 통계 표시.
 
 ```bash
-/shortcut:stats vscode
+/shortcut:shortcut-stats vscode
 
 === Learning Statistics: VS Code ===
 
@@ -438,7 +438,7 @@ Total mastery: 75% (Box 2+3)
 
 | 오류 유형   | 메시지                                    |
 | ----------- | ----------------------------------------- |
-| 미초기화    | "저장소가 초기화되지 않았습니다. /shortcut:init을 먼저 실행하세요." |
+| 미초기화    | "저장소가 초기화되지 않았습니다. /shortcut:shortcut-init을 먼저 실행하세요." |
 | 경로 없음   | "지정한 경로가 존재하지 않습니다."         |
 | Git 오류    | "Git 저장소 초기화 실패. Git이 설치되어 있는지 확인하세요." |
 
@@ -462,7 +462,7 @@ Total mastery: 75% (Box 2+3)
 
 | 오류 유형   | 메시지                                    |
 | ----------- | ----------------------------------------- |
-| 카드 없음   | "학습할 단축키가 없습니다. /shortcut:add로 추가하세요." |
+| 카드 없음   | "학습할 단축키가 없습니다. /shortcut:shortcut-add로 추가하세요." |
 | 복습 없음   | "오늘 복습할 카드가 없습니다. 다음 복습: 2026-01-18" |
 | 중단 복구   | 세션 단위 저장으로 인해 Ctrl+C 시 진행 내용 손실 |
 
@@ -546,7 +546,7 @@ git --version
 
 ### 단축키 표기법 정규화
 
-`/shortcut:add` 입력 시 자동 변환:
+`/shortcut:shortcut-add` 입력 시 자동 변환:
 - `cmd+d` → `Cmd+D`
 - `command+shift+p` → `Cmd+Shift+P`
 - `ctrl+alt+delete` → `Ctrl+Alt+Delete`

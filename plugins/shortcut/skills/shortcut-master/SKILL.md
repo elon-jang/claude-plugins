@@ -38,7 +38,7 @@
 사용자: "VS Code에서 Cmd+D 단축키를 추가하고 싶어"
 
 Claude:
-1. /shortcut:add 명령 실행
+1. /shortcut:shortcut-add 명령 실행
 2. 대화형 프롬프트 안내
    - App: vscode
    - Category: (기존 카테고리 제시)
@@ -53,7 +53,7 @@ Claude:
 사용자: "comment 관련 단축키 찾아줘"
 
 Claude:
-1. /shortcut:search "comment" 실행
+1. /shortcut:shortcut-search "comment" 실행
 2. 결과를 앱별로 그룹핑하여 표시
 3. 필요 시 섹션별 필터링 제안
 ```
@@ -67,7 +67,7 @@ Claude:
    - Flash (기본): 플래시카드
    - Quick: 빠른 학습
    - Typing: 실제 입력
-2. /shortcut:learn vscode --mode=<선택> 실행
+2. /shortcut:shortcut-learn vscode --mode=<선택> 실행
 3. 학습 세션 진행
 4. 완료 후 통계 표시
 ```
@@ -77,7 +77,7 @@ Claude:
 사용자: "내 학습 진도 보여줘"
 
 Claude:
-1. /shortcut:stats 실행
+1. /shortcut:shortcut-stats 실행
 2. Box 분포 설명
 3. 정답률 분석
 4. 어려운 단축키 확인
@@ -88,7 +88,7 @@ Claude:
 
 ### 자동 초기화 확인
 명령 실행 전 저장소가 초기화되었는지 확인:
-- 초기화 안 됨 → `/shortcut:init` 실행 안내
+- 초기화 안 됨 → `/shortcut:shortcut-init` 실행 안내
 
 ### 표기법 정규화 설명
 사용자가 소문자로 입력해도:
@@ -114,22 +114,22 @@ Claude:
 
 ```bash
 # 초기화
-/shortcut:init [repo_path]
+/shortcut:shortcut-init [repo_path]
 
 # 관리
-/shortcut:add
-/shortcut:delete <app> <shortcut>
-/shortcut:rename <old> <new>
-/shortcut:list
+/shortcut:shortcut-add
+/shortcut:shortcut-delete <app> <shortcut>
+/shortcut:shortcut-rename <old> <new>
+/shortcut:shortcut-list
 
 # 검색
-/shortcut:search <keyword> [--section=<name>]
+/shortcut:shortcut-search <keyword> [--section=<name>]
 
 # 학습
-/shortcut:learn [app] [--mode=flash|quick|typing] [--all]
+/shortcut:shortcut-learn [app] [--mode=flash|quick|typing] [--all]
 
 # 통계
-/shortcut:stats [app]
+/shortcut:shortcut-stats [app]
 ```
 
 ## Error Handling
@@ -138,7 +138,7 @@ Claude:
 ```
 Error: 저장소가 초기화되지 않았습니다
 
-→ /shortcut:init ~/shortcuts 실행 권장
+→ /shortcut:shortcut-init ~/shortcuts 실행 권장
 ```
 
 ### 파싱 에러
@@ -153,7 +153,7 @@ Error: vscode_shortcuts.md:15 - 테이블 형식 오류
 ```
 Error: 이미 존재하는 단축키입니다
 
-→ /shortcut:delete로 삭제 후 추가 안내
+→ /shortcut:shortcut-delete로 삭제 후 추가 안내
 → 또는 파일 직접 수정 제안
 ```
 

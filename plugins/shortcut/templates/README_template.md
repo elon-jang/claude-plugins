@@ -8,19 +8,19 @@ Personal keyboard shortcut collection managed with [Shortcut Master](https://git
 - Gmail
 - Chrome
 
-(Add more apps with `/shortcut:add`)
+(Add more apps with `/shortcut:shortcut-add`)
 
 ## Usage
 
 ```bash
 # Search shortcuts
-/shortcut:search "comment"
+/shortcut:shortcut-search "comment"
 
 # Learn shortcuts
-/shortcut:learn vscode
+/shortcut:shortcut-learn vscode
 
 # View statistics
-/shortcut:stats
+/shortcut:shortcut-stats
 ```
 
 ## Shortcuts by App

@@ -27,7 +27,7 @@ REPO_ROOT=$(git rev-parse --show-toplevel 2>/dev/null)
 ```
 
 If the command fails (not a Git repository):
-- Display error: "Error: Not in a Git repository. Please run `/shortcut:init` first."
+- Display error: "Error: Not in a Git repository. Please run `/shortcut:shortcut-init` first."
 - Stop execution
 
 **Detect current branch**:
@@ -235,7 +235,7 @@ Committed and pushed to origin/{branch}
 
 ## Error Handling
 
-- **Not in Git repository**: Display error, suggest `/shortcut:init`
+- **Not in Git repository**: Display error, suggest `/shortcut:shortcut-init`
 - **Duplicate shortcut**: Display existing entry, stop execution
 - **Git push fails**: Show error, files are saved locally
 - **File permission error**: Display error, stop execution
@@ -243,7 +243,7 @@ Committed and pushed to origin/{branch}
 ## Example
 
 ```
-User: /shortcut:add
+User: /shortcut:shortcut-add
 
 App: vscode
 Category: Editing

@@ -14,7 +14,7 @@ allowed-tools:
 ## Usage
 
 ```bash
-/shortcut:init [repo_path]
+/shortcut:shortcut-init [repo_path]
 ```
 
 ## Arguments
@@ -32,7 +32,7 @@ allowed-tools:
 ## Example
 
 ```bash
-/shortcut:init ~/my-shortcuts
+/shortcut:shortcut-init ~/my-shortcuts
 ```
 
 ## Implementation

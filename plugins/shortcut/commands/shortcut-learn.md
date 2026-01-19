@@ -14,7 +14,7 @@ Leitner Box 알고리즘으로 학습 세션을 시작합니다.
 ## Usage
 
 ```bash
-/shortcut:learn [app_name] [--mode=flash|quick|typing] [--all]
+/shortcut:shortcut-learn [app_name] [--mode=flash|quick|typing] [--all]
 ```
 
 ## Arguments
@@ -37,10 +37,10 @@ Leitner Box 알고리즘으로 학습 세션을 시작합니다.
 ## Examples
 
 ```bash
-/shortcut:learn vscode
-/shortcut:learn vscode --mode=quick
-/shortcut:learn vscode --all
-/shortcut:learn --mode=typing
+/shortcut:shortcut-learn vscode
+/shortcut:shortcut-learn vscode --mode=quick
+/shortcut:shortcut-learn vscode --all
+/shortcut:shortcut-learn --mode=typing
 ```
 
 ## Implementation

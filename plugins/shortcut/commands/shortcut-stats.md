@@ -14,7 +14,7 @@ allowed-tools:
 ## Usage
 
 ```bash
-/shortcut:stats [app_name]
+/shortcut:shortcut-stats [app_name]
 ```
 
 ## Arguments
@@ -30,8 +30,8 @@ allowed-tools:
 ## Examples
 
 ```bash
-/shortcut:stats
-/shortcut:stats vscode
+/shortcut:shortcut-stats
+/shortcut:shortcut-stats vscode
 ```
 
 ## Implementation

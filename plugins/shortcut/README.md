@@ -22,18 +22,18 @@ pip install -r requirements.txt
 ### 명령어
 
 ```
-/shortcut:init [repo_path]              # 저장소 초기화
-/shortcut:add                           # 단축키 추가
-/shortcut:delete <app> <shortcut>       # 단축키 삭제
-/shortcut:search <keyword>              # 검색
-/shortcut:learn [app]                   # 학습 시작
-/shortcut:stats [app]                   # 통계 보기
-/shortcut:list                          # 앱 목록 보기
+/shortcut:shortcut-init [repo_path]              # 저장소 초기화
+/shortcut:shortcut-add                           # 단축키 추가
+/shortcut:shortcut-delete <app> <shortcut>       # 단축키 삭제
+/shortcut:shortcut-search <keyword>              # 검색
+/shortcut:shortcut-learn [app]                   # 학습 시작
+/shortcut:shortcut-stats [app]                   # 통계 보기
+/shortcut:shortcut-list                          # 앱 목록 보기
 ```
 
 ### 작동 방식
 
-1. 저장소 초기화 (`/shortcut:init ~/shortcuts`)
+1. 저장소 초기화 (`/shortcut:shortcut-init ~/shortcuts`)
 2. 대화형 워크플로우로 단축키 추가:
    - App, Category, Shortcut, Description 입력
 3. Markdown 테이블로 자동 저장

@@ -14,7 +14,7 @@ allowed-tools:
 ## Usage
 
 ```bash
-/shortcut:search <keyword> [--section=<name>]
+/shortcut:shortcut-search <keyword> [--section=<name>]
 ```
 
 ## Arguments
@@ -25,9 +25,9 @@ allowed-tools:
 ## Examples
 
 ```bash
-/shortcut:search "comment"
-/shortcut:search "toggle" --section=Editing
-/shortcut:search "save"
+/shortcut:shortcut-search "comment"
+/shortcut:shortcut-search "toggle" --section=Editing
+/shortcut:shortcut-search "save"
 ```
 
 ## Implementation
