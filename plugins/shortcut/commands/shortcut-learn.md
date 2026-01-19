@@ -1,5 +1,5 @@
 ---
-name: learn
+name: shortcut-learn
 description: Leitner Box 학습 세션을 시작합니다
 argument-hint: "[app_name] [--mode=flash|quick|typing] [--all]"
 allowed-tools:

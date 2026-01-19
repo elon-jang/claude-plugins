@@ -1,5 +1,5 @@
 ---
-name: search
+name: shortcut-search
 description: 키워드로 단축키를 검색합니다
 argument-hint: "<keyword>"
 allowed-tools:
