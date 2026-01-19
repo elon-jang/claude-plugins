@@ -216,9 +216,9 @@ Read `{REPO_ROOT}/README.md` and find the category section.
 2. `### {Category}`
 3. `<!-- spark-index:{category} -->`
 
-**Add entry in alphabetical order**:
+**Add entry in alphabetical order** (use clickable markdown link):
 ```markdown
-- `{category}/{filename}.md` - {title}
+- [{title}]({category}/{filename}.md)
 ```
 
 If section not found, create it.
