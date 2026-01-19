@@ -8,7 +8,5 @@
   "keywords": ["knowledge", "learning", "flashcard", "socratic", "second-brain", "pkm"],
   "repository": "https://github.com/elon-jang/claude-plugins",
   "license": "MIT",
-  "homepage": "https://github.com/elon-jang/claude-plugins/tree/main/plugins/sparks",
-  "commands": ["spark-add", "spark-learn", "spark-search", "spark-list", "spark-init"],
-  "skills": ["sparks"]
+  "homepage": "https://github.com/elon-jang/claude-plugins/tree/main/plugins/sparks"
 }
