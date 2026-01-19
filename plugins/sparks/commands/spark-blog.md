@@ -121,17 +121,38 @@ Otherwise, just save the content with a `# {title}` header.
 
 ### 6. Update README.md
 
-Find or create Blog section in README.md:
+**Read README.md** and determine Blog section location.
 
-**Search patterns**:
-1. `## Blog`
-2. `### Blog`
-3. `<!-- spark-index:blog -->`
+**Search patterns** (in order):
+1. `<!-- spark-index:blog -->` - preferred anchor
+2. `## Blog`
+3. `### Blog`
 
-**Add entry** (newest first):
+**If Blog section NOT found**, create it:
+
+1. Find insertion point (search in order):
+   - After `<!-- spark-index:til -->` section
+   - After `### TIL` section
+   - Before `## Stats` section
+   - At end of file (before footer if exists)
+
+2. Insert new Blog section:
 ```markdown
-- [{date}] [{title}]({blog/filename})
+
+## Blog
+
+<!-- spark-index:blog -->
+
 ```
+
+**Add entry** (newest first, right after the anchor comment):
+```markdown
+- [{date}] [{title}](blog/{filename})
+```
+
+**Important**:
+- Keep existing entries, add new one at top
+- Ensure proper spacing (blank line before/after section)
 
 ### 7. Git Operations
 

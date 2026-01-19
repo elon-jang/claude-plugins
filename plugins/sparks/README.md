@@ -51,7 +51,15 @@ Q&A는 Claude가 자동 생성하고 확인을 요청합니다.
 /spark-learn --mode=connect
 ```
 
-### 4. 검색 & 목록
+### 4. 블로그 작성
+
+```bash
+/spark-blog
+```
+
+블로그 포스트를 `blog/` 디렉토리에 저장하고 README에 자동 인덱싱합니다.
+
+### 5. 검색 & 목록
 
 ```bash
 # 키워드 검색
@@ -63,6 +71,14 @@ Q&A는 Claude가 자동 생성하고 확인을 요청합니다.
 # 목록 조회
 /spark-list --stats
 ```
+
+### 6. 학습 통계
+
+```bash
+/spark-stats
+```
+
+카테고리별 분포, 신뢰도 레벨, 복습 현황, 오늘 복습할 항목 등을 대시보드로 표시합니다.
 
 ## Knowledge Repository Structure
 
@@ -77,6 +93,7 @@ my-sparks/
 ├── insights/             # 인사이트
 ├── skills/               # 실용 기술
 ├── til/                  # Today I Learned
+├── blog/                 # 블로그 포스트
 └── README.md             # 자동 생성 인덱스
 ```
 
@@ -111,11 +128,13 @@ Leitner 5-box 시스템:
 
 | 명령어 | 설명 |
 |--------|------|
+| `/spark-init` | 저장소 초기화 |
 | `/spark-add` | 새 지식 추가 |
-| `/spark-learn` | 학습 시작 |
+| `/spark-blog` | 블로그 포스트 저장 |
+| `/spark-learn` | 학습 시작 (소크라틱/플래시카드/연결) |
 | `/spark-search` | 지식 검색 |
 | `/spark-list` | 목록 조회 |
-| `/spark-init` | 저장소 초기화 |
+| `/spark-stats` | 학습 통계 대시보드 |
 
 ## License
 

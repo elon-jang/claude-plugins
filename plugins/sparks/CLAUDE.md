@@ -10,12 +10,13 @@
 plugins/sparks/
 ├── .claude-plugin/plugin.json    # 플러그인 메타데이터
 ├── commands/
+│   ├── spark-init.md             # 저장소 초기화
 │   ├── spark-add.md              # 지식 저장
 │   ├── spark-blog.md             # 블로그 글 저장
 │   ├── spark-learn.md            # 학습 (3가지 모드)
 │   ├── spark-search.md           # 검색
 │   ├── spark-list.md             # 목록 조회
-│   └── spark-init.md             # 저장소 초기화
+│   └── spark-stats.md            # 학습 통계 대시보드
 ├── templates/
 │   ├── knowledge_template.md     # 지식 파일 템플릿
 │   └── repo_init/                # 저장소 초기화 템플릿
@@ -96,6 +97,22 @@ plugins/sparks/
 --category=<name>   특정 카테고리만
 --stats             통계 포함 (복습 횟수, confidence)
 ```
+
+### `/spark-stats` - 학습 통계 대시보드
+
+**Workflow:**
+1. Git 저장소 감지
+2. 모든 지식 파일 스캔 (blog/, .sparks/ 제외)
+3. YAML frontmatter 파싱하여 통계 수집
+4. 대시보드 형태로 출력:
+   - 카테고리별 분포 (막대 차트)
+   - 신뢰도 레벨 분포 (⭐ 1-5)
+   - 복습 현황 (미복습, 1-2회, 3-5회, 6회+)
+   - 복습 예정 항목 (Leitner 간격 기반)
+   - 상위 태그 (Top 10)
+   - 블로그 통계 (선택)
+
+**Allowed Tools:** Glob, Read, Bash
 
 ### `/spark-init` - 저장소 초기화
 
@@ -179,6 +196,9 @@ cd plugins/sparks
 /spark-learn --mode=flashcard
 /spark-learn --mode=socratic
 /spark-learn --mode=connect
+
+# 통계 대시보드 테스트
+/spark-stats
 ```
 
 ## Related Files

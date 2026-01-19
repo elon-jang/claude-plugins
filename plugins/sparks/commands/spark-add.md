@@ -110,6 +110,22 @@ Use AskUserQuestion to gather basic information (4 questions max):
 
 If user selected "From blog post" as source:
 
+**First, scan blog directory and extract titles**:
+```bash
+# List all blog files
+ls -t "$REPO_ROOT/blog/"*.md 2>/dev/null
+```
+
+For each blog file found:
+1. Read the file
+2. Extract title from:
+   - YAML frontmatter `title:` field (preferred)
+   - First `# ` heading in content
+   - Filename (fallback)
+3. Extract date from filename (YYYY-MM-DD prefix)
+
+**Build options dynamically** (max 4 most recent, sorted by date desc):
+
 ```json
 {
   "questions": [
@@ -118,17 +134,23 @@ If user selected "From blog post" as source:
       "header": "Blog",
       "multiSelect": false,
       "options": [
-        {"label": "{blog_filename_1}", "description": "{title from file}"},
-        {"label": "{blog_filename_2}", "description": "{title from file}"}
+        {"label": "[2026-01-19] 해외주식 절세 꿀팁", "description": "blog/2026-01-19-overseas-stock-tax.md"},
+        {"label": "[2026-01-18] React Hooks 이해하기", "description": "blog/2026-01-18-react-hooks.md"},
+        {"label": "[2026-01-15] Git 워크플로우", "description": "blog/2026-01-15-git-workflow.md"},
+        {"label": "Other (enter path)", "description": "Manually enter blog path"}
       ]
     }
   ]
 }
 ```
 
+**Note**: Options are dynamically generated from actual blog files. Show `[date] title` format for easy identification.
+
+**If "Other" selected**, ask for manual path input.
+
 Read selected blog file and:
 - Extract title (from `# ` header or frontmatter)
-- Store path as `blog_link` for frontmatter
+- Store relative path as `blog_link` for frontmatter (e.g., `blog/2026-01-19-title.md`)
 
 ### 3. Collect Content (Second Call)
 
