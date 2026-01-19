@@ -203,11 +203,11 @@ parser_learn.add_argument('--mode', choices=['flash', 'quick', 'typing', 'newmod
 
 ```bash
 # 1. 초기화
-/shortcut init ~/test-shortcuts
+/shortcut:init ~/test-shortcuts
 cd ~/test-shortcuts
 
 # 2. 단축키 추가
-/shortcut add
+/shortcut:add
 # App: vscode
 # Category: Editing
 # Shortcut: cmd+d
@@ -217,21 +217,21 @@ cd ~/test-shortcuts
 cat vscode_shortcuts.md
 
 # 4. 검색
-/shortcut search "select"
+/shortcut:search "select"
 
 # 5. 학습
-/shortcut learn vscode
+/shortcut:learn vscode
 
 # 6. 파일 직접 수정 (정합성 테스트)
 # vscode_shortcuts.md에서 Cmd+D 삭제
-/shortcut learn vscode  # 진도 데이터 자동 정리 확인
+/shortcut:learn vscode  # 진도 데이터 자동 정리 확인
 
 # 7. 중복 테스트
-/shortcut add
+/shortcut:add
 # 같은 단축키 입력 → 에러 확인
 
 # 8. 표기법 정규화 테스트
-/shortcut add
+/shortcut:add
 # Shortcut: cmd+shift+p → Cmd+Shift+P로 변환 확인
 ```
 
@@ -290,7 +290,7 @@ def test_is_due_for_review():
 
 ### 구현 필요
 
-- [ ] `/shortcut delete` 완전 구현
+- [ ] `/shortcut:delete` 완전 구현
 - [ ] Typing Mode 실제 키보드 감지 (pynput)
 - [ ] 단위 테스트 추가
 - [ ] 학습 세션 중 Ctrl+C 처리 (임시 저장)

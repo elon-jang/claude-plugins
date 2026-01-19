@@ -1,6 +1,6 @@
 # My Shortcuts
 
-Personal keyboard shortcut collection managed with [Shortcut Master](https://github.com/elon-jang/claude-plugins/tree/master/plugins/shortcut-master).
+Personal keyboard shortcut collection managed with [Shortcut Master](https://github.com/elon-jang/claude-plugins/tree/master/plugins/shortcut).
 
 ## Apps
 
@@ -8,19 +8,19 @@ Personal keyboard shortcut collection managed with [Shortcut Master](https://git
 - Gmail
 - Chrome
 
-(Add more apps with `/shortcut add`)
+(Add more apps with `/shortcut:add`)
 
 ## Usage
 
 ```bash
 # Search shortcuts
-/shortcut search "comment"
+/shortcut:search "comment"
 
 # Learn shortcuts
-/shortcut learn vscode
+/shortcut:learn vscode
 
 # View statistics
-/shortcut stats
+/shortcut:stats
 ```
 
 ## Shortcuts by App
