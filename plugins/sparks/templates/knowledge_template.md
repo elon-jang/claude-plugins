@@ -14,6 +14,9 @@ last_reviewed: null
 
 # {title}
 
+<!-- If blog_link exists, add this line: -->
+<!-- > **Blog**: [{blog_title}](../{blog_link}) -->
+
 ## Summary
 
 {summary}

@@ -251,6 +251,9 @@ last_reviewed: null
 
 # {title}
 
+> **Blog**: [{blog_title}](../{blog_link})
+<!-- ↑ Only include this line if blog_link exists -->
+
 ## Summary
 
 {content}
@@ -267,6 +270,8 @@ last_reviewed: null
 
 <!-- Add your own understanding here -->
 ```
+
+**Note**: When `blog_link` is provided, add a visible link below the title using blockquote format for easy navigation.
 
 ### 8. Update README.md
 
