@@ -5,15 +5,16 @@
 ## 설치
 
 ```bash
+/plugin marketplace add elon-jang/claude-plugins
+/plugin install shortcut-master@ai-plugins
+```
+
+### 수동 설치
+
+```bash
 git clone https://github.com/elon-jang/claude-plugins.git
 cd claude-plugins/plugins/shortcut-master
 pip install -r requirements.txt
-```
-
-### Claude Plugin으로 설치
-
-```bash
-/plugin marketplace add elon-jang/claude-plugins
 ```
 
 ## 사용법

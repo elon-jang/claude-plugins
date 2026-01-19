@@ -5,14 +5,15 @@ Git 저장소에 새로운 AI 프롬프트를 자동으로 추가하고 Github�
 ## 설치
 
 ```bash
-git clone https://github.com/elon-jang/claude-plugins.git
-cd claude-plugins/plugins/add-prompt
+/plugin marketplace add elon-jang/claude-plugins
+/plugin install add-prompt@ai-plugins
 ```
 
-### Claude Plugin으로 설치
+### 수동 설치
 
 ```bash
-/plugin marketplace add elon-jang/claude-plugins
+git clone https://github.com/elon-jang/claude-plugins.git
+cd claude-plugins/plugins/add-prompt
 ```
 
 ## 사용법

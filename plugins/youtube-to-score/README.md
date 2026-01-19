@@ -5,15 +5,16 @@ YouTube 피아노 연주 영상에서 악보(MIDI, MusicXML, PDF)를 자동 생�
 ## 설치
 
 ```bash
+/plugin marketplace add elon-jang/claude-plugins
+/plugin install youtube-to-score@ai-plugins
+```
+
+### 수동 설치
+
+```bash
 git clone https://github.com/elon-jang/claude-plugins.git
 cd claude-plugins/plugins/youtube-to-score
 ./scripts/setup.sh
-```
-
-### Claude Plugin으로 설치
-
-```bash
-/plugin marketplace add elon-jang/claude-plugins
 ```
 
 ## 사용법
@@ -31,25 +32,26 @@ cd claude-plugins/plugins/youtube-to-score
 "YouTube에서 피아노 채보해줘"
 ```
 
-### 직접 실행
+### 작동 방식
 
-```bash
-source venv/bin/activate
-python skills/youtube-to-score/scripts/main.py "YOUTUBE_URL"
-```
+1. YouTube URL 입력
+2. 오디오 추출 (yt-dlp)
+3. 피아노 음원 분리 (Demucs)
+4. 음표 인식 (Basic Pitch)
+5. 악보 생성 (music21)
 
 ## 결과물
 
-| 폴더 | 파일 |
+| 작업 | 내용 |
 |------|------|
-| `downloads/` | 추출된 오디오 (`.wav`) |
-| `output/` | 악보 (`.mid`, `.xml`, `.pdf`) |
+| 오디오 추출 | `downloads/*.wav` |
+| 악보 생성 | `output/*.mid`, `*.xml`, `*.pdf` |
 
 ## 제한 사항
 
 - 피아노 전용
 - macOS 전용
-- 최대 10분
+- 최대 10분 영상
 
 ## 라이선스
 
