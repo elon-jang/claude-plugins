@@ -1,12 +1,8 @@
 {
   "name": "add-prompt",
-  "version": "0.1.0",
-  "description": "Add new AI prompts to the prompts repository and push to Github",
+  "version": "1.0.0",
+  "description": "Git 저장소에 새로운 AI 프롬프트를 자동으로 추가하고 Github에 푸시하는 플러그인",
   "author": {
-    "name": "Elon"
-  },
-  "keywords": ["prompts", "workflow", "git", "automation"],
-  "repository": "https://github.com/elon-jang/claude-plugins",
-  "license": "MIT",
-  "homepage": "https://github.com/elon-jang/claude-plugins/tree/main/plugins/add-prompt"
+    "name": "Elon Jang"
+  }
 }

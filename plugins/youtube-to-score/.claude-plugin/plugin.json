@@ -1,20 +1,8 @@
 {
-    "name": "youtube-to-score",
-    "version": "1.0.0",
-    "description": "YouTube 피아노 연주 영상에서 악보(MIDI, MusicXML, PDF)를 자동 생성하는 도구",
-    "author": {
-        "name": "elon-jang"
-    },
-    "repository": "https://github.com/elon-jang/claude-plugins",
-    "homepage": "https://github.com/elon-jang/claude-plugins/tree/master/plugins/youtube-to-score",
-    "license": "MIT",
-    "keywords": [
-        "youtube",
-        "piano",
-        "sheet-music",
-        "midi",
-        "transcription",
-        "music21",
-        "basic-pitch"
-    ]
+  "name": "youtube-to-score",
+  "version": "1.0.0",
+  "description": "YouTube 피아노 연주 영상에서 악보(MIDI, MusicXML, PDF)를 자동 생성하는 플러그인",
+  "author": {
+    "name": "Elon Jang"
+  }
 }
