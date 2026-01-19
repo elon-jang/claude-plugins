@@ -1,5 +1,5 @@
 ---
-name: shortcut-delete
+name: delete
 description: 단축키를 삭제합니다
 argument-hint: "<app_name> <shortcut>"
 allowed-tools:

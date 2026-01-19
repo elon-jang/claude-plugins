@@ -1,5 +1,5 @@
 ---
-name: shortcut-stats
+name: stats
 description: 학습 통계를 표시합니다
 argument-hint: "[app_name]"
 allowed-tools:
