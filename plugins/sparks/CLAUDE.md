@@ -11,6 +11,7 @@ plugins/sparks/
 ├── .claude-plugin/plugin.json    # 플러그인 메타데이터
 ├── commands/
 │   ├── spark-add.md              # 지식 저장
+│   ├── spark-blog.md             # 블로그 글 저장
 │   ├── spark-learn.md            # 학습 (3가지 모드)
 │   ├── spark-search.md           # 검색
 │   ├── spark-list.md             # 목록 조회
@@ -28,13 +29,26 @@ plugins/sparks/
 
 **Workflow:**
 1. Git 저장소 감지 (`git rev-parse --show-toplevel`)
-2. 카테고리 자동 감지 (디렉토리 기반)
+2. 블로그 글 존재 여부 확인 (`blog/` 디렉토리)
 3. AskUserQuestion으로 입력 수집:
-   - Category, Title, Tags, Source, Content
-4. Claude가 Q&A 자동 생성 → 사용자 확인
-5. Markdown + YAML frontmatter 파일 생성
-6. README.md 업데이트
-7. Git add, commit, push
+   - Category, Title, Tags, Source (블로그 링크 옵션 포함), Content
+4. 블로그에서 가져올 경우: 블로그 글 선택 → `blog_link` 필드에 저장
+5. Claude가 Q&A 자동 생성 → 사용자 확인
+6. Markdown + YAML frontmatter 파일 생성
+7. README.md 업데이트
+8. Git add, commit, push
+
+**Allowed Tools:** AskUserQuestion, Glob, Read, Write, Edit, Bash
+
+### `/spark-blog` - 블로그 글 저장
+
+**Workflow:**
+1. Git 저장소 감지
+2. AskUserQuestion으로 입력 수집:
+   - Title, Tags (선택), Content
+3. `blog/YYYY-MM-DD-title.md` 파일 생성 (원문 그대로)
+4. README.md 업데이트 (Blog 섹션)
+5. Git add, commit, push
 
 **Allowed Tools:** AskUserQuestion, Glob, Read, Write, Edit, Bash
 
@@ -97,6 +111,7 @@ category: "concepts"
 tags: ["tag1", "tag2"]
 created: "2026-01-19T10:30:00"
 source: "출처 (선택)"
+blog_link: "blog/2026-01-19-title.md"  # 블로그 연결 시 (선택)
 confidence: 3           # 1-5 (자기 평가)
 connections: ["related-id"]
 review_count: 0
@@ -133,6 +148,7 @@ my-sparks/
 ├── insights/             # 인사이트/깨달음
 ├── skills/               # 실용 기술
 ├── til/                  # Today I Learned
+├── blog/                 # 블로그 글 (원문)
 ├── .gitignore
 └── README.md
 ```
@@ -145,6 +161,7 @@ my-sparks/
 | `insights` | 경험에서 얻은 깨달음 | 코드리뷰 교훈, 실패 복기 |
 | `skills` | 실용 기술, How-to | Git 명령어, 단축키 |
 | `til` | 오늘 배운 것 | 일일 학습 기록 |
+| `blog` | 블로그 글 원문 | 기술 블로그, 회고 글 |
 
 ## Testing
 
@@ -152,7 +169,10 @@ my-sparks/
 # 플러그인 디렉토리에서 테스트
 cd plugins/sparks
 
-# 지식 저장 테스트
+# 블로그 저장 테스트
+/spark-blog
+
+# 지식 저장 테스트 (블로그 연결 포함)
 /spark-add
 
 # 학습 테스트

@@ -5,6 +5,7 @@ category: "{category}"
 tags: [{tags}]
 created: "{created}"
 source: "{source}"
+blog_link: null            # optional: "blog/YYYY-MM-DD-title.md"
 confidence: 3
 connections: []
 review_count: 0

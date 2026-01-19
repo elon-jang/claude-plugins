@@ -43,9 +43,20 @@ Default categories if none found: `["concepts", "insights", "skills", "til"]`
 CURRENT_BRANCH=$(git branch --show-current)
 ```
 
-### 1. Collect Information (First Call)
+### 1. Check for Blog Posts (Optional Source)
+
+**Check if blog directory exists and has posts**:
+```bash
+ls "$REPO_ROOT/blog/"*.md 2>/dev/null
+```
+
+If blog posts exist, store the list for later use in Source options.
+
+### 2. Collect Information (First Call)
 
 Use AskUserQuestion to gather basic information (4 questions max):
+
+**If blog posts exist**, include "From blog post" option in Source:
 
 ```json
 {
@@ -80,10 +91,11 @@ Use AskUserQuestion to gather basic information (4 questions max):
       ]
     },
     {
-      "question": "What is the source of this knowledge? (optional)",
+      "question": "What is the source of this knowledge?",
       "header": "Source",
       "multiSelect": false,
       "options": [
+        {"label": "From blog post", "description": "Link to existing blog post"},
         {"label": "Enter source", "description": "Book, course, experience, etc."},
         {"label": "Skip", "description": "No source"}
       ]
@@ -92,7 +104,33 @@ Use AskUserQuestion to gather basic information (4 questions max):
 }
 ```
 
-### 2. Collect Content (Second Call)
+**If no blog posts**, use original Source options (without "From blog post").
+
+### 2-1. Select Blog Post (If "From blog post" selected)
+
+If user selected "From blog post" as source:
+
+```json
+{
+  "questions": [
+    {
+      "question": "Select a blog post to link:",
+      "header": "Blog",
+      "multiSelect": false,
+      "options": [
+        {"label": "{blog_filename_1}", "description": "{title from file}"},
+        {"label": "{blog_filename_2}", "description": "{title from file}"}
+      ]
+    }
+  ]
+}
+```
+
+Read selected blog file and:
+- Extract title (from `# ` header or frontmatter)
+- Store path as `blog_link` for frontmatter
+
+### 3. Collect Content (Second Call)
 
 ```json
 {
@@ -119,7 +157,7 @@ Use AskUserQuestion to gather basic information (4 questions max):
 }
 ```
 
-### 3. Auto-Generate Q&A
+### 4. Auto-Generate Q&A
 
 Based on the content and key points, Claude generates 2-3 Q&A pairs:
 
@@ -145,7 +183,7 @@ Based on the content and key points, Claude generates 2-3 Q&A pairs:
 }
 ```
 
-### 4. Generate Filename and UUID
+### 5. Generate Filename and UUID
 
 **UUID**: Generate a unique identifier (use timestamp-based format)
 ```
@@ -160,7 +198,7 @@ Format: {timestamp}-{random} e.g., 20260119-a1b2c3
 
 Example: "Machine Learning Basics" → `machine-learning-basics.md`
 
-### 5. Check for Duplicate Filenames
+### 6. Check for Duplicate Filenames
 
 Use Glob to check if file exists:
 ```
@@ -169,7 +207,7 @@ Pattern: {category}/{filename}.md
 
 If exists, append `-2`, `-3`, etc.
 
-### 6. Create Knowledge File
+### 7. Create Knowledge File
 
 **Path**: `{REPO_ROOT}/{category}/{filename}.md`
 
@@ -182,6 +220,7 @@ category: "{category}"
 tags: [{tags_array}]
 created: "{iso_timestamp}"
 source: "{source}"
+blog_link: "{blog_link}"   # optional, only if linked from blog
 confidence: 3
 connections: []
 review_count: 0
@@ -207,7 +246,7 @@ last_reviewed: null
 <!-- Add your own understanding here -->
 ```
 
-### 7. Update README.md
+### 8. Update README.md
 
 Read `{REPO_ROOT}/README.md` and find the category section.
 
@@ -223,7 +262,7 @@ Read `{REPO_ROOT}/README.md` and find the category section.
 
 If section not found, create it.
 
-### 8. Git Operations
+### 9. Git Operations
 
 ```bash
 cd {REPO_ROOT} && \
@@ -232,7 +271,7 @@ git commit -m "Add knowledge: {title}" && \
 git push origin {CURRENT_BRANCH}
 ```
 
-### 9. Success Message
+### 10. Success Message
 
 ```
 ✅ Knowledge added successfully!
