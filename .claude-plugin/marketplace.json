@@ -42,6 +42,19 @@
                 "leitner-box",
                 "spaced-repetition"
             ]
+        },
+        {
+            "name": "sparks",
+            "source": "./plugins/sparks",
+            "description": "지식과 인사이트를 Github에 저장하고, 소크라틱 대화/플래시카드/연결 탐색을 통해 학습하는 플러그인",
+            "keywords": [
+                "knowledge",
+                "learning",
+                "flashcard",
+                "socratic",
+                "second-brain",
+                "pkm"
+            ]
         }
     ]
 }
