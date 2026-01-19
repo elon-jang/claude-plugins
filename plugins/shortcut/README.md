@@ -6,14 +6,14 @@
 
 ```bash
 /plugin marketplace add elon-jang/claude-plugins
-/plugin install shortcut-master@ai-plugins
+/plugin install shortcut@ai-plugins
 ```
 
 ### 수동 설치
 
 ```bash
 git clone https://github.com/elon-jang/claude-plugins.git
-cd claude-plugins/plugins/shortcut-master
+cd claude-plugins/plugins/shortcut
 pip install -r requirements.txt
 ```
 

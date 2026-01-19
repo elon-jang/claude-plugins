@@ -1,5 +1,5 @@
 {
-  "name": "shortcut-master",
+  "name": "shortcut",
   "version": "1.0.0",
   "description": "애플리케이션 단축키를 GitHub에 저장하고 Leitner Box 알고리즘으로 효과적으로 학습하는 개인 단축키 관리 시스템",
   "author": {
