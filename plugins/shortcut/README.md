@@ -45,9 +45,16 @@ pip install -r requirements.txt
 
 | 작업 | 내용 |
 |------|------|
-| 파일 생성 | `{app}_shortcuts.md` |
+| 단축키 파일 | `{app}_shortcuts.md` |
+| README | `README.md` (Summary + Quick Reference) |
 | 학습 진도 | `.shortcut-master/learning-progress.json` |
-| Git 커밋 | 자동 커밋 (선택) |
+| Git 커밋 | 자동 커밋 및 푸시 |
+
+### README.md 자동 생성
+
+단축키 추가 시 README.md가 자동으로 업데이트됩니다:
+- **Summary**: 앱별 단축키 개수, 최근 수정일
+- **Quick Reference**: 앱별 Top 5 단축키
 
 ## 학습 모드
 
