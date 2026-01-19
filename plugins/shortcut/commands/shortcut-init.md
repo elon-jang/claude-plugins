@@ -1,5 +1,5 @@
 ---
-name: init
+name: shortcut-init
 description: 새 단축키 저장소를 초기화합니다
 argument-hint: "[repo_path]"
 allowed-tools:

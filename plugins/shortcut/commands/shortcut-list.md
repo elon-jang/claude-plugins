@@ -1,5 +1,5 @@
 ---
-name: list
+name: shortcut-list
 description: 등록된 앱 목록을 표시합니다
 argument-hint: ""
 allowed-tools:

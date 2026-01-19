@@ -1,5 +1,5 @@
 ---
-name: add
+name: shortcut-add
 description: 단축키를 대화형으로 추가합니다
 argument-hint: ""
 allowed-tools:
