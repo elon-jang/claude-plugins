@@ -41,6 +41,148 @@ pip install -r requirements.txt
    - Box 1 (매일) → Box 2 (3일) → Box 3 (7일)
 5. Git 자동 커밋
 
+## 사용 예시
+
+### 1. 저장소 초기화
+
+```bash
+# 새 저장소 생성
+/shortcut:shortcut-init ~/my-shortcuts
+
+# 결과:
+# ✓ Created ~/my-shortcuts
+# ✓ Initialized git repository
+# ✓ Created .shortcut-master/config.json
+```
+
+### 2. 단축키 추가
+
+```bash
+/shortcut:shortcut-add
+
+# 대화형 입력:
+# App: vscode
+# Category: Editing
+# Shortcut: cmd+d
+# Description: Select next occurrence
+
+# 결과:
+# ✅ Shortcut added successfully!
+# - vscode_shortcuts.md 생성/업데이트
+# - README.md 자동 업데이트
+# - Git commit: "Add shortcut: vscode - Cmd+D"
+```
+
+**생성되는 파일 예시 (`vscode_shortcuts.md`):**
+
+```markdown
+# VS Code Shortcuts
+
+## Editing
+
+| Shortcut | Description |
+|----------|-------------|
+| Cmd+D | Select next occurrence |
+| Cmd+Shift+L | Select all occurrences |
+```
+
+### 3. 단축키 검색
+
+```bash
+/shortcut:shortcut-search "comment"
+
+# 결과:
+# === Search Results for "comment" ===
+#
+# [VS Code]
+#   Cmd+/         Toggle line comment        (Editing)
+#   Cmd+K Cmd+C   Add line comment          (Editing)
+#
+# Found 2 shortcuts across 1 app.
+```
+
+### 4. 학습 시작
+
+```bash
+# 기본 Flash 모드
+/shortcut:shortcut-learn vscode
+
+# Quick 모드 (빠른 학습)
+/shortcut:shortcut-learn vscode --mode=quick
+
+# 모든 카드 학습 (복습 예정 무시)
+/shortcut:shortcut-learn vscode --all
+```
+
+**Flash 모드 예시:**
+
+```
+=== Learning Mode: VS Code (Flash) ===
+Box 1: 5 cards | Box 2: 3 cards | Box 3: 2 cards
+
+[Question 1/10] Box 1
+What does this shortcut do?
+
+  Cmd+D
+
+[Press Enter to reveal answer]
+
+=== Answer ===
+  Cmd+D → Select next occurrence
+
+Did you remember correctly?
+  [y] Yes - move to Box 2
+  [n] No - stay in Box 1
+```
+
+### 5. 통계 확인
+
+```bash
+/shortcut:shortcut-stats vscode
+
+# 결과:
+# === Learning Statistics: VS Code ===
+#
+# Box Distribution:
+#   Box 1: 5 cards (review now)
+#   Box 2: 12 cards (next: 2026-01-18)
+#   Box 3: 23 cards (next: 2026-01-22)
+#
+# Overall Accuracy: 85.3%
+#   Correct: 142 / Incorrect: 24
+#
+# Most Difficult Shortcuts (Top 5):
+#   1. Cmd+K Cmd+S - incorrectCount: 8
+#   2. Cmd+Shift+F - incorrectCount: 5
+```
+
+### 6. 앱 목록 보기
+
+```bash
+/shortcut:shortcut-list
+
+# 결과:
+# === Registered Apps ===
+#
+# 1. vscode (25 shortcuts)
+# 2. chrome (12 shortcuts)
+# 3. figma (8 shortcuts)
+#
+# Total: 45 shortcuts across 3 apps
+```
+
+### 7. 단축키 삭제
+
+```bash
+/shortcut:shortcut-delete vscode "Cmd+D"
+
+# 결과:
+# ✓ Deleted shortcut: Cmd+D from vscode
+# ✓ Updated vscode_shortcuts.md
+# ✓ Removed from learning progress
+# ✓ Committed: "Delete shortcut: vscode - Cmd+D"
+```
+
 ## 결과물
 
 | 작업 | 내용 |
