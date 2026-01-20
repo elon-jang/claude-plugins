@@ -46,6 +46,21 @@ If no directories found:
 CURRENT_BRANCH=$(git branch --show-current)
 ```
 
+**Detect remote URL for GitHub links**:
+```bash
+REMOTE_URL=$(git config --get remote.origin.url)
+```
+
+Convert to HTTPS URL format:
+- `git@github.com:user/repo.git` → `https://github.com/user/repo`
+- `https://github.com/user/repo.git` → `https://github.com/user/repo`
+
+Example conversion:
+```bash
+# Remove .git suffix and convert SSH to HTTPS
+GITHUB_URL=$(echo "$REMOTE_URL" | sed 's/\.git$//' | sed 's/git@github.com:/https:\/\/github.com\//')
+```
+
 ### 1. Collect Information
 
 Use AskUserQuestion tool to gather all required information in a single call with 4 questions (maximum allowed).
@@ -273,21 +288,32 @@ If no matching section found:
   ```markdown
   ## {Category}
 
-  - `{category}/{filename}.md` - {description}
+  - [`{category}/{filename}.md`]({GITHUB_URL}/blob/{CURRENT_BRANCH}/{category}/{filename}.md) - {description}
   ```
 
 **Add the new entry in alphabetical order** within that section:
 
-**Format**: `` - `{category}/{filename}.md` - {description} ``
+**Format**: `` - [`{category}/{filename}.md`]({GITHUB_URL}/blob/{CURRENT_BRANCH}/{category}/{filename}.md) - {description} ``
+
+Where:
+- `{GITHUB_URL}` is the GitHub repository URL detected in Step 0 (e.g., `https://github.com/elon-jang/prompts`)
+- `{CURRENT_BRANCH}` is the current Git branch (e.g., `main`)
+- `{category}` is the selected category directory
+- `{filename}.md` is the generated filename
+
+**Example**:
+```markdown
+- [`infrastructure/aws-ec2-management.md`](https://github.com/elon-jang/prompts/blob/main/infrastructure/aws-ec2-management.md) - AWS EC2 instance management commands
+```
 
 **Alphabetical sorting**:
 - Compare filenames (not titles)
 - Insert at the correct position to maintain alphabetical order
 - Example ordering:
   ```
-  - `infrastructure/aws-ec2-management.md` - ...
-  - `infrastructure/tencent-vm-start.md` - ...
-  - `infrastructure/tencent-vm-status.md` - ...
+  - [`infrastructure/aws-ec2-management.md`](https://github.com/elon-jang/prompts/blob/main/infrastructure/aws-ec2-management.md) - ...
+  - [`infrastructure/tencent-vm-start.md`](https://github.com/elon-jang/prompts/blob/main/infrastructure/tencent-vm-start.md) - ...
+  - [`infrastructure/tencent-vm-status.md`](https://github.com/elon-jang/prompts/blob/main/infrastructure/tencent-vm-status.md) - ...
   ```
 
 Use Edit to update README.md with the new entry inserted at the correct position.
@@ -369,8 +395,10 @@ Content: [Full markdown content]
 
 Result:
 - Detected repo: ~/my-prompts
+- Detected GitHub URL: https://github.com/elon-jang/prompts
 - Created: infrastructure/aws-ec2-management.md
-- Updated README with alphabetically sorted entry
+- Updated README with clickable link:
+  `- [`infrastructure/aws-ec2-management.md`](https://github.com/elon-jang/prompts/blob/main/infrastructure/aws-ec2-management.md) - AWS EC2 instance start/stop/status commands`
 - Committed and pushed to current branch (main)
 ```
 
@@ -409,8 +437,10 @@ Result:
 
 - **Must run from within a Git repository** - Command will fail if not in a Git repository
 - **Automatically detects repository root** using `git rev-parse --show-toplevel`
+- **Automatically detects GitHub URL** from `git remote origin` for README links
 - **Automatically detects categories** from top-level directories
 - **Automatically detects current Git branch** for pushing
+- README entries include clickable GitHub links to prompt files
 - Maintain alphabetical sorting in README
 - Category names are case-sensitive (use lowercase in directory names)
 - Preserve existing README formatting
