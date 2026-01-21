@@ -70,6 +70,11 @@ claude-plugins/
 └── README.md
 ```
 
+## Blog
+
+<!-- spark-index:blog -->
+- [2026-01-21] [[Playwright] 삭제 버튼 52번 누르기 싫어서 만든 자동화 스크립트](blog/2026-01-21-playwright-delete-automation.md)
+
 ## 라이선스
 
 MIT
