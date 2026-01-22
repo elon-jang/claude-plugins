@@ -187,22 +187,35 @@ Did you remember correctly?
 ### 8. Cheat Sheet 생성
 
 ```bash
-# 기본 경로에 생성 (저장소 내 cheatsheet.html)
+# 기본 (체크박스 없음)
 /shortcut:shortcut-cheatsheet
 
-# 특정 경로에 생성
-/shortcut:shortcut-cheatsheet ~/Desktop/shortcuts.html
+# 학습 진행상황 표시 (읽기 전용)
+/shortcut:shortcut-cheatsheet --mode progress
+
+# 직접 체크 가능 (브라우저용)
+/shortcut:shortcut-cheatsheet ~/Desktop/shortcuts.html --mode interactive
 
 # 결과:
 # ✓ Cheat sheet generated: ~/Desktop/shortcuts.html
+# Mode: 학습 진행상황 표시
 # Opened in browser
 ```
+
+**체크박스 모드:**
+
+| 모드 | 설명 |
+|------|------|
+| `simple` (기본) | 체크박스 없음 |
+| `progress` | 학습 진행상황 기반 (✓=Box3, △=Box2, □=Box1/미학습) |
+| `interactive` | 브라우저에서 직접 체크 (localStorage 저장) |
 
 **생성되는 Cheat Sheet:**
 - A4 사이즈에 최적화된 HTML
 - 앱별로 그룹화, 섹션별 구분
 - 개별 키캡 스타일로 높은 가독성
 - 인쇄 시 배경색 지원
+- (progress/interactive 모드) 진행률 표시 및 체크박스
 
 ## 결과물
 

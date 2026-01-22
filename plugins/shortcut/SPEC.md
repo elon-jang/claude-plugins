@@ -205,6 +205,9 @@ Box 1 (자주 복습)     Box 2 (보통)        Box 3 (드물게 복습)
 
 # 앱 목록 보기
 /shortcut:shortcut-list
+
+# Cheat Sheet 생성
+/shortcut:shortcut-cheatsheet [output_path] [--mode=simple|progress|interactive]
 ```
 
 ### 명령어 상세 설명
@@ -344,6 +347,39 @@ Most Difficult Shortcuts (Top 5):
   3. Cmd+P - incorrectCount: 4
   ...
 ```
+
+#### `/shortcut:shortcut-cheatsheet [output] [--mode]`
+
+A4 인쇄용 Cheat Sheet HTML 생성.
+
+```bash
+# 기본 (체크박스 없음)
+/shortcut:shortcut-cheatsheet
+
+# 학습 진행상황 표시
+/shortcut:shortcut-cheatsheet --mode=progress
+
+# 직접 체크 가능 (브라우저용)
+/shortcut:shortcut-cheatsheet ~/Desktop/shortcuts.html --mode=interactive
+```
+
+**체크박스 모드:**
+
+| 모드 | 설명 | 용도 |
+|------|------|------|
+| `simple` | 체크박스 없음 (기본값) | 인쇄용 |
+| `progress` | 학습 진행상황 기반 (읽기 전용) | 학습 현황 확인 |
+| `interactive` | 브라우저에서 직접 체크 | 수동 체크리스트 |
+
+**Progress 모드 체크박스:**
+- ✓ = Box 3 (마스터)
+- △ = Box 2 (진행 중)
+- □ = Box 1 또는 미학습
+
+**Interactive 모드:**
+- 브라우저에서 체크박스 클릭 가능
+- `localStorage`에 자동 저장 (브라우저 종료 후에도 유지)
+- 실시간 진행률 표시
 
 ## Input/Output Specifications
 
