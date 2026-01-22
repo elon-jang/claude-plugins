@@ -2,9 +2,17 @@
 
 import sys
 import argparse
+import re
 from pathlib import Path
+from datetime import date
 from rich.console import Console
 from rich.prompt import Prompt
+
+try:
+    import yaml
+    HAS_YAML = True
+except ImportError:
+    HAS_YAML = False
 
 from scripts.repo_manager import RepositoryManager
 from scripts.parser import parse_all_shortcuts, get_categories
@@ -16,6 +24,41 @@ from scripts.utils import find_repo_root, normalize_shortcut
 
 
 console = Console()
+
+# App icons mapping
+APP_ICONS = {
+    'claude': '🤖', 'claude-desktop': '🤖',
+    'gmail': '📧',
+    'safari': '🧭',
+    'slack': '💬',
+    'vscode': '📝', 'vs-code': '📝', 'vs code': '📝',
+    'chrome': '🌐',
+    'figma': '🎨',
+    'notion': '📓',
+    'terminal': '💻',
+    'finder': '📁',
+    'arc': '🌈',
+}
+
+# Modifier key mappings for conversion
+MODIFIER_MAP = {
+    'cmd': '⌘', 'command': '⌘', '⌘': '⌘',
+    'opt': '⌥', 'option': '⌥', 'alt': '⌥', '⌥': '⌥',
+    'ctrl': '⌃', 'control': '⌃', '⌃': '⌃',
+    'shift': '⇧', '⇧': '⇧',
+}
+
+SPECIAL_KEYS = {
+    'enter': '↵', 'return': '↵', '↵': '↵',
+    'delete': '⌫', 'backspace': '⌫', '⌫': '⌫',
+    'tab': 'Tab',
+    'esc': 'Esc', 'escape': 'Esc',
+    'space': 'Space',
+    'up': '↑', '↑': '↑',
+    'down': '↓', '↓': '↓',
+    'left': '←', '←': '←',
+    'right': '→', '→': '→',
+}
 
 
 def cmd_init(args):
@@ -249,6 +292,241 @@ def cmd_rename(args):
         console.print(f"\n[red]Error: {e}[/red]\n")
 
 
+def cmd_cheatsheet(args):
+    """Generate A4 printable cheat sheet HTML."""
+    repo_path = find_repo_root()
+    if not repo_path:
+        console.print("[red]저장소가 초기화되지 않았습니다.[/red]")
+        return
+
+    # Determine output path
+    output_path = Path(args.output or repo_path / 'cheatsheet.html').expanduser()
+
+    # Load shortcuts from YAML or Markdown files
+    apps_data = _load_all_shortcuts(repo_path)
+
+    if not apps_data:
+        console.print("[yellow]단축키 파일이 없습니다.[/yellow]")
+        return
+
+    # Generate HTML
+    html_content = _generate_cheatsheet_html(apps_data, repo_path)
+
+    # Write to file
+    output_path.write_text(html_content, encoding='utf-8')
+    console.print(f"\n[green]✓ Cheat sheet generated: {output_path}[/green]")
+
+    # Open in browser if requested
+    if not args.no_open:
+        import subprocess
+        try:
+            subprocess.run(['open', str(output_path)], check=True)
+            console.print("[dim]Opened in browser[/dim]\n")
+        except Exception:
+            console.print(f"[dim]Open with: open {output_path}[/dim]\n")
+
+
+def _load_all_shortcuts(repo_path: Path) -> dict:
+    """Load shortcuts from YAML or Markdown files."""
+    apps_data = {}
+
+    # Try YAML files first (shortcuts/*.yaml)
+    yaml_dir = repo_path / 'shortcuts'
+    if yaml_dir.exists() and HAS_YAML:
+        for yaml_file in sorted(yaml_dir.glob('*.yaml')):
+            try:
+                with open(yaml_file, 'r', encoding='utf-8') as f:
+                    data = yaml.safe_load(f)
+                    if data and 'app' in data:
+                        app_name = data['app']
+                        apps_data[app_name] = data.get('shortcuts', [])
+            except Exception:
+                continue
+
+    # Also try root level YAML files
+    for yaml_file in sorted(repo_path.glob('*.yaml')):
+        if yaml_file.name.startswith('.'):
+            continue
+        try:
+            with open(yaml_file, 'r', encoding='utf-8') as f:
+                data = yaml.safe_load(f)
+                if data and 'app' in data:
+                    app_name = data['app']
+                    if app_name not in apps_data:
+                        apps_data[app_name] = data.get('shortcuts', [])
+        except Exception:
+            continue
+
+    # Fallback to Markdown files if no YAML found
+    if not apps_data:
+        try:
+            shortcuts_by_app = parse_all_shortcuts(repo_path)
+            for app_name, shortcuts in shortcuts_by_app.items():
+                # Convert to YAML-like structure
+                sections = {}
+                for s in shortcuts:
+                    section = s.section or s.category or 'General'
+                    if section not in sections:
+                        sections[section] = []
+                    sections[section].append({
+                        'shortcut': s.shortcut,
+                        'description': s.description
+                    })
+                apps_data[app_name] = [
+                    {'section': name, 'items': items}
+                    for name, items in sections.items()
+                ]
+        except Exception:
+            pass
+
+    return apps_data
+
+
+def _shortcut_to_keys_html(shortcut: str) -> str:
+    """Convert shortcut string to HTML key elements."""
+    # Already has symbols
+    if any(sym in shortcut for sym in ['⌘', '⌥', '⌃', '⇧']):
+        return _symbols_to_html(shortcut)
+
+    # Parse text format (Cmd+Shift+P)
+    return _text_to_html(shortcut)
+
+
+def _symbols_to_html(shortcut: str) -> str:
+    """Convert symbol-based shortcut to HTML."""
+    keys_html = []
+    i = 0
+    chars = list(shortcut)
+
+    while i < len(chars):
+        char = chars[i]
+
+        # Modifier symbols
+        if char in ['⌘', '⌥', '⌃', '⇧']:
+            keys_html.append(f'<span class="key modifier">{char}</span>')
+            i += 1
+        # Arrow keys
+        elif char in ['↑', '↓', '←', '→', '↵', '⌫']:
+            keys_html.append(f'<span class="key">{char}</span>')
+            i += 1
+        # Regular characters (skip + and spaces)
+        elif char not in ['+', ' ', '-']:
+            # Check for multi-char keys (Esc, Tab, etc.)
+            remaining = ''.join(chars[i:])
+            found_special = False
+            for key_name, display in SPECIAL_KEYS.items():
+                if remaining.lower().startswith(key_name):
+                    css_class = 'key wide' if len(display) > 2 else 'key'
+                    keys_html.append(f'<span class="{css_class}">{display}</span>')
+                    i += len(key_name)
+                    found_special = True
+                    break
+            if not found_special:
+                keys_html.append(f'<span class="key">{char.upper()}</span>')
+                i += 1
+        else:
+            i += 1
+
+    return '<div class="keys">' + ''.join(keys_html) + '</div>'
+
+
+def _text_to_html(shortcut: str) -> str:
+    """Convert text-based shortcut (Cmd+P) to HTML."""
+    keys_html = []
+
+    # Split by + or spaces
+    parts = re.split(r'[+\s]+', shortcut)
+
+    for part in parts:
+        part_lower = part.lower().strip()
+        if not part_lower:
+            continue
+
+        # Check modifiers
+        if part_lower in MODIFIER_MAP:
+            symbol = MODIFIER_MAP[part_lower]
+            keys_html.append(f'<span class="key modifier">{symbol}</span>')
+        # Check special keys
+        elif part_lower in SPECIAL_KEYS:
+            display = SPECIAL_KEYS[part_lower]
+            css_class = 'key wide' if len(display) > 2 else 'key'
+            keys_html.append(f'<span class="{css_class}">{display}</span>')
+        # Regular key
+        else:
+            # Handle ranges like 1~9 or 1-9
+            if re.match(r'\d[~\-]\d', part):
+                keys_html.append(f'<span class="key wide">{part}</span>')
+            else:
+                keys_html.append(f'<span class="key">{part.upper()}</span>')
+
+    return '<div class="keys">' + ''.join(keys_html) + '</div>'
+
+
+def _generate_cheatsheet_html(apps_data: dict, repo_path: Path) -> str:
+    """Generate complete cheat sheet HTML."""
+    # Load template
+    template_path = Path(__file__).parent.parent / 'templates' / 'cheatsheet_template.html'
+
+    if template_path.exists():
+        template = template_path.read_text(encoding='utf-8')
+    else:
+        # Fallback minimal template
+        template = """<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><title>Shortcuts</title></head>
+<body><div class="container">{{apps_html}}</div></body></html>"""
+
+    # Generate apps HTML
+    apps_html = []
+    total_count = 0
+
+    for app_name, sections in apps_data.items():
+        app_key = app_name.lower().replace(' ', '-')
+        icon = APP_ICONS.get(app_key, '📱')
+
+        app_html = f'    <div class="app" data-app="{app_key}">\n'
+        app_html += f'      <div class="app-header">\n'
+        app_html += f'        <span class="app-icon">{icon}</span>\n'
+        app_html += f'        <span class="app-name">{app_name}</span>\n'
+        app_html += f'      </div>\n'
+
+        for section in sections:
+            section_name = section.get('section', 'General')
+            items = section.get('items', [])
+
+            if not items:
+                continue
+
+            app_html += f'      <div class="section">\n'
+            app_html += f'        <div class="section-name">{section_name}</div>\n'
+
+            for item in items:
+                shortcut = item.get('shortcut', '')
+                desc = item.get('description', '')
+
+                if not shortcut:
+                    continue
+
+                keys_html = _shortcut_to_keys_html(shortcut)
+                app_html += f'        <div class="shortcut-row">\n'
+                app_html += f'          {keys_html}\n'
+                app_html += f'          <span class="desc">{desc}</span>\n'
+                app_html += f'        </div>\n'
+                total_count += 1
+
+            app_html += f'      </div>\n'
+
+        app_html += f'    </div>\n'
+        apps_html.append(app_html)
+
+    # Fill template
+    html = template.replace('{{apps_html}}', '\n'.join(apps_html))
+    html = html.replace('{{total_count}}', str(total_count))
+    html = html.replace('{{app_count}}', str(len(apps_data)))
+    html = html.replace('{{date}}', date.today().isoformat())
+
+    return html
+
+
 def main():
     """Main CLI entry point."""
     parser = argparse.ArgumentParser(
@@ -301,6 +579,12 @@ def main():
     parser_rename.add_argument('old_name', help='Old app name')
     parser_rename.add_argument('new_name', help='New app name')
     parser_rename.set_defaults(func=cmd_rename)
+
+    # cheatsheet
+    parser_cheatsheet = subparsers.add_parser('cheatsheet', help='Generate A4 cheat sheet HTML')
+    parser_cheatsheet.add_argument('output', nargs='?', help='Output file path')
+    parser_cheatsheet.add_argument('--no-open', action='store_true', help='Do not open in browser')
+    parser_cheatsheet.set_defaults(func=cmd_cheatsheet)
 
     args = parser.parse_args()
 

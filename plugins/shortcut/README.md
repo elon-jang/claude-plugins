@@ -29,6 +29,7 @@ pip install -r requirements.txt
 /shortcut:shortcut-learn [app]                   # 학습 시작
 /shortcut:shortcut-stats [app]                   # 통계 보기
 /shortcut:shortcut-list                          # 앱 목록 보기
+/shortcut:shortcut-cheatsheet [output_path]      # A4 Cheat Sheet 생성
 ```
 
 ### 작동 방식
@@ -182,6 +183,26 @@ Did you remember correctly?
 # ✓ Removed from learning progress
 # ✓ Committed: "Delete shortcut: vscode - Cmd+D"
 ```
+
+### 8. Cheat Sheet 생성
+
+```bash
+# 기본 경로에 생성 (저장소 내 cheatsheet.html)
+/shortcut:shortcut-cheatsheet
+
+# 특정 경로에 생성
+/shortcut:shortcut-cheatsheet ~/Desktop/shortcuts.html
+
+# 결과:
+# ✓ Cheat sheet generated: ~/Desktop/shortcuts.html
+# Opened in browser
+```
+
+**생성되는 Cheat Sheet:**
+- A4 사이즈에 최적화된 HTML
+- 앱별로 그룹화, 섹션별 구분
+- 개별 키캡 스타일로 높은 가독성
+- 인쇄 시 배경색 지원
 
 ## 결과물
 

@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>Mac Shortcuts Cheat Sheet</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 8mm;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 9px;
+      line-height: 1.3;
+      color: #1a1a1a;
+      background: white;
+      width: 210mm;
+      min-height: 297mm;
+      padding: 6mm;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 5px;
+      padding-bottom: 4px;
+      border-bottom: 2px solid #333;
+    }
+    header h1 {
+      font-size: 16px;
+      font-weight: 700;
+    }
+    header p {
+      font-size: 8px;
+      color: #666;
+      margin-top: 2px;
+    }
+    .container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+    .app {
+      background: #f8f9fa;
+      border-radius: 5px;
+      padding: 5px;
+      border: 1px solid #e0e0e0;
+    }
+    .app-header {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-bottom: 4px;
+      padding-bottom: 3px;
+      border-bottom: 1px solid #ddd;
+    }
+    .app-icon {
+      font-size: 11px;
+    }
+    .app-name {
+      font-size: 10px;
+      font-weight: 700;
+      color: #333;
+    }
+    .section {
+      margin-bottom: 3px;
+    }
+    .section-name {
+      font-size: 6.5px;
+      font-weight: 600;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      margin-bottom: 2px;
+    }
+    .shortcut-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 2px 0;
+      gap: 6px;
+    }
+    .keys {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      flex-shrink: 0;
+    }
+    .key {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 9px;
+      font-weight: 500;
+      min-width: 18px;
+      height: 18px;
+      padding: 0 4px;
+      background: linear-gradient(180deg, #fafafa 0%, #e5e5e5 100%);
+      border: 1px solid #b0b0b0;
+      border-radius: 3px;
+      box-shadow: 0 1px 0 #999, inset 0 0 0 1px rgba(255,255,255,0.4);
+      color: #333;
+    }
+    .key.modifier {
+      font-size: 10px;
+      min-width: 16px;
+      padding: 0 3px;
+      background: linear-gradient(180deg, #f0f0f0 0%, #d8d8d8 100%);
+    }
+    .key.wide {
+      min-width: 28px;
+      font-size: 8px;
+    }
+    .desc {
+      font-size: 8px;
+      color: #444;
+      text-align: right;
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* App Colors */
+    .app[data-app="claude"] .app-header,
+    .app[data-app="claude-desktop"] .app-header { border-color: #d97706; }
+    .app[data-app="claude"] .app-name,
+    .app[data-app="claude-desktop"] .app-name { color: #d97706; }
+
+    .app[data-app="gmail"] .app-header { border-color: #ea4335; }
+    .app[data-app="gmail"] .app-name { color: #ea4335; }
+
+    .app[data-app="safari"] .app-header { border-color: #007aff; }
+    .app[data-app="safari"] .app-name { color: #007aff; }
+
+    .app[data-app="slack"] .app-header { border-color: #4a154b; }
+    .app[data-app="slack"] .app-name { color: #4a154b; }
+
+    .app[data-app="vscode"] .app-header,
+    .app[data-app="vs-code"] .app-header { border-color: #007acc; }
+    .app[data-app="vscode"] .app-name,
+    .app[data-app="vs-code"] .app-name { color: #007acc; }
+
+    .app[data-app="chrome"] .app-header { border-color: #4285f4; }
+    .app[data-app="chrome"] .app-name { color: #4285f4; }
+
+    .app[data-app="figma"] .app-header { border-color: #f24e1e; }
+    .app[data-app="figma"] .app-name { color: #f24e1e; }
+
+    .app[data-app="notion"] .app-header { border-color: #000000; }
+    .app[data-app="notion"] .app-name { color: #000000; }
+
+    .app[data-app="terminal"] .app-header { border-color: #28a745; }
+    .app[data-app="terminal"] .app-name { color: #28a745; }
+
+    .tips {
+      background: #fffbeb;
+      border-color: #f59e0b;
+    }
+    .tips .app-header { border-color: #f59e0b; }
+    .tips .app-name { color: #b45309; }
+
+    footer {
+      text-align: center;
+      margin-top: 4px;
+      padding-top: 3px;
+      border-top: 1px solid #ddd;
+      font-size: 7px;
+      color: #888;
+    }
+    @media print {
+      body { width: 100%; padding: 0; }
+      .app { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Mac Shortcuts Cheat Sheet</h1>
+    <p>{{total_count}} shortcuts across {{app_count}} apps</p>
+  </header>
+
+  <div class="container">
+{{apps_html}}
+    <!-- Quick Reference -->
+    <div class="app tips">
+      <div class="app-header">
+        <span class="app-icon">💡</span>
+        <span class="app-name">Quick Reference</span>
+      </div>
+      <div class="section">
+        <div class="section-name">Modifier Keys</div>
+        <div class="shortcut-row">
+          <div class="keys"><span class="key modifier">⌘</span></div>
+          <span class="desc">Command</span>
+        </div>
+        <div class="shortcut-row">
+          <div class="keys"><span class="key modifier">⌥</span></div>
+          <span class="desc">Option (Alt)</span>
+        </div>
+        <div class="shortcut-row">
+          <div class="keys"><span class="key modifier">⌃</span></div>
+          <span class="desc">Control</span>
+        </div>
+        <div class="shortcut-row">
+          <div class="keys"><span class="key modifier">⇧</span></div>
+          <span class="desc">Shift</span>
+        </div>
+      </div>
+      <div class="section">
+        <div class="section-name">Common Keys</div>
+        <div class="shortcut-row">
+          <div class="keys"><span class="key">↵</span></div>
+          <span class="desc">Enter / Return</span>
+        </div>
+        <div class="shortcut-row">
+          <div class="keys"><span class="key">⌫</span></div>
+          <span class="desc">Delete (Backspace)</span>
+        </div>
+        <div class="shortcut-row">
+          <div class="keys"><span class="key wide">Esc</span></div>
+          <span class="desc">Escape</span>
+        </div>
+        <div class="shortcut-row">
+          <div class="keys"><span class="key wide">Tab</span></div>
+          <span class="desc">Tab</span>
+        </div>
+      </div>
+      <div class="section">
+        <div class="section-name">Common Patterns</div>
+        <div class="shortcut-row">
+          <div class="keys"><span class="key modifier">⌘</span><span class="key">K</span></div>
+          <span class="desc">Quick Action / Search</span>
+        </div>
+        <div class="shortcut-row">
+          <div class="keys"><span class="key modifier">⌘</span><span class="key">[</span></div>
+          <span class="desc">Go Back</span>
+        </div>
+        <div class="shortcut-row">
+          <div class="keys"><span class="key">J</span><span class="key">K</span></div>
+          <span class="desc">Vim-style Navigation</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    Last updated: {{date}} | Generated by Shortcut Master
+  </footer>
+</body>
+</html>
