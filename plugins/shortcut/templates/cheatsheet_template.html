@@ -181,7 +181,12 @@
 <body>
   <header>
     <h1>Mac Shortcuts Cheat Sheet</h1>
-    <p>{{total_count}} shortcuts across {{app_count}} apps</p>
+    <p>{{total_count}} shortcuts across {{app_count}} apps
+      <span id="progress-container" class="progress-summary" style="display: none;">
+        | Mastered: <span id="progress-summary">{{mastered_count}}/{{total_count}}</span>
+        <span class="progress-bar"><span id="progress-bar-fill" class="progress-bar-fill" style="width: 0%"></span></span>
+      </span>
+    </p>
   </header>
 
   <div class="container">

@@ -309,12 +309,25 @@ def cmd_cheatsheet(args):
         console.print("[yellow]단축키 파일이 없습니다.[/yellow]")
         return
 
+    # Load learning progress for progress mode
+    progress_data = {}
+    if args.mode == 'progress':
+        repo_manager = RepositoryManager(repo_path)
+        progress_data = repo_manager.load_progress()
+
     # Generate HTML
-    html_content = _generate_cheatsheet_html(apps_data, repo_path)
+    html_content = _generate_cheatsheet_html(apps_data, repo_path, args.mode, progress_data)
 
     # Write to file
     output_path.write_text(html_content, encoding='utf-8')
+
+    mode_desc = {
+        'simple': '기본',
+        'progress': '학습 진행상황 표시',
+        'interactive': '직접 체크 가능'
+    }
     console.print(f"\n[green]✓ Cheat sheet generated: {output_path}[/green]")
+    console.print(f"[dim]Mode: {mode_desc.get(args.mode, args.mode)}[/dim]")
 
     # Open in browser if requested
     if not args.no_open:
@@ -462,10 +475,46 @@ def _text_to_html(shortcut: str) -> str:
     return '<div class="keys">' + ''.join(keys_html) + '</div>'
 
 
-def _generate_cheatsheet_html(apps_data: dict, repo_path: Path) -> str:
+def _get_checkbox_html(mode: str, app_name: str, shortcut: str, progress_data: dict) -> str:
+    """Generate checkbox HTML based on mode."""
+    if mode == 'simple':
+        return ''
+
+    shortcut_key = f"{app_name}:{shortcut}"
+    data_key = shortcut_key.replace('"', '&quot;')
+
+    if mode == 'progress':
+        # Learning progress based checkbox (read-only visual indicator)
+        if shortcut_key in progress_data:
+            box = progress_data[shortcut_key].get('box', 1)
+            if box >= 3:
+                return f'<span class="checkbox checked" title="마스터 (Box 3)">✓</span>'
+            elif box == 2:
+                return f'<span class="checkbox partial" title="진행 중 (Box 2)">△</span>'
+            else:
+                return f'<span class="checkbox" title="학습 중 (Box 1)">□</span>'
+        else:
+            return f'<span class="checkbox" title="미학습">□</span>'
+
+    elif mode == 'interactive':
+        # Interactive checkbox (localStorage based)
+        return f'<input type="checkbox" class="checkbox interactive" data-key="{data_key}" title="클릭하여 체크">'
+
+    return ''
+
+
+def _generate_cheatsheet_html(apps_data: dict, repo_path: Path, mode: str = 'simple', progress_data: dict = None) -> str:
     """Generate complete cheat sheet HTML."""
-    # Load template
-    template_path = Path(__file__).parent.parent / 'templates' / 'cheatsheet_template.html'
+    if progress_data is None:
+        progress_data = {}
+
+    # Load template based on mode
+    if mode == 'interactive':
+        template_path = Path(__file__).parent.parent / 'templates' / 'cheatsheet_interactive_template.html'
+        if not template_path.exists():
+            template_path = Path(__file__).parent.parent / 'templates' / 'cheatsheet_template.html'
+    else:
+        template_path = Path(__file__).parent.parent / 'templates' / 'cheatsheet_template.html'
 
     if template_path.exists():
         template = template_path.read_text(encoding='utf-8')
@@ -478,6 +527,7 @@ def _generate_cheatsheet_html(apps_data: dict, repo_path: Path) -> str:
     # Generate apps HTML
     apps_html = []
     total_count = 0
+    mastered_count = 0
 
     for app_name, sections in apps_data.items():
         app_key = app_name.lower().replace(' ', '-')
@@ -507,11 +557,20 @@ def _generate_cheatsheet_html(apps_data: dict, repo_path: Path) -> str:
                     continue
 
                 keys_html = _shortcut_to_keys_html(shortcut)
+                checkbox_html = _get_checkbox_html(mode, app_name, shortcut, progress_data)
+
                 app_html += f'        <div class="shortcut-row">\n'
+                if checkbox_html:
+                    app_html += f'          {checkbox_html}\n'
                 app_html += f'          {keys_html}\n'
                 app_html += f'          <span class="desc">{desc}</span>\n'
                 app_html += f'        </div>\n'
                 total_count += 1
+
+                # Count mastered shortcuts for progress mode
+                shortcut_key = f"{app_name}:{shortcut}"
+                if shortcut_key in progress_data and progress_data[shortcut_key].get('box', 1) >= 3:
+                    mastered_count += 1
 
             app_html += f'      </div>\n'
 
@@ -520,11 +579,158 @@ def _generate_cheatsheet_html(apps_data: dict, repo_path: Path) -> str:
 
     # Fill template
     html = template.replace('{{apps_html}}', '\n'.join(apps_html))
+    html = template.replace('{{apps_html}}', '\n'.join(apps_html))
     html = html.replace('{{total_count}}', str(total_count))
     html = html.replace('{{app_count}}', str(len(apps_data)))
     html = html.replace('{{date}}', date.today().isoformat())
+    html = html.replace('{{mastered_count}}', str(mastered_count))
+    html = html.replace('{{mode}}', mode)
+
+    # Add checkbox styles if needed
+    if mode in ['progress', 'interactive']:
+        checkbox_styles = _get_checkbox_styles(mode)
+        html = html.replace('</style>', checkbox_styles + '\n  </style>')
+
+    # Add interactive JavaScript if needed
+    if mode == 'interactive':
+        interactive_script = _get_interactive_script()
+        html = html.replace('</body>', interactive_script + '\n</body>')
+        # Show progress container for interactive mode
+        html = html.replace('id="progress-container" class="progress-summary" style="display: none;"',
+                           'id="progress-container" class="progress-summary"')
+
+    # Show progress for progress mode
+    if mode == 'progress':
+        percent = round((mastered_count / total_count) * 100) if total_count > 0 else 0
+        html = html.replace('id="progress-container" class="progress-summary" style="display: none;"',
+                           'id="progress-container" class="progress-summary"')
+        html = html.replace('style="width: 0%"', f'style="width: {percent}%"')
 
     return html
+
+
+def _get_checkbox_styles(mode: str) -> str:
+    """Get CSS styles for checkboxes."""
+    return """
+    /* Checkbox styles */
+    .checkbox {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 14px;
+      height: 14px;
+      font-size: 10px;
+      margin-right: 4px;
+      flex-shrink: 0;
+      color: #999;
+    }
+    .checkbox.checked {
+      color: #22c55e;
+      font-weight: bold;
+    }
+    .checkbox.partial {
+      color: #f59e0b;
+    }
+    .checkbox.interactive {
+      width: 12px;
+      height: 12px;
+      cursor: pointer;
+      accent-color: #22c55e;
+    }
+    .checkbox.interactive:checked {
+      background: #22c55e;
+    }
+    .shortcut-row {
+      display: flex;
+      align-items: center;
+    }
+    /* Progress summary */
+    .progress-summary {
+      font-size: 8px;
+      color: #666;
+      margin-left: 8px;
+    }
+    .progress-bar {
+      display: inline-block;
+      width: 50px;
+      height: 4px;
+      background: #e5e5e5;
+      border-radius: 2px;
+      overflow: hidden;
+      vertical-align: middle;
+      margin-left: 4px;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: #22c55e;
+      transition: width 0.3s;
+    }"""
+
+
+def _get_interactive_script() -> str:
+    """Get JavaScript for interactive checkboxes."""
+    return """
+  <script>
+    // Interactive checkbox with localStorage
+    (function() {
+      const STORAGE_KEY = 'shortcut-master-checks';
+
+      function loadChecks() {
+        try {
+          return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+        } catch {
+          return {};
+        }
+      }
+
+      function saveChecks(checks) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(checks));
+        updateProgress();
+      }
+
+      function updateProgress() {
+        const checks = loadChecks();
+        const total = document.querySelectorAll('.checkbox.interactive').length;
+        const checked = Object.values(checks).filter(v => v).length;
+        const percent = total > 0 ? Math.round((checked / total) * 100) : 0;
+
+        const summary = document.getElementById('progress-summary');
+        if (summary) {
+          summary.textContent = `${checked}/${total} (${percent}%)`;
+        }
+
+        const bar = document.getElementById('progress-bar-fill');
+        if (bar) {
+          bar.style.width = percent + '%';
+        }
+      }
+
+      function init() {
+        const checks = loadChecks();
+
+        document.querySelectorAll('.checkbox.interactive').forEach(cb => {
+          const key = cb.dataset.key;
+          if (checks[key]) {
+            cb.checked = true;
+          }
+
+          cb.addEventListener('change', function() {
+            const checks = loadChecks();
+            checks[this.dataset.key] = this.checked;
+            saveChecks(checks);
+          });
+        });
+
+        updateProgress();
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else {
+        init();
+      }
+    })();
+  </script>"""
 
 
 def main():
@@ -584,6 +790,12 @@ def main():
     parser_cheatsheet = subparsers.add_parser('cheatsheet', help='Generate A4 cheat sheet HTML')
     parser_cheatsheet.add_argument('output', nargs='?', help='Output file path')
     parser_cheatsheet.add_argument('--no-open', action='store_true', help='Do not open in browser')
+    parser_cheatsheet.add_argument(
+        '--mode',
+        choices=['simple', 'progress', 'interactive'],
+        default='simple',
+        help='Checkbox mode: simple (no checkbox), progress (learning status), interactive (manual check)'
+    )
     parser_cheatsheet.set_defaults(func=cmd_cheatsheet)
 
     args = parser.parse_args()
