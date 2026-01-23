@@ -208,7 +208,7 @@ Did you remember correctly?
 |------|------|
 | `simple` (기본) | 체크박스 없음 |
 | `progress` | 학습 진행상황 기반 (✓=Box3, △=Box2, □=Box1/미학습) |
-| `interactive` | 브라우저에서 직접 체크 (localStorage 저장) |
+| `interactive` | 브라우저에서 직접 체크 (localStorage 저장) + 학습 가이드 |
 
 **생성되는 Cheat Sheet:**
 - A4 사이즈에 최적화된 HTML
@@ -216,6 +216,11 @@ Did you remember correctly?
 - 개별 키캡 스타일로 높은 가독성
 - 인쇄 시 배경색 지원
 - (progress/interactive 모드) 진행률 표시 및 체크박스
+
+**Interactive 모드 추가 기능:**
+- **Memorization Tips**: 6가지 암기 전략 (연상법, Modifier 패턴, 하루 3개 규칙 등)
+- **Pattern Analysis**: 앱 간 공통 단축키, 알파벳 연상법, 앱별 고유 패턴
+- 팁/패턴 섹션은 화면에서만 보이고, 인쇄 시 자동 숨김
 
 ## 결과물
 
@@ -245,6 +250,12 @@ Did you remember correctly?
 - Git 저장소 내에서만 실행 가능
 - 학습 진도는 로컬 전용 (기기 간 동기화 불가)
 - Typing Mode는 동시 누름만 지원 (시퀀스 불가)
+
+## Future Improvements
+
+- [ ] `/shortcut:shortcut-learn` 스킬에서 체크리스트 진행률 연동
+- [ ] 브라우저 localStorage 대신 `learning_progress.yaml`에 진행률 저장
+- [ ] 다크모드 지원 (시스템 설정 자동 감지)
 
 ## 라이선스
 

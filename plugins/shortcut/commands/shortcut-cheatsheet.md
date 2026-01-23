@@ -37,6 +37,27 @@ A4 한 장 분량의 인쇄용 Cheat Sheet HTML 파일을 생성합니다.
 - 인쇄 시 배경색 포함 옵션
 - (progress/interactive 모드) 체크박스 및 진행률 표시
 
+### Interactive 모드 추가 기능
+
+`--mode interactive` 선택 시 다음 학습 가이드가 포함됩니다:
+
+**Memorization Tips (6가지 암기 전략):**
+- 연상 기억법 (K=Kick, L=Location 등)
+- Modifier 패턴 이해 (⌘=기본, ⇧⌘=반대)
+- 그룹 학습 (탭 이동, 히스토리 등 쌍으로 암기)
+- 하루 3개 규칙
+- 마우스 금지 챌린지
+- 손가락 근육 기억
+
+**Pattern Analysis (패턴 분석):**
+- 앱 간 공통 단축키 (⌘K, ⌘P, ⌘[] 등)
+- Modifier 키 규칙
+- 알파벳 연상법 (12개 핵심 키)
+- 앱별 고유 패턴 (Gmail=Vim스타일, Rectangle=⌃⌥ 등)
+- 핵심 암기 공식 5가지
+
+> 팁/패턴 섹션은 화면에서만 보이고, 인쇄 시 자동 숨김 (A4 한 장 유지)
+
 ## Example
 
 ```bash
