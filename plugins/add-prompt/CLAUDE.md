@@ -60,7 +60,7 @@ The `/add-prompt` command follows this sequence:
 cc --plugin-dir ~/elon/ai/claude-code/claude-plugins/plugins/add-prompt
 
 # Or from marketplace
-/plugin install add-prompt@ai-plugins
+/plugin install add-prompt@claude-kit
 ```
 
 **Integration Testing**:
@@ -141,7 +141,7 @@ claude-plugins/
 **Update marketplace.json**:
 ```json
 {
-  "name": "ai-plugins",
+  "name": "claude-kit",
   "owner": {
     "name": "Elon",
     "email": "contact@elon.dev"
@@ -186,7 +186,7 @@ Ensure `.claude-plugin/plugin.json` contains complete metadata:
 
 **Install plugin**:
 ```bash
-/plugin install add-prompt@ai-plugins
+/plugin install add-prompt@claude-kit
 ```
 
 **Use plugin**:

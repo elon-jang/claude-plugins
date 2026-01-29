@@ -14,22 +14,22 @@
 
 ```bash
 # AI 프롬프트 자동 추가 및 Git 푸시
-/plugin install add-prompt@ai-plugins
+/plugin install add-prompt@claude-kit
 
 # LinkedIn 글 저장/검색/분석
-/plugin install linked-insight@ai-plugins
+/plugin install linked-insight@claude-kit
 
 # 애플리케이션 단축키 관리 + Leitner Box 학습
-/plugin install shortcut@ai-plugins
+/plugin install shortcut@claude-kit
 
 # 지식/인사이트 저장 + 학습
-/plugin install sparks@ai-plugins
+/plugin install sparks@claude-kit
 
 # YouTube/Longblack 스크랩
-/plugin install webfetch@ai-plugins
+/plugin install webfetch@claude-kit
 
 # YouTube 피아노 영상 → 악보 변환
-/plugin install youtube-to-score@ai-plugins
+/plugin install youtube-to-score@claude-kit
 ```
 
 ## Plugins

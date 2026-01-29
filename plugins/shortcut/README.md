@@ -6,7 +6,7 @@
 
 ```bash
 /plugin marketplace add elon-jang/claude-plugins
-/plugin install shortcut@ai-plugins
+/plugin install shortcut@claude-kit
 ```
 
 ### 수동 설치

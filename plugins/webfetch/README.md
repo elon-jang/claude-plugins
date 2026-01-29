@@ -6,7 +6,7 @@ YouTube 요약 추출 및 Longblack 기사 스크랩을 Markdown/PDF로 저장�
 
 ```bash
 /plugin marketplace add elon-jang/claude-plugins
-/plugin install webfetch@ai-plugins
+/plugin install webfetch@claude-kit
 ```
 
 ### 수동 설치

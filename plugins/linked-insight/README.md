@@ -20,7 +20,7 @@ ln -s /Users/elon/elon/ai/claude-code/claude-plugins/plugins/linked-insight ~/.c
 /plugin marketplace add elon-jang/claude-plugins
 
 # 플러그인 설치
-/plugin install linked-insight@ai-plugins
+/plugin install linked-insight@claude-kit
 ```
 
 ## 환경 설정

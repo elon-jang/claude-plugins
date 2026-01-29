@@ -6,7 +6,7 @@
 
 ```bash
 /plugin marketplace add elon-jang/claude-plugins
-/plugin install sparks@ai-plugins
+/plugin install sparks@claude-kit
 ```
 
 ## 사용법

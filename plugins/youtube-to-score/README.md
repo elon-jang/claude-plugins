@@ -6,7 +6,7 @@ YouTube 피아노 연주 영상에서 악보(MIDI, MusicXML, PDF)를 자동 생�
 
 ```bash
 /plugin marketplace add elon-jang/claude-plugins
-/plugin install youtube-to-score@ai-plugins
+/plugin install youtube-to-score@claude-kit
 ```
 
 ### 수동 설치

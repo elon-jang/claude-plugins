@@ -6,7 +6,7 @@ Git 저장소에 새로운 AI 프롬프트를 자동으로 추가하고 Github�
 
 ```bash
 /plugin marketplace add elon-jang/claude-plugins
-/plugin install add-prompt@ai-plugins
+/plugin install add-prompt@claude-kit
 ```
 
 ### 수동 설치
