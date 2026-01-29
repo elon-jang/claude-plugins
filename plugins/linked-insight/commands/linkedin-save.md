@@ -1,6 +1,14 @@
 ---
 name: linkedin-save
 description: Save LinkedIn posts with frontmatter and embeddings. Use when users say "linkedin 저장", "포스트 저장", "글 저장해줘", or paste LinkedIn post content.
+argument-hint: ""
+allowed-tools:
+  - AskUserQuestion
+  - Glob
+  - Read
+  - Write
+  - Edit
+  - Bash
 ---
 
 # LinkedIn 글 저장
