@@ -1,0 +1,36 @@
+---
+author: ''
+date: '2026-01-29'
+embedding_id: laude Code -> oh my -bea9a54f
+tags: []
+title: 더 많은 사람에게 토큰을 더 많이 쓰게 해주는 도구가 사랑받고 있습니다. Claude Code -> oh my opencode -> Pencil로
+  넘어갑니다.
+url: ''
+---
+
+더 많은 사람에게 토큰을 더 많이 쓰게 해주는 도구가 사랑받고 있습니다. Claude Code -> oh my opencode -> Pencil로 넘어갑니다.
+이것의 근간은 Claude max $200로 토큰을 할인 받아 사는 것입니다. 토큰을 더 많이 쓸수록(=클로드 코드를 더 많이 쓰면) 유저가 승리하는 구조가 만들어지고 있습니다.
+
+시간 순으로 보면 토큰을 많이 쓰는게 점점 쉬워진다는게 체감됩니다.
+
+1. Multi Clauding: 긴 세션의 시작
+   이때는 세션을 여러 개 켜서 Multi Clauding했어요. worktree 를 쓰면서 여러 개의 피처를 동시에 개발하는데 엄청난 노력이 필요했어요.
+   사람들은 프롬프트를 저장해두고 상황에 맞는 파일을 호출해서 사용했어요. 퓨샷, COT 같은 기법을 적용하는 노력도 필요했어요.
+   극소수의 사람들이 session limit에 도달했어요. Claude max $200 플랜으로 한 달에 $2000, $3000 어치 토큰을 썼다고 자랑하는 문화가 있었죠.
+2. Skills: 복잡한 프롬프트 활용법 등장
+   프롬프트를 사용하는 Best Practice가 프로토콜 수준으로 정의됐어요. Skills 는 다른 도구(Subagents, hooks, ...)들과 달리 그냥 프롬프트에요. 그냥 md 파일(=줄글)이에요. 그래서 Claude Code에서만 동작하는 게 아니라 다 됩니다.
+   특히 Skills를 Subagents와 물려서 사용하다보면 좀 하는 개발자들은 session limit에 도달했어요.
+3. Plugin: Oh my opencode로 대표되는, 남이 만들어둔 세팅을 가져와서 사용
+   개발자인데 Claude Code를 쓴다면 누구나 한 번쯤 리밋에 도달해요. 누군가 훌륭하게 만들어둔 플러그인을 그대로 따라만 써도 토큰을 왕창 쓸 수 있거든요.
+   끝판왕은 Oy my opencode에요. ultrawork 몇 번 치면 개발자 누구나 session limit 에 도달해요.
+4. Pencil: Claude Code 위에서 도는 서비스의 강력한 퍼포먼스
+   Claude Agent SDK를 활용하면 내 로컬 Claude Code을 직접 사용하면서 여기서 token을 차감해요. Pencil을 써보면 결과물 퀄리티가 굉장히 좋은데요. 왜냐면 Claude를 무지막지하게 돌리거든요.
+   이제는 CLI가 아니라 훨씬 더 많은 사람한테 친숙한 UI가 붙기 시작했어요. 혁신적인 UI는 필요 없었고, 그냥 Figma랑 똑같이 생긴 뷰를 붙이면 돼요. 필요한 건 채팅창과 Claude $200 구독이었고요.
+
+여기서 변한 건 AI를 쓰는 방식이에요. Claude Code -> Skills -> Plugin -> SDK. 이런 걸 Harness라고도 하죠. 계속 정교해지고 있어요.
+변하지 않는 건 max 구독이에요. $200를 구독해야 토큰을 최대한으로 할인받거든요. 월 $200 구독해서(할인 마트에 가면), 하루에 $200어치 토큰을 쓸 수 있어요.
+
+---
+## AI Notes
+- **Summary**: 이것의 근간은 Claude max $200로 토큰을 할인 받아 사는 것입니다. 토큰을 더 많이 쓸수록(=클로드 코드를 더 많이 쓰면) 유저가 승리하는 구조가 만들어지고 있습니다. 시간 순으로 보면 토큰을 많이 쓰는게 점점 쉬워진다는게 체감됩니다. 1. Multi Clauding: 긴 세션의 시작
+- **Topics**: general

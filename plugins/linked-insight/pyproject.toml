@@ -1,0 +1,17 @@
+[project]
+name = "linked-insight"
+version = "0.1.0"
+description = "LinkedIn post management with semantic search"
+requires-python = ">=3.10"
+dependencies = [
+    "chromadb>=0.4.0",
+    "google-genai>=1.0.0",
+    "python-frontmatter>=1.0.0",
+    "pyyaml>=6.0",
+    "python-dotenv>=1.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+]

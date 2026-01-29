@@ -1,0 +1,17 @@
+# Environment
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+
+# ChromaDB
+data/chroma/
+
+# IDE
+.idea/
+.vscode/
+
+# Claude Code local settings
+.claude/
