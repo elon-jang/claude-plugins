@@ -19,6 +19,15 @@
 # LinkedIn 글 저장/검색/분석
 /plugin install linked-insight@ai-plugins
 
+# 애플리케이션 단축키 관리 + Leitner Box 학습
+/plugin install shortcut@ai-plugins
+
+# 지식/인사이트 저장 + 학습
+/plugin install sparks@ai-plugins
+
+# YouTube/Longblack 스크랩
+/plugin install webfetch@ai-plugins
+
 # YouTube 피아노 영상 → 악보 변환
 /plugin install youtube-to-score@ai-plugins
 ```
@@ -54,9 +63,53 @@ LinkedIn 글을 저장하고 시맨틱 검색하는 플러그인입니다.
 
 **환경변수**: `GOOGLE_API_KEY` (Gemini API)
 
-### [youtube-to-score](plugins/youtube-to-score/skills/youtube-to-score/SKILL.md)
+### [shortcut](plugins/shortcut/)
 
-YouTube 피아노 연주 영상에서 악보(MIDI, MusicXML, PDF)를 자동 생성하는 스킬입니다.
+애플리케이션 단축키를 GitHub에 저장하고 Leitner Box 시스템으로 학습하는 플러그인입니다.
+
+**사용법**: `/shortcut-init`, `/shortcut-add`, `/shortcut-learn`, `/shortcut-search`
+
+**주요 기능**:
+
+- 대화형 단축키 추가 (App, Category, Shortcut, Description)
+- Leitner Box 알고리즘 학습 (Box 1→2→3)
+- 키워드 검색 및 앱별 필터링
+- A4 Cheat Sheet HTML 생성
+- Git 자동 커밋
+
+### [sparks](plugins/sparks/)
+
+지식과 인사이트를 Github에 저장하고 다양한 학습 모드로 학습하는 플러그인입니다.
+
+**사용법**: `/spark-init`, `/spark-add`, `/spark-blog`, `/spark-learn`, `/spark-search`, `/spark-stats`
+
+**주요 기능**:
+
+- 지식/인사이트 저장 (YAML frontmatter + Q&A 자동 생성)
+- 블로그 글 저장 및 지식 연결
+- 3가지 학습 모드: Socratic, Flashcard (Leitner 5-box), Connect
+- 학습 통계 대시보드
+- Git 자동 커밋
+
+### [webfetch](plugins/webfetch/)
+
+YouTube 요약 및 Longblack 기사를 스크랩하여 Markdown/PDF로 저장하는 플러그인입니다.
+
+**사용법**: `/webfetch-scrape`, `/webfetch-today`, `/webfetch-batch`, `/webfetch-cache`
+
+**주요 기능**:
+
+- YouTube 영상 요약 추출 (LiveWiki 경유)
+- Longblack 기사 스크랩
+- Markdown + PDF 동시 저장
+- 배치 처리 및 캐시 관리
+- 오늘의 기사 자동 감지
+
+**사전요구사항**: Playwright 브라우저 설치
+
+### [youtube-to-score](plugins/youtube-to-score/)
+
+YouTube 피아노 연주 영상에서 악보(MIDI, MusicXML, PDF)를 자동 생성하는 플러그인입니다.
 
 **사용법**: `/youtube-to-score <youtube_url>`
 
@@ -79,14 +132,12 @@ claude-plugins/
 ├── .claude-plugin/
 │   └── marketplace.json
 ├── plugins/
+│   ├── add-prompt/
 │   ├── linked-insight/
-│   │   ├── .claude-plugin/plugin.json
-│   │   ├── skills/{linkedin-save,linkedin-search,linkedin-analyze}/
-│   │   ├── scripts/
-│   │   └── data/posts/
+│   ├── shortcut/
+│   ├── sparks/
+│   ├── webfetch/
 │   └── youtube-to-score/
-│       ├── .claude-plugin/plugin.json
-│       └── skills/youtube-to-score/
 └── README.md
 ```
 

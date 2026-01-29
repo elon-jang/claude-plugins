@@ -19,6 +19,18 @@
             ]
         },
         {
+            "name": "linked-insight",
+            "source": "./plugins/linked-insight",
+            "description": "LinkedIn 글 저장, 검색, 분석을 위한 시맨틱 검색 시스템",
+            "keywords": [
+                "linkedin",
+                "semantic-search",
+                "chromadb",
+                "gemini",
+                "knowledge-management"
+            ]
+        },
+        {
             "name": "youtube-to-score",
             "source": "./plugins/youtube-to-score",
             "description": "YouTube 피아노 연주 영상에서 악보(MIDI, MusicXML, PDF)를 자동 생성하는 도구",
