@@ -1,6 +1,6 @@
 ---
 name: linkedin-save
-description: Save LinkedIn posts with frontmatter and embeddings. Use when users say "linkedin 저장", "포스트 저장", "글 저장해줘", or paste LinkedIn post content.
+description: LinkedIn 글 저장 및 벡터 인덱싱
 argument-hint: ""
 allowed-tools:
   - AskUserQuestion

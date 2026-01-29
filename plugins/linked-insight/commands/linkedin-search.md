@@ -1,6 +1,6 @@
 ---
 name: linkedin-search
-description: Search saved LinkedIn posts using keyword, semantic, or hybrid search. Use when users say "linkedin 검색", "포스트 찾기", "관련 글", or ask about saved posts.
+description: LinkedIn 글 검색 (키워드/시맨틱/하이브리드)
 argument-hint: "<검색어>"
 allowed-tools:
   - Bash

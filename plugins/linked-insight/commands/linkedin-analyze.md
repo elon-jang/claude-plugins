@@ -1,6 +1,6 @@
 ---
 name: linkedin-analyze
-description: Analyze saved LinkedIn posts for insights, summaries, and tag distribution. Use when users say "linkedin 분석", "인사이트", "포스트 요약", or ask for analysis of saved posts.
+description: LinkedIn 글 분석 및 인사이트 도출
 argument-hint: ""
 allowed-tools:
   - Bash
