@@ -6,7 +6,7 @@ LinkedIn 글 저장/검색/분석 플러그인.
 
 | 커맨드 | 설명 |
 |--------|------|
-| `/linkedin-save` | 글 저장 (URL 자동 가져오기 + 중복체크 + URL단축 + 임베딩) |
+| `/linkedin-save` | 글 저장 (메타검증 + 중복체크 + URL단축 + 임베딩) |
 | `/linkedin-search <검색어>` | 하이브리드 검색 |
 | `/linkedin-analyze` | 글 분석/인사이트 |
 | `/linkedin-stats` | 통계 조회 |
