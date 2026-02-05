@@ -25,9 +25,6 @@
 # 지식/인사이트 저장 + 학습
 /plugin install sparks@claude-kit
 
-# YouTube/Longblack 스크랩
-/plugin install webfetch@claude-kit
-
 # YouTube 피아노 영상 → 악보 변환
 /plugin install youtube-to-score@claude-kit
 ```
@@ -91,22 +88,6 @@ LinkedIn 글을 저장하고 시맨틱 검색하는 플러그인입니다.
 - 학습 통계 대시보드
 - Git 자동 커밋
 
-### [webfetch](plugins/webfetch/)
-
-YouTube 요약 및 Longblack 기사를 스크랩하여 Markdown/PDF로 저장하는 플러그인입니다.
-
-**사용법**: `/webfetch-scrape`, `/webfetch-today`, `/webfetch-batch`, `/webfetch-cache`
-
-**주요 기능**:
-
-- YouTube 영상 요약 추출 (LiveWiki 경유)
-- Longblack 기사 스크랩
-- Markdown + PDF 동시 저장
-- 배치 처리 및 캐시 관리
-- 오늘의 기사 자동 감지
-
-**사전요구사항**: Playwright 브라우저 설치
-
 ### [youtube-to-score](plugins/youtube-to-score/)
 
 YouTube 피아노 연주 영상에서 악보(MIDI, MusicXML, PDF)를 자동 생성하는 플러그인입니다.
@@ -136,7 +117,6 @@ claude-plugins/
 │   ├── linked-insight/
 │   ├── shortcut/
 │   ├── sparks/
-│   ├── webfetch/
 │   └── youtube-to-score/
 └── README.md
 ```

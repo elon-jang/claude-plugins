@@ -11,6 +11,9 @@ Claude Code 플러그인 모음 (AI-Native Product Items)
 | 플러그인 | 설명 | 경로 |
 |---------|------|------|
 | add-prompt | AI 프롬프트 자동 추가 및 Git 푸시 | `./plugins/add-prompt/` |
+| linked-insight | LinkedIn 글 저장/검색/분석 | `./plugins/linked-insight/` |
+| shortcut | 단축키 관리 + Leitner Box 학습 | `./plugins/shortcut/` |
+| sparks | 지식/인사이트 저장 + 학습 | `./plugins/sparks/` |
 | youtube-to-score | YouTube 피아노 → 악보 변환 | `./plugins/youtube-to-score/` |
 
 ## Rules

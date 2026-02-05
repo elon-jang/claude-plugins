@@ -1,8 +1,0 @@
-{
-  "name": "webfetch",
-  "version": "1.0.0",
-  "description": "Web scraping CLI for LiveWiki & Longblack - YouTube 요약 추출, 롱블랙 기사 스크랩을 Markdown/PDF로 저장",
-  "author": {
-    "name": "Elon Jang"
-  }
-}

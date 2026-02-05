@@ -67,19 +67,6 @@
                 "second-brain",
                 "pkm"
             ]
-        },
-        {
-            "name": "webfetch",
-            "source": "./plugins/webfetch",
-            "description": "YouTube 요약 추출 및 Longblack 기사 스크랩을 Markdown/PDF로 저장하는 Web scraping CLI 플러그인",
-            "keywords": [
-                "web-scraping",
-                "youtube",
-                "longblack",
-                "markdown",
-                "pdf",
-                "automation"
-            ]
         }
     ]
 }
