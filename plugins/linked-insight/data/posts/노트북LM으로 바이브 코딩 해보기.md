@@ -2,7 +2,12 @@
 author: ''
 date: '2026-01-29'
 embedding_id: 노트북LM으로 바이브 코딩 해보기-e5b4a28a
-tags: []
+tags:
+- notebooklm
+- development
+- google
+- vibe-coding
+- coding
 title: '[노트북LM으로 바이브 코딩 해보기]'
 url: ''
 ---

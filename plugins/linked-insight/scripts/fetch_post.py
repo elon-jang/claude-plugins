@@ -185,6 +185,9 @@ def extract_author(soup: BeautifulSoup, title_tag: str, url: str, verbose: bool 
         "span.feed-shared-actor__name",
         "a.feed-shared-actor__container-link span",
         "span.update-components-actor__name",
+        ".update-components-actor__title",
+        "a.app-aware-link.update-components-actor__meta-link span",
+        ".feed-shared-actor__title",
     ]
 
     for selector in selectors:
@@ -195,6 +198,29 @@ def extract_author(soup: BeautifulSoup, title_tag: str, url: str, verbose: bool 
                 if verbose:
                     print(f"Author found via: {selector} → {name}", file=sys.stderr)
                 return name
+
+    # Try meta tags
+    for meta_sel in ['meta[name="author"]', 'meta[property="article:author"]',
+                     'meta[property="og:title"]']:
+        meta = soup.select_one(meta_sel)
+        if meta and meta.get("content"):
+            content = meta["content"].strip()
+            if meta_sel == 'meta[property="og:title"]':
+                # Parse "Author on LinkedIn" or "Author Name | LinkedIn"
+                m = re.match(r"^(.+?)\s+on\s+LinkedIn", content)
+                if not m:
+                    m = re.match(r"^(.+?)\s*[|\-]\s*LinkedIn", content)
+                if m:
+                    name = m.group(1).strip()
+                    if name and len(name) < 100:
+                        if verbose:
+                            print(f"Author from og:title meta → {name}", file=sys.stderr)
+                        return name
+            else:
+                if len(content) < 100:
+                    if verbose:
+                        print(f"Author from {meta_sel} → {content}", file=sys.stderr)
+                    return content
 
     # Fallback: extract from <title> tag
     # Common format: "Author Name on LinkedIn: post text..."
@@ -214,6 +240,14 @@ def extract_author(soup: BeautifulSoup, title_tag: str, url: str, verbose: bool 
                 name = match.group(1).strip()
                 if verbose:
                     print(f"Author from title tag → {name}", file=sys.stderr)
+                return name
+
+            # Korean: "(숫자) 이름 님의 게시물 | LinkedIn"
+            match = re.match(r"^\(\d+\)\s+(.+?)(?:\s*님의\s*게시물)", title_tag)
+            if match:
+                name = match.group(1).strip()
+                if verbose:
+                    print(f"Author from Korean title → {name}", file=sys.stderr)
                 return name
 
     # Fallback: extract username from /posts/username_... URL

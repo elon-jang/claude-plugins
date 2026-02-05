@@ -2,7 +2,12 @@
 author: ''
 date: '2026-01-29'
 embedding_id: AI가 자꾸 까먹어서 답답하셨죠?-05076d30
-tags: []
+tags:
+- claude-code
+- mcp
+- development
+- vibe-coding
+- plugin
 title: AI가 자꾸 까먹어서 답답하셨죠?
 url: https://bit.ly/4rySYCF
 ---

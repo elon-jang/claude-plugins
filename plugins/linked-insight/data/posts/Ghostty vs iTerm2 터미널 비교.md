@@ -1,6 +1,6 @@
 ---
 author: ''
-date: '2025-01-30'
+date: '2026-01-30'
 embedding_id: Ghostty vs iTerm2 터미-788d9f0d
 tags:
 - claude-code

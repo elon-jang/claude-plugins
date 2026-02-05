@@ -1,6 +1,6 @@
 ---
 author: ''
-date: '2025-01-29'
+date: '2026-01-29'
 embedding_id: Clawdbot이 맥 미니를 품절시킨-16d6367b
 tags:
 - clawdbot

@@ -2,7 +2,12 @@
 author: ''
 date: '2026-01-29'
 embedding_id: 구글 문서들을 로컬에 다운받아주는 C-cf719eef
-tags: []
+tags:
+- google
+- claude-code
+- coding
+- llm
+- ai-agent
 title: '[일주일프/02] g-export: 구글 문서들을 로컬에 다운받아주는 Claude Skill'
 url: https://lnkd.in/gaRx-YE2
 ---

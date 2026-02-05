@@ -2,7 +2,12 @@
 author: ''
 date: '2026-01-29'
 embedding_id: cc 7가지 팁-ee874eb2
-tags: []
+tags:
+- claude-code
+- coding
+- mcp
+- hackathon
+- development
 title: Claude Code 해커톤에서 우승하고 나서 70가지 팁을 정리했어요. 솔직히 처음엔 저도 Claude Code를 과소평가했거든요.
   그냥 AI 코딩 도구겠지 했는데, 제대로 쓰는
 url: ''

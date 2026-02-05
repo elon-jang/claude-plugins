@@ -2,7 +2,11 @@
 author: ''
 date: '2026-01-29'
 embedding_id: session-wrap 플러그인에 두-99feaf8c
-tags: []
+tags:
+- claude-code
+- ai-agent
+- plugin
+- hook
 title: Claude Code와 나눴던 대화들 어떻게 하시나요?
 url: https://bit.ly/4rlpEiS
 ---

@@ -2,7 +2,12 @@
 author: ''
 date: '2026-01-29'
 embedding_id: Context7, 단순 MCP 연결 -c3f3026f
-tags: []
+tags:
+- context7
+- ai-agent
+- mcp
+- claude-code
+- plugin
 title: "\U0001F4DA Context7, 단순 MCP 연결 말고 스킬, 서브에이전트로 컨텍스트를 절약하세요"
 url: ''
 ---

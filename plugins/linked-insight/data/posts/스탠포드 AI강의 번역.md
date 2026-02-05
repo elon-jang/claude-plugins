@@ -2,7 +2,9 @@
 author: ''
 date: '2026-01-29'
 embedding_id: 스탠포드 AI강의 번역-78ef8ecd
-tags: []
+tags:
+- claude-code
+- ai-agent
 title: AI로 인한 변화는 SF에서 가장 먼저 느낄테고, 그렇기 때문에 Stanford 는 가장 면밀하게 움직일 수밖에 없습니다. 원작자와 연락이
   닿아 stanford 에서 강의한 자료를
 url: https://lnkd.in/dEdThrdf

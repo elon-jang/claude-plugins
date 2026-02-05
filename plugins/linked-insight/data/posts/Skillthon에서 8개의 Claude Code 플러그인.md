@@ -1,6 +1,6 @@
 ---
 author: ''
-date: '2025-01-29'
+date: '2026-01-29'
 embedding_id: Skillthon에서 8개의 Clau-f959e7c4
 tags:
 - skillthon

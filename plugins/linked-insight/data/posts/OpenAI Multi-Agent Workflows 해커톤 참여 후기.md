@@ -2,7 +2,12 @@
 author: ''
 date: '2026-01-29'
 embedding_id: OpenAI Multi-Agent W-5222ec84
-tags: []
+tags:
+- ai-agent
+- openai
+- hackathon
+- claude-code
+- multi-agent
 title: OpenAI Multi-Agent Workflows 해커톤 참여 후기 (feat. OpenAI 엔지니어가 Codex를 사용하는 방법)
 url: https://lnkd.in/gFUmWsxD
 ---

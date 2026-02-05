@@ -2,7 +2,12 @@
 author: ''
 date: '2026-01-29'
 embedding_id: CC headless mode-733e228e
-tags: []
+tags:
+- claude-code
+- ai-agent
+- terminal
+- development
+- automation
 title: Claude Code가 새벽에 혼자 일하고 있으면 어떨까요? Mac 켜놓고 자면 아침에 코드 리뷰가 끝나있는 거죠.
 url: ''
 ---

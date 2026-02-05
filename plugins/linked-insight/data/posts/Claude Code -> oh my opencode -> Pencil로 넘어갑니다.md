@@ -2,7 +2,12 @@
 author: ''
 date: '2026-01-29'
 embedding_id: laude Code -> oh my -bea9a54f
-tags: []
+tags:
+- claude-code
+- development
+- pencil
+- ai-agent
+- plugin
 title: 더 많은 사람에게 토큰을 더 많이 쓰게 해주는 도구가 사랑받고 있습니다. Claude Code -> oh my opencode -> Pencil로
   넘어갑니다.
 url: ''

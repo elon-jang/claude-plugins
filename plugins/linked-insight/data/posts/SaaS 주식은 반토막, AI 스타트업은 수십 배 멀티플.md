@@ -1,6 +1,6 @@
 ---
 author: ''
-date: '2025-01-30'
+date: '2026-01-30'
 embedding_id: SaaS 주식은 반토막, AI 스타트-8c665fe7
 tags:
 - saas

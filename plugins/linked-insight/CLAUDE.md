@@ -31,6 +31,11 @@ python scripts/delete.py "파일명.md"
 # URL 단축
 python scripts/shorten_urls.py --file "data/posts/파일명.md" --verbose
 python scripts/shorten_urls.py "긴 URL이 포함된 텍스트"
+
+# 데이터 정비 (backfill)
+python scripts/backfill.py --dry-run    # 미리보기
+python scripts/backfill.py --apply      # 자동 수정 적용 (태그/날짜/파일명)
+python scripts/backfill.py --report     # 수동 처리 필요 항목만
 ```
 
 ## 저장 위치

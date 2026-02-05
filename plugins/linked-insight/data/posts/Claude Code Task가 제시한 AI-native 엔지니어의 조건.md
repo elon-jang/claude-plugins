@@ -1,6 +1,6 @@
 ---
 author: ''
-date: '2025-01-29'
+date: '2026-01-29'
 embedding_id: Claude Code Task가 제시-75bad2fc
 tags:
 - claude-code

@@ -2,7 +2,12 @@
 author: ''
 date: '2026-01-29'
 embedding_id: super power skill-6fa65131
-tags: []
+tags:
+- claude-code
+- plugin
+- career
+- openai
+- ai-agent
 title: openai 는 광고를 붙였습니다. B2C는 지루해지는데 일을 위한 생태계(편의상 B2B)는 놀랍도록 재밌습니다.
 url: https://lnkd.in/gxTnuuUd
 ---

@@ -2,7 +2,12 @@
 author: ''
 date: '2026-01-29'
 embedding_id: ' Figma 킬러앱 Pencil이 출-4b92ff61'
-tags: []
+tags:
+- claude-code
+- ai-agent
+- pencil
+- mcp
+- coding
 title: Claude Code로 동작하는 Figma 킬러앱 Pencil이 출시됐습니다.
 url: https://bit.ly/3O65T0h
 ---

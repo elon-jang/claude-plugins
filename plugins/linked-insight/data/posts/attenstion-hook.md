@@ -3,7 +3,10 @@ author: ''
 date: '2026-01-29'
 embedding_id: attenstion-hook-6791d82f
 tags:
-- google_vignette
+- hook
+- terminal
+- claude-code
+- llm
 title: 얼마 전 쓴 attention-hook(원격 환경에서 클로드 코드가 내 응답을 기다릴 때 슬랙 알림을 보내주는 hook)을 소개하는 글
   https://lnkd.in/gmijhsuK
 url: https://lnkd.in/gmijhsuK

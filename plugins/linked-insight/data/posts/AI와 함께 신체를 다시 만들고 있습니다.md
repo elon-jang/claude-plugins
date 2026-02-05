@@ -2,7 +2,9 @@
 author: ''
 date: '2026-01-29'
 embedding_id: AI와 함께 신체를 다시 만들고 있습-5ed48648
-tags: []
+tags:
+- llm
+- claude-code
 title: AI와 함께 신체를 다시 만들고 있습니다.
 url: https://bit.ly/4rlpEiS
 ---

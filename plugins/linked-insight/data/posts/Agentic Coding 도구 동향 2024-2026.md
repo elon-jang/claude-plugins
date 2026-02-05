@@ -1,6 +1,6 @@
 ---
 author: rascal-hyunjun
-date: '2025-01-30'
+date: '2026-01-30'
 embedding_id: Agentic Coding 도구 동향-ea402c67
 tags:
 - agentic-coding

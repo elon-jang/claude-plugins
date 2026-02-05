@@ -2,7 +2,12 @@
 author: ''
 date: '2026-01-29'
 embedding_id: Claude Code를 10개 이상 -1e4094a9
-tags: []
+tags:
+- claude-code
+- ai-agent
+- automation
+- mcp
+- hook
 title: Claude Code를 10개 이상 동시에 돌리는 방법이 두 가지 있습니다. 하나는 앱이 알아서 해주고, 다른 하나는 창시자가 직접 쓰는
   방식이에요
 url: https://bit.ly/4rwQJjh
