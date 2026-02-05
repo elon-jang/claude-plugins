@@ -5,7 +5,7 @@ embedding_id: Claude Code를 10개 이상 -1e4094a9
 tags: []
 title: Claude Code를 10개 이상 동시에 돌리는 방법이 두 가지 있습니다. 하나는 앱이 알아서 해주고, 다른 하나는 창시자가 직접 쓰는
   방식이에요
-url: http://claude.ai/code%EB%A5%BC
+url: https://bit.ly/4rwQJjh
 ---
 
 Claude Code를 10개 이상 동시에 돌리는 방법이 두 가지 있습니다. 하나는 앱이 알아서 해주고, 다른 하나는 창시자가 직접 쓰는 방식이에요
@@ -22,7 +22,7 @@ Boris는 iTerm2에서 탭 5개를 직접 관리합니다. 번호를 1-5로 붙�
 
 근데 Boris는 여기서 끝이 아닙니다.
 
-웹에서[claude.ai/code를](http://claude.ai/code%EB%A5%BC)5-10개 더 돌려요. 터미널 작업하다가 웹으로 넘기기도 하고, teleport로 왔다 갔다도 해요.
+웹에서[claude.ai/code를](https://bit.ly/4rwQJjh)5-10개 더 돌려요. 터미널 작업하다가 웹으로 넘기기도 하고, teleport로 왔다 갔다도 해요.
 
 심지어 아침마다 폰에서 Claude iOS 앱으로 세션 몇 개 시작해두고, 나중에 체크인한다고 합니다.
 
@@ -48,11 +48,11 @@ Boris 답변이 명확합니다. Each agent gets its own git checkout
 
 진짜 차이는 팀 지식 축적에 있습니다.
 
-Boris 팀은[CLAUDE.md](http://claude.md/)하나를 공유해요. Git에 체크인하고, 팀 전체가 일주일에 여러 번 업데이트합니다.
+Boris 팀은[CLAUDE.md](https://bit.ly/4rySYCF)하나를 공유해요. Git에 체크인하고, 팀 전체가 일주일에 여러 번 업데이트합니다.
 
 Claude가 뭔가 잘못하면 거기에 추가해요. 다음부터는 같은 실수 안 합니다.
 
-코드 리뷰할 때 동료 PR에 @claude 태그 달아서[CLAUDE.md](http://claude.md/)업데이트하라고 시키기도 해요. Compounding Engineering이라고 부르더라고요.
+코드 리뷰할 때 동료 PR에 @claude 태그 달아서[CLAUDE.md](https://bit.ly/4rySYCF)업데이트하라고 시키기도 해요. Compounding Engineering이라고 부르더라고요.
 
 참고로 그 파일 크기는 2.5k 토큰입니다. bash 명령어, 코드 스타일, UI 가이드라인, 에러 핸들링, PR 템플릿 정도가 들어있대요.
 
@@ -118,7 +118,7 @@ Claude가 알아서 도구들을 써준다고 합니다.
 
 Claude에게 자기 작업을 검증할 방법을 줘라. 이 피드백 루프가 있으면 결과물 품질이 2-3배 올라간다고 합니다.
 
-Boris는[claude.ai/code에](http://claude.ai/code%EC%97%90)랜딩되는 모든 변경사항을 Claude Chrome extension으로 테스트해요. 브라우저 열고, UI 테스트하고, 코드가 작동하고 UX가 좋을 때까지 반복합니다.
+Boris는[claude.ai/code에](https://bit.ly/4ry58f8)랜딩되는 모든 변경사항을 Claude Chrome extension으로 테스트해요. 브라우저 열고, UI 테스트하고, 코드가 작동하고 UX가 좋을 때까지 반복합니다.
 
 검증 방법은 도메인마다 달라요. bash 명령어 하나일 수도 있고, 테스트 스위트일 수도 있고, 브라우저나 폰 시뮬레이터일 수도 있어요.
 
@@ -130,7 +130,7 @@ Claude Squad는 이런 Boris 방식의 일부를 자동화해준 거예요.
 
 Git Worktree 자동 생성, 세션 전환 UI, Diff 미리보기. 진입장벽을 확 낮춰줍니다.
 
-근데[CLAUDE.md](http://claude.md/)팀 공유, Hooks, Subagents, MCP 연동, 검증 워크플로우는 직접 구축해야 해요.
+근데[CLAUDE.md](https://bit.ly/4rySYCF)팀 공유, Hooks, Subagents, MCP 연동, 검증 워크플로우는 직접 구축해야 해요.
 
 ---
 

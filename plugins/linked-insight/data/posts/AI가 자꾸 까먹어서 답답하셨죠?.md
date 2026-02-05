@@ -4,7 +4,7 @@ date: '2026-01-29'
 embedding_id: AI가 자꾸 까먹어서 답답하셨죠?-05076d30
 tags: []
 title: AI가 자꾸 까먹어서 답답하셨죠?
-url: http://claude.md/
+url: https://bit.ly/4rySYCF
 ---
 
 AI가 자꾸 까먹어서 답답하셨죠?
@@ -15,7 +15,7 @@ AI가 자꾸 까먹어서 답답하셨죠?
 
 어제 AI 커뮤니티에서 가장 뜨거웠던 이슈 5가지를 정리해봤는데요.
 
-Claude Code 비용 폭탄, ChatGPT 이미지 챌린지, MCP 생태계 폭발,[CLAUDE.md](http://claude.md/)한계, Vibe Coding 보안 경고까지.
+Claude Code 비용 폭탄, ChatGPT 이미지 챌린지, MCP 생태계 폭발,[CLAUDE.md](https://bit.ly/4rySYCF)한계, Vibe Coding 보안 경고까지.
 
 그중에서 가장 주목할 만한 건 3번이에요.
 

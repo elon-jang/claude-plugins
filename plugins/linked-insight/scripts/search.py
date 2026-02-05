@@ -114,6 +114,31 @@ def reciprocal_rank_fusion(
     return results
 
 
+def find_file_by_embedding_id(embedding_id: str) -> Optional[str]:
+    """Find file path by embedding_id."""
+    for md_file in POSTS_PATH.glob("*.md"):
+        try:
+            post = frontmatter.load(md_file)
+            if post.get("embedding_id") == embedding_id:
+                return str(md_file)
+        except Exception:
+            pass
+    return None
+
+
+def enrich_with_file_paths(results: list[dict]) -> list[dict]:
+    """Add file paths to results that don't have them."""
+    for result in results:
+        if "file" not in result or not result.get("file"):
+            # Try to find file by embedding_id
+            embedding_id = result.get("id") or result.get("metadata", {}).get("embedding_id")
+            if embedding_id:
+                file_path = find_file_by_embedding_id(embedding_id)
+                if file_path:
+                    result["file"] = file_path
+    return results
+
+
 def search_hybrid(
     query: str,
     n_results: int = 5,
@@ -133,11 +158,22 @@ def search_hybrid(
     if mode == "keyword":
         return search_keyword(query, n_results)
     elif mode == "semantic":
-        return search_semantic(query, n_results)
+        results = search_semantic(query, n_results)
+        return enrich_with_file_paths(results)
     else:  # hybrid
         keyword_results = search_keyword(query, n_results * 2)
         semantic_results = search_semantic(query, n_results * 2)
-        return reciprocal_rank_fusion(keyword_results, semantic_results)[:n_results]
+        results = reciprocal_rank_fusion(keyword_results, semantic_results)[:n_results]
+        return enrich_with_file_paths(results)
+
+
+def distance_to_similarity(distance: float) -> float:
+    """Convert ChromaDB L2 distance to similarity percentage."""
+    # ChromaDB uses L2 distance by default
+    # Lower distance = more similar
+    # Convert to 0-100% scale (heuristic: distance 0 = 100%, distance 2 = 0%)
+    similarity = max(0, (2 - distance) / 2) * 100
+    return round(similarity, 1)
 
 
 def format_results(results: list[dict], verbose: bool = False) -> str:
@@ -149,9 +185,12 @@ def format_results(results: list[dict], verbose: bool = False) -> str:
     for i, result in enumerate(results, 1):
         meta = result.get("metadata", {})
         title = meta.get("title", "Untitled")
-        author = meta.get("author", "Unknown")
+        author = meta.get("author", "")
         date = meta.get("date", "")
         tags = meta.get("tags", [])
+        url = meta.get("url", "")
+        file_path = result.get("file", "")
+
         if isinstance(tags, str):
             try:
                 import json
@@ -159,19 +198,37 @@ def format_results(results: list[dict], verbose: bool = False) -> str:
             except:
                 tags = [tags]
 
-        # Score info
+        # Score info - convert distance to similarity %
         score_info = ""
         if "rrf_score" in result:
             score_info = f" (RRF: {result['rrf_score']:.4f})"
         elif "distance" in result:
-            score_info = f" (distance: {result['distance']:.4f})"
+            similarity = distance_to_similarity(result['distance'])
+            score_info = f" ({similarity}% 유사)"
         elif "score" in result:
             score_info = f" (score: {result['score']})"
 
         lines.append(f"\n{i}. **{title}**{score_info}")
-        lines.append(f"   Author: {author} | Date: {date}")
+
+        # Only show author/date if they exist
+        info_parts = []
+        if author:
+            info_parts.append(f"Author: {author}")
+        if date:
+            info_parts.append(f"Date: {date}")
+        if info_parts:
+            lines.append(f"   {' | '.join(info_parts)}")
+
         if tags:
             lines.append(f"   Tags: {', '.join(tags)}")
+
+        # URL or file path (link reference)
+        if url and url.strip():
+            lines.append(f"   Link: {url}")
+        elif file_path:
+            # Show relative path from project root
+            rel_path = Path(file_path).relative_to(PROJECT_ROOT) if PROJECT_ROOT in Path(file_path).parents or Path(file_path).parent == PROJECT_ROOT else file_path
+            lines.append(f"   File: {rel_path}")
 
         if verbose:
             # Show preview

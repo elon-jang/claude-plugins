@@ -2,16 +2,35 @@
 
 LinkedIn 글 저장/검색/분석 플러그인.
 
-## 스킬
+## 커맨드
 
-- `/linkedin-save` - 글 저장
-- `/linkedin-search <검색어>` - 검색
-- `/linkedin-analyze` - 분석
+| 커맨드 | 설명 |
+|--------|------|
+| `/linkedin-save` | 글 저장 (URL 자동 가져오기 + 중복체크 + URL단축 + 임베딩) |
+| `/linkedin-search <검색어>` | 하이브리드 검색 |
+| `/linkedin-analyze` | 글 분석/인사이트 |
+| `/linkedin-stats` | 통계 조회 |
+| `/linkedin-delete <파일명>` | 글 삭제 |
 
-## 검색 실행
+## CLI
 
 ```bash
+# 글 가져오기 (URL → JSON)
+python scripts/fetch_post.py "https://www.linkedin.com/posts/..." --verbose
+
+# 검색
 python scripts/search.py "<검색어>" --mode hybrid --verbose
+
+# 통계
+python scripts/stats.py
+
+# 삭제
+python scripts/delete.py --list
+python scripts/delete.py "파일명.md"
+
+# URL 단축
+python scripts/shorten_urls.py --file "data/posts/파일명.md" --verbose
+python scripts/shorten_urls.py "긴 URL이 포함된 텍스트"
 ```
 
 ## 저장 위치
@@ -23,4 +42,6 @@ python scripts/search.py "<검색어>" --mode hybrid --verbose
 
 ```
 GOOGLE_API_KEY=<Gemini API 키>
+BITLY_TOKEN=<Bitly API 토큰>  # URL 단축용 (선택)
+LINKEDIN_COOKIE_PATH=<linkedin_cookie.json 경로>  # 글 가져오기용 (선택, 기본값 있음)
 ```

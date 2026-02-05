@@ -4,7 +4,7 @@ date: '2026-01-29'
 embedding_id: session-wrap 플러그인에 두-99feaf8c
 tags: []
 title: Claude Code와 나눴던 대화들 어떻게 하시나요?
-url: https://www.linkedin.com/in/gb-jeong/
+url: https://bit.ly/4rlpEiS
 ---
 
 Claude Code와 나눴던 대화들 어떻게 하시나요?
@@ -14,7 +14,7 @@ Claude Code와 나눴던 대화들 어떻게 하시나요?
 워크플로우로 깎아서 스킬로 만들거나.
 인사이트를 추출해서 컨텍스트로 박아두거나.
 
-그래서 제가 종종 사용하던 스킬들을 정리해서[정구봉 Goobong Jeong](https://www.linkedin.com/in/gb-jeong/)님이 공유해주셨던 session-wrap 플러그인에 두 개의 스킬을 업데이트했습니다.
+그래서 제가 종종 사용하던 스킬들을 정리해서[정구봉 Goobong Jeong](https://bit.ly/4rlpEiS)님이 공유해주셨던 session-wrap 플러그인에 두 개의 스킬을 업데이트했습니다.
 
 1. history-insight
 
@@ -38,7 +38,7 @@ Claude Code와 나눴던 대화들을 기간별로 분석하거나 프로젝트 
 
 그래서 저는 스킬 만들면 꼭 Evaluation을 합니다.
 원하는 동작을 했는지, 내부적으로 Hook, SubAgent, Tool Calling이 다 실행됐는지.
-[SKILL.md](http://skill.md/)스펙 대비 실제 실행을 비교해서 Expected vs Actual 표로 뽑아줍니다.
+[SKILL.md](https://bit.ly/4ry5cLU)스펙 대비 실제 실행을 비교해서 Expected vs Actual 표로 뽑아줍니다.
 
 세션 끝나면 그대로 두지마세요!
 거기서 다음 워크플로우가 나옵니다.

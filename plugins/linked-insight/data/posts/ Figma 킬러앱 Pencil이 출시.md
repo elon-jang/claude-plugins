@@ -4,7 +4,7 @@ date: '2026-01-29'
 embedding_id: ' Figma 킬러앱 Pencil이 출-4b92ff61'
 tags: []
 title: Claude Code로 동작하는 Figma 킬러앱 Pencil이 출시됐습니다.
-url: https://www.pencil.dev/
+url: https://bit.ly/3O65T0h
 ---
 
 Claude Code로 동작하는 Figma 킬러앱 Pencil이 출시됐습니다.
@@ -54,7 +54,7 @@ Takeaways
 
 Claude Agent SDK 사용해보시길 추천드립니다!
 
-pencil:[https://www.pencil.dev/](https://www.pencil.dev/)
+pencil:[https://bit.ly/3O65T0h](https://bit.ly/3O65T0h)
 
 ---
 ## AI Notes
