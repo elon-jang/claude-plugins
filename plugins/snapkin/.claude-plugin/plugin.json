@@ -1,0 +1,13 @@
+{
+  "name": "snapkin",
+  "version": "2.0.0",
+  "description": "Multi-Agent Session Management Protocol - 3 agents (historian, auditor, validator) sync session work into 2 project documents with Quick/Review modes",
+  "author": {
+    "name": "Elon Jang",
+    "url": "https://github.com/elon-jang"
+  },
+  "homepage": "https://github.com/elon-jang/snapkin",
+  "repository": "https://github.com/elon-jang/snapkin",
+  "license": "MIT",
+  "keywords": ["session", "documentation", "multi-agent", "napkin", "lessons", "quick-mode", "validation", "P0-P3"]
+}

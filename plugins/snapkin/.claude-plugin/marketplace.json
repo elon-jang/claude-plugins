@@ -1,0 +1,27 @@
+{
+  "name": "snapkin",
+  "owner": {
+    "name": "Elon Jang"
+  },
+  "metadata": {
+    "description": "Multi-Agent Session Management Protocol for Claude Code",
+    "version": "2.0.0"
+  },
+  "plugins": [
+    {
+      "name": "snapkin",
+      "source": "./",
+      "description": "3 agents (historian, auditor, validator) sync session work into 2 project documents. Features: Quick mode, Review mode, P0-P3 priorities, security scanning.",
+      "version": "2.0.0",
+      "author": {
+        "name": "Elon Jang"
+      },
+      "homepage": "https://github.com/elon-jang/snapkin",
+      "repository": "https://github.com/elon-jang/snapkin",
+      "license": "MIT",
+      "keywords": ["session", "documentation", "multi-agent", "napkin", "lessons", "quick-mode", "validation"],
+      "category": "productivity",
+      "tags": ["session-management", "documentation", "multi-agent", "workflow", "security", "P0-P3"]
+    }
+  ]
+}
