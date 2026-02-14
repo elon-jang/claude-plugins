@@ -130,3 +130,45 @@ cd plugins/sparks
 
 - `plugins/add-prompt/commands/add-prompt.md` - 커맨드 패턴 참조
 - `plugins/shortcut-master/scripts/learning.py` - Leitner Box 로직 참조
+
+---
+
+<!-- SNAPKIN:SESSION_CONTEXT_START -->
+## Session Context
+
+> Current state snapshot. Fully rewritten each session sync.
+
+### Last Sync
+
+- **Date**: 2026-02-15
+- **Session**: Sparks 플러그인 명령 통합 - 8개 개별 파일을 spark.md로 병합
+
+### Active Work
+
+- **완료**: 8개 개별 command 파일을 단일 spark.md로 통합
+- **완료**: CLAUDE.md 대폭 간소화 (129줄 → 133줄, 구조 개선)
+- **완료**: plugin.json 버전 업데이트 (1.0.0 → 1.1.0)
+
+### Blockers
+
+No blockers.
+
+### Next Entry Point
+
+- **[P1/M]** `/spark` 명령 실제 테스트 및 서브커맨드 동작 검증 — `commands/spark.md:1` (done: 모든 서브커맨드 정상 동작)
+- **[P2/S]** README.md 업데이트 — 통합 명령 구조 반영
+- **[P3/L]** 학습 모드 3가지 구현 완성도 검증
+
+### Recent Changes
+
+- `commands/spark.md` — 8개 서브커맨드를 단일 파일에 통합 (라우터 패턴)
+- `CLAUDE.md` — 개발자 가이드 구조 개선, 테스트 섹션 추가
+- `plugin.json` — 버전 1.1.0으로 업데이트
+
+### Key Files
+
+- `commands/spark.md` — 모든 서브커맨드 통합 라우터
+- `templates/knowledge_template.md` — 지식 파일 템플릿
+- `templates/repo_init/` — 저장소 초기화 템플릿
+
+<!-- SNAPKIN:SESSION_CONTEXT_END -->
