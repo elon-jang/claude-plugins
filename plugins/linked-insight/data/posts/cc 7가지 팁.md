@@ -1,7 +1,7 @@
 ---
 author: ''
 date: '2026-01-29'
-embedding_id: cc 7가지 팁-ee874eb2
+embedding_id: cc 7가지 팁-e48d249a
 tags:
 - claude-code
 - coding

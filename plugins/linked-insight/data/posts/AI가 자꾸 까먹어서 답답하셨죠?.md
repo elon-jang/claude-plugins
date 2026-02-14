@@ -1,7 +1,7 @@
 ---
 author: ''
 date: '2026-01-29'
-embedding_id: AI가 자꾸 까먹어서 답답하셨죠?-05076d30
+embedding_id: AI가 자꾸 까먹어서 답답하셨죠?-59de0bc3
 tags:
 - claude-code
 - mcp

@@ -1,7 +1,7 @@
 ---
 author: ''
 date: '2026-01-29'
-embedding_id: Claude Code를 10개 이상 -1e4094a9
+embedding_id: Claude Code를 10개 이상 -b0320f43
 tags:
 - claude-code
 - ai-agent

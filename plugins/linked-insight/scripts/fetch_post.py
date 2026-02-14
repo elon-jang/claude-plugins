@@ -3,7 +3,7 @@
 Fetch LinkedIn post content using Playwright headless browser.
 
 Requires li_at cookie from linkedin_cookie.json.
-Outputs JSON {title, author, content, url} to stdout.
+Outputs JSON {title, author, content, url, published_date} to stdout.
 
 Usage:
     python fetch_post.py "https://www.linkedin.com/posts/..." --verbose
@@ -14,6 +14,7 @@ import json
 import os
 import re
 import sys
+from datetime import datetime, timedelta
 from pathlib import Path
 from urllib.parse import urlparse, urlunparse, parse_qs, urlencode
 
@@ -129,6 +130,9 @@ def fetch_post(url: str, li_at: str, verbose: bool = False) -> dict:
     # Extract author
     author = extract_author(soup, title_tag, url, verbose)
 
+    # Extract published date
+    published_date = extract_published_date(soup, verbose)
+
     # Generate title from content
     title = generate_title(content)
 
@@ -137,6 +141,7 @@ def fetch_post(url: str, li_at: str, verbose: bool = False) -> dict:
         "author": author,
         "content": content,
         "url": url,
+        "published_date": published_date,
     }
 
 
@@ -261,6 +266,130 @@ def extract_author(soup: BeautifulSoup, title_tag: str, url: str, verbose: bool 
                 print(f"Author from URL slug → {username}", file=sys.stderr)
             return username
 
+    return ""
+
+
+def _parse_relative_time(text: str) -> str:
+    """Parse relative time strings (English/Korean) to YYYY-MM-DD.
+
+    Examples: "2w", "3d ago", "1mo", "2주 전", "3일", "1개월"
+    Returns "" if no match.
+    """
+    text = text.strip().lower()
+    now = datetime.now()
+
+    # English patterns: "2w", "3d", "1mo", "5h", "3d ago", "1 week ago"
+    en_match = re.match(r"(\d+)\s*(mo|w|d|h|m|yr|year|month|week|day|hour|min)", text)
+    if en_match:
+        num = int(en_match.group(1))
+        unit = en_match.group(2)
+        if unit in ("mo", "month"):
+            delta = timedelta(days=num * 30)
+        elif unit in ("w", "week"):
+            delta = timedelta(weeks=num)
+        elif unit in ("d", "day"):
+            delta = timedelta(days=num)
+        elif unit in ("h", "hour"):
+            delta = timedelta(hours=num)
+        elif unit in ("m", "min"):
+            delta = timedelta(minutes=num)
+        elif unit in ("yr", "year"):
+            delta = timedelta(days=num * 365)
+        else:
+            return ""
+        return (now - delta).strftime("%Y-%m-%d")
+
+    # Korean patterns: "2주 전", "3일 전", "1개월 전", "5시간"
+    ko_match = re.match(r"(\d+)\s*(개월|주|일|시간|분|년)", text)
+    if ko_match:
+        num = int(ko_match.group(1))
+        unit = ko_match.group(2)
+        if unit == "개월":
+            delta = timedelta(days=num * 30)
+        elif unit == "주":
+            delta = timedelta(weeks=num)
+        elif unit == "일":
+            delta = timedelta(days=num)
+        elif unit == "시간":
+            delta = timedelta(hours=num)
+        elif unit == "분":
+            delta = timedelta(minutes=num)
+        elif unit == "년":
+            delta = timedelta(days=num * 365)
+        else:
+            return ""
+        return (now - delta).strftime("%Y-%m-%d")
+
+    return ""
+
+
+def extract_published_date(soup: BeautifulSoup, verbose: bool = False) -> str:
+    """Extract post published date from parsed HTML.
+
+    Returns YYYY-MM-DD string or "" if not found.
+    """
+    # 1. <time datetime="..."> — ISO format, most accurate
+    time_el = soup.find("time", attrs={"datetime": True})
+    if time_el:
+        dt_str = time_el["datetime"].strip()
+        try:
+            dt = datetime.fromisoformat(dt_str.replace("Z", "+00:00"))
+            if verbose:
+                print(f"Published date from <time> tag → {dt.strftime('%Y-%m-%d')}", file=sys.stderr)
+            return dt.strftime("%Y-%m-%d")
+        except (ValueError, TypeError):
+            pass
+
+    # 2. Meta tags
+    meta_selectors = [
+        'meta[property="article:published_time"]',
+        'meta[property="og:published_time"]',
+        'meta[name="date"]',
+    ]
+    for sel in meta_selectors:
+        meta = soup.select_one(sel)
+        if meta and meta.get("content"):
+            content = meta["content"].strip()
+            try:
+                dt = datetime.fromisoformat(content.replace("Z", "+00:00"))
+                if verbose:
+                    print(f"Published date from {sel} → {dt.strftime('%Y-%m-%d')}", file=sys.stderr)
+                return dt.strftime("%Y-%m-%d")
+            except (ValueError, TypeError):
+                pass
+
+    # 3. Relative time selectors (LinkedIn-specific)
+    relative_selectors = [
+        "span.feed-shared-actor__sub-description",
+        "span.update-components-actor__sub-description",
+        ".feed-shared-actor__sub-description span",
+        "a.app-aware-link span.visually-hidden",
+    ]
+    for sel in relative_selectors:
+        elements = soup.select(sel)
+        for el in elements:
+            text = el.get_text(strip=True)
+            if text and len(text) < 30:
+                result = _parse_relative_time(text)
+                if result:
+                    if verbose:
+                        print(f"Published date from relative time ({sel}: '{text}') → {result}", file=sys.stderr)
+                    return result
+
+    # 4. Fallback: scan all short <span> elements for relative time patterns
+    for span in soup.find_all("span"):
+        text = span.get_text(strip=True)
+        if text and len(text) < 30:
+            # Only try if it looks like a time string
+            if re.search(r"\d+\s*(mo|w|d|h|m|yr|개월|주|일|시간|분|년)", text.lower()):
+                result = _parse_relative_time(text)
+                if result:
+                    if verbose:
+                        print(f"Published date from span fallback ('{text}') → {result}", file=sys.stderr)
+                    return result
+
+    if verbose:
+        print("Published date: not found", file=sys.stderr)
     return ""
 
 

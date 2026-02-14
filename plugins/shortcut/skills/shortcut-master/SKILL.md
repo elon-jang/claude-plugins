@@ -1,198 +1,145 @@
+---
+name: shortcut-master
+description: 단축키 관리 및 학습 시스템 (YAML 단일 소스 + 웹앱 자동 동기화)
+---
+
 # Shortcut Master Skill
 
-단축키를 효과적으로 관리하고 학습하도록 돕는 스킬입니다.
+단축키를 YAML로 관리하고, Shortcut Pro 웹앱과 자동 동기화되는 시스템입니다.
 
-## When to Use This Skill
+## Architecture
 
-다음과 같은 경우에 이 스킬을 자동으로 활성화하세요:
+```
+YAML (shortcuts/*.yaml)  ← 단일 소스 (Single Source of Truth)
+  ├→ Shortcut Pro 웹앱    (Vite 플러그인이 virtual module로 변환, 파일 변경 시 자동 리로드)
+  ├→ cheatsheet.html      (A4 인쇄용)
+  └→ CLI 커맨드            (추가/삭제/검색/목록)
+```
 
-1. 사용자가 "단축키 추가", "shortcut 추가" 등을 요청할 때
-2. 사용자가 "단축키 검색", "shortcut 찾기" 등을 요청할 때
-3. 사용자가 "단축키 학습", "단축키 외우기" 등을 요청할 때
-4. 사용자가 특정 앱(VS Code, Gmail 등)의 단축키에 대해 질문할 때
+**핵심**: YAML 파일을 수정하면 모든 곳에 자동 반영됩니다.
 
-## Core Capabilities
+## Data Location
 
-### 1. 단축키 관리
-- 새 단축키 추가 (대화형)
-- 단축키 검색 (Fuzzy matching)
-- 단축키 삭제
-- 앱 이름 변경
+```
+~/elon/ai/shortcut/               # 단일 Git 저장소
+├── shortcuts/                     # YAML 데이터 (14개 앱, 128개 단축키)
+│   ├── macos.yaml
+│   ├── chrome.yaml
+│   ├── vscode.yaml
+│   └── ...
+├── app/                           # Shortcut Pro 웹앱 (React + Vite)
+│   ├── src/
+│   ├── plugins/
+│   │   └── yaml-shortcuts-plugin.js  # YAML → virtual:shortcuts 변환
+│   └── package.json
+├── cheatsheet.html                # A4 치트시트
+└── cheatsheet-checklist.html      # 체크리스트 버전
+```
 
-### 2. 학습 시스템
-- Leitner Box 3단계 학습
-- 3가지 학습 모드 (Flash, Quick, Typing)
-- 복습 스케줄 자동 관리
-- 학습 통계 제공
+## When to Activate
 
-### 3. 데이터 관리
-- Markdown 형식으로 저장
-- Git 자동 커밋
-- 단축키 표기법 자동 정규화
-- 데이터 정합성 자동 유지
+다음 경우에 자동 활성화:
+
+1. "단축키 추가", "shortcut 추가" 요청
+2. "단축키 검색", "shortcut 찾기" 요청
+3. "단축키 삭제" 요청
+4. "단축키 목록", "어떤 앱 있어?" 요청
+5. 특정 앱의 단축키에 대해 질문할 때
+
+## Commands
+
+| Command | 용도 |
+|---------|------|
+| `/shortcut:shortcut-add` | 대화형 단축키 추가 → YAML 수정 → git push → 웹앱 자동 반영 |
+| `/shortcut:shortcut-delete` | 단축키 삭제 |
+| `/shortcut:shortcut-search <keyword>` | YAML에서 키워드 검색 |
+| `/shortcut:shortcut-list [app]` | 앱/단축키 현황 표시 |
+| `/shortcut:shortcut-cheatsheet` | A4 치트시트 HTML 생성 |
+
+## YAML Format
+
+```yaml
+app: Chrome
+shortcuts:
+  - section: Tabs
+    items:
+      - shortcut: Cmd+T
+        description: 새 탭 열기
+      - shortcut: Cmd+W
+        description: 현재 탭 닫기
+```
+
+## Shortcut Notation Rules
+
+### 정규화
+- `cmd`, `command` → `Cmd`
+- `ctrl`, `control` → `Ctrl`
+- `opt`, `option`, `alt` → `Opt`
+- `shift` → `Shift`
+- 영문자는 대문자: `d` → `D`
+- `+`로 연결: `Cmd+Shift+P`
+
+### 특수 표기
+- 범위: `Cmd+1~9` (1부터 9까지)
+- 대안: `Opt+Cmd+←/→` (왼쪽 또는 오른쪽)
+- 특수키: `Esc`, `Return`, `Space`, `Tab`, `Delete`, `⌫`
+- 화살표: `←`, `→`, `↑`, `↓`
+- 따옴표: `"!"` (YAML 이스케이프 필요한 문자)
+
+## Web App Integration
+
+Shortcut Pro 웹앱은 Vite 플러그인(`yaml-shortcuts-plugin.js`)으로 YAML을 읽습니다:
+- `virtual:shortcuts` 모듈이 `SHORTCUT_DATA`와 `CATEGORIES`를 export
+- YAML 디렉토리를 watch하여 변경 시 자동 full-reload
+- 입력 불가 단축키(`~`, `/` 대안, 마우스, `Fn`, `Insert`)는 `typeable: false`로 마킹
+- 웹앱의 타이핑 모드에서 자동 필터링
+
+**웹앱 dev 서버 실행**:
+```bash
+cd ~/elon/ai/shortcut/app && npm run dev
+```
 
 ## Workflow Examples
 
-### 단축키 추가 요청
+### 단축키 추가
 ```
-사용자: "VS Code에서 Cmd+D 단축키를 추가하고 싶어"
+사용자: "Notion에서 Cmd+Shift+L 추가해줘 - 불릿 리스트 토글"
 
-Claude:
-1. /shortcut:shortcut-add 명령 실행
-2. 대화형 프롬프트 안내
-   - App: vscode
-   - Category: (기존 카테고리 제시)
-   - Shortcut: cmd+d (자동으로 Cmd+D로 정규화)
-   - Description: 입력 요청
-3. 파일 업데이트 확인
-4. Git 커밋 확인
+1. shortcuts/notion.yaml 읽기
+2. 중복 확인
+3. Editing 섹션에 항목 추가
+4. git commit + push
+5. 웹앱 자동 반영 안내
 ```
 
-### 검색 요청
+### 단축키 검색
 ```
-사용자: "comment 관련 단축키 찾아줘"
+사용자: "탭 관련 단축키 찾아줘"
 
-Claude:
-1. /shortcut:shortcut-search "comment" 실행
-2. 결과를 앱별로 그룹핑하여 표시
-3. 필요 시 섹션별 필터링 제안
+1. 모든 YAML에서 "탭" 검색
+2. 앱별 그룹핑하여 표시
 ```
 
-### 학습 시작
+### 단축키 삭제
 ```
-사용자: "VS Code 단축키 외우고 싶어"
+사용자: "Chrome에서 Cmd+Y 삭제해줘"
 
-Claude:
-1. 사용자에게 학습 모드 선택 안내
-   - Flash (기본): 플래시카드
-   - Quick: 빠른 학습
-   - Typing: 실제 입력
-2. /shortcut:shortcut-learn vscode --mode=<선택> 실행
-3. 학습 세션 진행
-4. 완료 후 통계 표시
-```
-
-### 통계 확인
-```
-사용자: "내 학습 진도 보여줘"
-
-Claude:
-1. /shortcut:shortcut-stats 실행
-2. Box 분포 설명
-3. 정답률 분석
-4. 어려운 단축키 확인
-5. 추가 학습 권장
+1. shortcuts/chrome.yaml에서 Cmd+Y 찾기
+2. 항목 삭제
+3. git commit + push
 ```
 
 ## Important Behaviors
 
-### 자동 초기화 확인
-명령 실행 전 저장소가 초기화되었는지 확인:
-- 초기화 안 됨 → `/shortcut:shortcut-init` 실행 안내
+### 데이터 무결성
+- 추가 시 항상 중복 확인
+- YAML 문법 유지 (들여쓰기 2칸, 하이픈 + 공백)
+- 빈 섹션은 삭제
 
-### 표기법 정규화 설명
-사용자가 소문자로 입력해도:
-- `cmd+d` → `Cmd+D`로 자동 변환
-- 변환 사실을 사용자에게 알림
+### Git 자동화
+- 모든 변경 후 자동 commit + push
+- 커밋 메시지 형식: `Add shortcut: {App} - {Shortcut} ({Description})`
 
-### 학습 모드 추천
-- **초보자**: Flash Mode (가장 간단)
-- **빠른 복습**: Quick Mode
-- **실전 연습**: Typing Mode (동시 누름만 지원 주의)
-
-### 복습 타이밍 설명
-"오늘 복습할 카드가 없습니다" 메시지 시:
-- Leitner Box의 정확한 날짜 매칭 설명
-- 다음 복습일 안내
-- `--all` 플래그로 강제 복습 가능
-
-### 데이터 정합성
-- 파일 직접 수정 시 자동 정리 안내
-- 중복 단축키 추가 시 거부 이유 설명
-
-## Commands to Use
-
-```bash
-# 초기화
-/shortcut:shortcut-init [repo_path]
-
-# 관리
-/shortcut:shortcut-add
-/shortcut:shortcut-delete <app> <shortcut>
-/shortcut:shortcut-rename <old> <new>
-/shortcut:shortcut-list
-
-# 검색
-/shortcut:shortcut-search <keyword> [--section=<name>]
-
-# 학습
-/shortcut:shortcut-learn [app] [--mode=flash|quick|typing] [--all]
-
-# 통계
-/shortcut:shortcut-stats [app]
-```
-
-## Error Handling
-
-### 저장소 미초기화
-```
-Error: 저장소가 초기화되지 않았습니다
-
-→ /shortcut:shortcut-init ~/shortcuts 실행 권장
-```
-
-### 파싱 에러
-```
-Error: vscode_shortcuts.md:15 - 테이블 형식 오류
-
-→ Markdown 테이블 형식 확인 안내
-→ 필수 컬럼: Shortcut, Description, Category
-```
-
-### 중복 단축키
-```
-Error: 이미 존재하는 단축키입니다
-
-→ /shortcut:shortcut-delete로 삭제 후 추가 안내
-→ 또는 파일 직접 수정 제안
-```
-
-### 복습 카드 없음
-```
-오늘 복습할 카드가 없습니다. 다음 복습: Jan 18
-
-→ Leitner Box 정확한 날짜 매칭 설명
-→ --all 플래그로 강제 복습 가능
-```
-
-## Best Practices
-
-1. **사용자 친화적 안내**
-   - 에러 메시지 번역 및 해결 방법 제시
-   - 다음 단계 명확히 안내
-
-2. **학습 효과 극대화**
-   - 적절한 학습 모드 추천
-   - 정기적 복습 독려
-   - 통계 기반 약점 분석
-
-3. **데이터 무결성**
-   - Git 커밋 자동화 확인
-   - 파일 형식 검증
-   - 백업 권장
-
-4. **워크플로우 최적화**
-   - 자주 사용하는 명령어 조합 제안
-   - 단축키 그룹 관리 팁 제공
-
-## Integration with Other Tools
-
-- **Git**: 자동 버전 관리, 수동 push 안내
-- **Markdown editors**: 파일 직접 수정 가능, 자동 정리
-- **GitHub**: 원격 저장소 동기화 가이드
-
-## Resources
-
-- [SPEC.md](../../SPEC.md) - 프로젝트 명세서
-- [README.md](../../README.md) - 사용자 가이드
-- [CLAUDE.md](../../CLAUDE.md) - 개발자 가이드
+### 웹앱 연동
+- YAML 변경 → Vite dev server가 감지 → 브라우저 자동 리로드
+- 프로덕션 빌드 시에도 YAML에서 읽음 (빌드 타임 변환)

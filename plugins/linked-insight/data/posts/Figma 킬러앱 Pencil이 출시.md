@@ -1,7 +1,7 @@
 ---
 author: ''
 date: '2026-01-29'
-embedding_id: ' Figma 킬러앱 Pencil이 출-4b92ff61'
+embedding_id: Figma 킬러앱 Pencil이 출시-3d1c6eb0
 tags:
 - claude-code
 - ai-agent

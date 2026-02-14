@@ -1,7 +1,7 @@
 ---
 author: ''
 date: '2026-01-29'
-embedding_id: Context7, 단순 MCP 연결 -c3f3026f
+embedding_id: Context7, 단순 MCP 연결 -1cb94dae
 tags:
 - context7
 - ai-agent

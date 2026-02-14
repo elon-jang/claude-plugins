@@ -190,6 +190,17 @@ def report_empty_urls(posts: list[dict]) -> list[str]:
     return lines
 
 
+def report_empty_published_dates(posts: list[dict]) -> list[str]:
+    """Report posts with empty published_date field."""
+    empty = [p for p in posts if not p["metadata"].get("published_date")]
+    if not empty:
+        return ["  All posts have published_date."]
+    lines = [f"  {len(empty)} posts with empty published_date:"]
+    for p in empty:
+        lines.append(f"    - {p['filename']}")
+    return lines
+
+
 def report_duplicate_urls(posts: list[dict]) -> list[str]:
     """Report posts sharing the same URL."""
     url_map: dict[str, list[str]] = defaultdict(list)
@@ -210,6 +221,37 @@ def report_duplicate_urls(posts: list[dict]) -> list[str]:
     return lines
 
 
+def report_ai_notes_format(posts: list[dict]) -> list[str]:
+    """Report posts by AI Notes format: new (3-section) / old / none."""
+    old_format = []
+    new_format = []
+    no_notes = []
+
+    for p in posts:
+        content = p["content"]
+        if "## AI Notes" not in content:
+            no_notes.append(p["filename"])
+        elif "### 핵심 인사이트" in content and "### 요약" in content:
+            new_format.append(p["filename"])
+        else:
+            old_format.append(p["filename"])
+
+    lines = []
+    if old_format:
+        lines.append(f"  {len(old_format)} posts with old format:")
+        for f in old_format:
+            lines.append(f"    - {f}")
+    if no_notes:
+        lines.append(f"  {len(no_notes)} posts with no AI Notes:")
+        for f in no_notes:
+            lines.append(f"    - {f}")
+    if not old_format and not no_notes:
+        lines.append("  All posts have new AI Notes format!")
+
+    lines.append(f"\n  Summary: {len(new_format)} new / {len(old_format)} old / {len(no_notes)} none")
+    return lines
+
+
 def run_backfill(mode: str):
     """Run backfill in specified mode: dry-run, apply, or report."""
     posts = get_all_posts()
@@ -226,8 +268,18 @@ def run_backfill(mode: str):
             print(line)
         print()
 
+        print("=== Empty Published Dates ===")
+        for line in report_empty_published_dates(posts):
+            print(line)
+        print()
+
         print("=== Duplicate URLs ===")
         for line in report_duplicate_urls(posts):
+            print(line)
+        print()
+
+        print("=== AI Notes Format ===")
+        for line in report_ai_notes_format(posts):
             print(line)
         return
 
@@ -294,6 +346,10 @@ def run_backfill(mode: str):
     for line in report_empty_urls(posts):
         print(line)
     print()
+    print("--- Empty Published Dates ---")
+    for line in report_empty_published_dates(posts):
+        print(line)
+    print()
     print("--- Duplicate URLs ---")
     for line in report_duplicate_urls(posts):
         print(line)
@@ -307,6 +363,7 @@ def main():
     group.add_argument("--dry-run", action="store_true", help="Preview changes without applying")
     group.add_argument("--apply", action="store_true", help="Apply auto-fixes")
     group.add_argument("--report", action="store_true", help="Show manual-fix report only")
+    group.add_argument("--notes-report", action="store_true", help="Show AI Notes format report only")
 
     args = parser.parse_args()
 
@@ -316,6 +373,12 @@ def main():
         run_backfill("apply")
     elif args.report:
         run_backfill("report")
+    elif args.notes_report:
+        posts = get_all_posts()
+        print(f"Loaded {len(posts)} posts.\n")
+        print("=== AI Notes Format Report ===")
+        for line in report_ai_notes_format(posts):
+            print(line)
 
 
 if __name__ == "__main__":

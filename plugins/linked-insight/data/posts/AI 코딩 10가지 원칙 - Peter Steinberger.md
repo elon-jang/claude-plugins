@@ -1,7 +1,7 @@
 ---
 author: Tony Lee
 date: '2026-02-03'
-embedding_id: AI 코딩 10가지 원칙 - Pete-334a3b3b
+embedding_id: AI 코딩 10가지 원칙 - Pete-d9c871fc
 tags:
 - AI코딩
 - 에이전트

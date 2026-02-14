@@ -1,7 +1,7 @@
 ---
 author: ''
 date: '2026-01-29'
-embedding_id: OpenAI Multi-Agent W-5222ec84
+embedding_id: OpenAI Multi-Agent W-9a141457
 tags:
 - ai-agent
 - openai

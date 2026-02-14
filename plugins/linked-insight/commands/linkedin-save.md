@@ -62,7 +62,7 @@ cd <project_root>
 python scripts/fetch_post.py "<LinkedIn URL>" --verbose
 ```
 
-- **성공 시**: JSON 출력에서 `title`, `author`, `content`, `url` 추출 → Step 2로 진행
+- **성공 시**: JSON 출력에서 `title`, `author`, `content`, `url`, `published_date` 추출 → Step 2로 진행
 - **실패 시**: 에러 메시지 출력 후 사용자에게 수동 입력 안내 (Step 0-C로 이동)
 
 #### C. 수동 입력
@@ -73,6 +73,7 @@ LinkedIn URL이 아니고 롱블랙도 아닌 경우 (또는 B 실패 시):
 - 글 내용 (필수)
 - 작성자 이름 (**권장** - 비어있으면 검색 품질 저하)
 - 원본 URL (**권장** - 중복 체크 및 출처 추적용)
+- 게시 날짜 (선택 - YYYY-MM-DD 형식, 모르면 빈 문자열)
 - 추가 태그 (선택)
 
 ### Step 1: 메타데이터 검증
@@ -121,6 +122,7 @@ python scripts/search.py "<본문 첫 30자>" --mode semantic --limit 3
 title: "{제목 - 50자 이내로 정제}"
 author: "{작성자}"
 date: "{YYYY-MM-DD}"
+published_date: "{YYYY-MM-DD}"
 url: "{URL}"
 tags: [tag1, tag2, tag3]
 embedding_id: "{unique-id}"
@@ -130,9 +132,26 @@ embedding_id: "{unique-id}"
 
 ---
 ## AI Notes
-- **Summary**: {1-2문장 요약}
-- **Topics**: {태그 나열}
+
+### 핵심 인사이트
+- {구체적이고 실행 가능한 takeaway 1}
+- {구체적이고 실행 가능한 takeaway 2}
+- {구체적이고 실행 가능한 takeaway 3}
+
+### 요약
+{2-3문단 아티클 형태 요약.
+첫 문단: 배경과 맥락
+둘째 문단: 핵심 주장과 근거
+셋째 문단: 결론 및 시사점
+— 원문을 읽지 않아도 글의 핵심을 이해할 수 있어야 함.}
+
+### Topics
+{tag1, tag2, tag3}
 ```
+
+**AI Notes 생성 가이드**:
+- **핵심 인사이트**: 독자가 바로 실행하거나 기억할 수 있는 3개의 포인트. "~하라", "~을 고려하라" 형태의 액션 중심.
+- **요약**: 원문을 읽지 않아도 맥락과 논지를 완전히 이해할 수 있는 서술형 summary. 배경→주장→결론 흐름.
 
 ### Step 5: URL 단축
 

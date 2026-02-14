@@ -11,7 +11,7 @@ load_dotenv()
 # Configure Gemini
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 
-MODEL_NAME = "text-embedding-004"
+MODEL_NAME = "gemini-embedding-001"
 
 
 def _get_client():

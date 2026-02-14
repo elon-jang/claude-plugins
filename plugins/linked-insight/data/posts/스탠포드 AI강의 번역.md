@@ -1,7 +1,7 @@
 ---
 author: ''
 date: '2026-01-29'
-embedding_id: 스탠포드 AI강의 번역-78ef8ecd
+embedding_id: 스탠포드 AI강의 번역-0758a18e
 tags:
 - claude-code
 - ai-agent

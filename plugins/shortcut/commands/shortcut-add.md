@@ -1,6 +1,6 @@
 ---
 name: shortcut-add
-description: 단축키를 대화형으로 추가하고 README.md를 자동 업데이트합니다
+description: 단축키를 대화형으로 추가합니다 (YAML 기반, 웹앱 자동 동기화)
 argument-hint: ""
 allowed-tools:
   - AskUserQuestion
@@ -13,38 +13,33 @@ allowed-tools:
 
 # Add Shortcut
 
-단축키를 대화형으로 추가하고 README.md를 자동 업데이트합니다.
+단축키를 YAML 파일에 대화형으로 추가합니다. 추가 즉시 Shortcut Pro 웹앱에 자동 반영됩니다.
+
+## Constants
+
+```
+REPO_ROOT = ~/elon/ai/shortcut
+YAML_DIR  = $REPO_ROOT/shortcuts
+```
 
 ## Workflow
 
-Execute the following steps in order:
+### 0. Detect Repository & Existing Data
 
-### 0. Detect Repository Configuration
-
-**Detect Git repository root**:
+**YAML 디렉토리 존재 확인**:
 ```bash
-REPO_ROOT=$(git rev-parse --show-toplevel 2>/dev/null)
+ls "$YAML_DIR"/*.yaml
 ```
 
-If the command fails (not a Git repository):
-- Display error: "Error: Not in a Git repository. Please run `/shortcut:shortcut-init` first."
-- Stop execution
+**기존 앱 목록 추출**: YAML 파일명에서 앱 이름을 파싱 (각 파일 첫 줄의 `app:` 값).
 
-**Detect current branch**:
-```bash
-CURRENT_BRANCH=$(git branch --show-current)
-```
-
-**Detect existing apps**:
-```bash
-ls "$REPO_ROOT"/*_shortcuts.md 2>/dev/null | sed 's/_shortcuts.md$//' | xargs -n1 basename
-```
+**기존 섹션 추출**: 사용자가 앱을 선택하면 해당 YAML의 `section:` 값들을 수집.
 
 ### 1. Collect Information
 
 Use AskUserQuestion to gather all required information:
 
-**First AskUserQuestion call** (4 questions):
+**First AskUserQuestion** (2 questions):
 
 ```json
 {
@@ -54,30 +49,37 @@ Use AskUserQuestion to gather all required information:
       "header": "App",
       "multiSelect": false,
       "options": [
-        {"label": "vscode", "description": "Visual Studio Code"},
-        {"label": "chrome", "description": "Google Chrome"},
-        {"label": "figma", "description": "Figma Design"},
-        {"label": "Enter custom app", "description": "Type app name"}
+        // 기존 앱들을 YAML에서 읽어 동적으로 생성
+        // 예: {"label": "Chrome", "description": "15 shortcuts"},
+        // 항상 마지막에:
+        {"label": "New app", "description": "새 앱 추가"}
       ]
     },
     {
-      "question": "Which category does this shortcut belong to?",
-      "header": "Category",
+      "question": "Which section does this shortcut belong to?",
+      "header": "Section",
       "multiSelect": false,
       "options": [
-        {"label": "Editing", "description": "Text editing, selection"},
-        {"label": "Navigation", "description": "Moving around, jumping"},
-        {"label": "View", "description": "UI, panels, zoom"},
-        {"label": "Enter custom category", "description": "Type category name"}
+        // 선택된 앱의 기존 섹션들을 동적으로 표시
+        // 예: {"label": "Navigation", "description": "existing section"},
+        {"label": "New section", "description": "새 섹션 추가"}
       ]
-    },
+    }
+  ]
+}
+```
+
+**Second AskUserQuestion** (2 questions):
+
+```json
+{
+  "questions": [
     {
       "question": "What is the keyboard shortcut? (e.g., cmd+d, ctrl+shift+p)",
       "header": "Shortcut",
       "multiSelect": false,
       "options": [
-        {"label": "Enter shortcut", "description": "Type the keyboard shortcut"},
-        {"label": "Skip", "description": "Not used"}
+        {"label": "Enter shortcut", "description": "Type the keyboard shortcut"}
       ]
     },
     {
@@ -85,21 +87,14 @@ Use AskUserQuestion to gather all required information:
       "header": "Description",
       "multiSelect": false,
       "options": [
-        {"label": "Enter description", "description": "Brief description of the action"},
-        {"label": "Skip", "description": "Not used"}
+        {"label": "Enter description", "description": "Brief description of the action"}
       ]
     }
   ]
 }
 ```
 
-**Important**:
-- If existing apps detected, dynamically add them to App options
-- If existing categories found in the target app file, add them to Category options
-
 ### 2. Normalize Shortcut Notation
-
-Convert shortcut to standard format:
 
 | Input | Output |
 |-------|--------|
@@ -118,141 +113,80 @@ Convert shortcut to standard format:
 
 ### 3. Check for Duplicates
 
-Read target file `{REPO_ROOT}/{app}_shortcuts.md` if exists.
-
-Search for the normalized shortcut in the table.
+Read target YAML file. Search all items for matching shortcut.
 
 If duplicate found:
-- Display error: "Error: Shortcut `{shortcut}` already exists for {app}."
-- Show existing entry
+- Display: "이미 존재하는 단축키입니다: `{shortcut}` → {description}"
 - Stop execution
 
-### 4. Add Shortcut to File
+### 4. Add Shortcut to YAML File
 
-**If file doesn't exist**, create `{REPO_ROOT}/{app}_shortcuts.md`:
+**If YAML file doesn't exist** (new app), create `$YAML_DIR/{app-id}.yaml`:
 
-```markdown
-# {App} Shortcuts
-
-## {Category}
-
-| Shortcut | Description |
-|----------|-------------|
-| {shortcut} | {description} |
+```yaml
+app: {App Name}
+shortcuts:
+  - section: {Section}
+    items:
+      - shortcut: {Normalized Shortcut}
+        description: {Description}
 ```
 
-**If file exists**, find or create the category section and add the row:
+`app-id`는 앱 이름을 소문자 kebab-case로 변환 (예: `VS Code` → `vscode`, `Claude Desktop` → `claude-desktop`).
 
-```markdown
-| {shortcut} | {description} |
+**If YAML file exists**, find the target section:
+
+- **Section exists**: 해당 section의 `items` 배열 끝에 추가
+- **Section doesn't exist**: `shortcuts` 배열 끝에 새 section 추가
+
+```yaml
+      - shortcut: {Normalized Shortcut}
+        description: {Description}
 ```
 
-**Sorting**: Add entries alphabetically within each category.
-
-### 5. Update README.md
-
-**Scan all shortcut files**:
-```bash
-ls "$REPO_ROOT"/*_shortcuts.md
-```
-
-**For each file**:
-1. Extract app name from filename
-2. Count total shortcuts (table rows excluding header)
-3. Get file modification date
-4. Extract Top 5 shortcuts (first 5 from first category)
-
-**Generate README.md content**:
-
-```markdown
-# My Shortcuts
-
-애플리케이션 단축키 모음입니다.
-
-## Summary
-
-| App | Shortcuts | Last Updated |
-|-----|-----------|--------------|
-| [vscode](./vscode_shortcuts.md) | 25 | 2026-01-19 |
-| [chrome](./chrome_shortcuts.md) | 12 | 2026-01-18 |
-
-**Total**: 37 shortcuts across 2 apps
-
-## Quick Reference
-
-### vscode
-
-| Shortcut | Description |
-|----------|-------------|
-| Cmd+D | Select next occurrence |
-| Cmd+Shift+P | Command palette |
-| Cmd+P | Quick open file |
-| Cmd+B | Toggle sidebar |
-| Cmd+` | Toggle terminal |
-
-[View all vscode shortcuts →](./vscode_shortcuts.md)
-
-### chrome
-
-| Shortcut | Description |
-|----------|-------------|
-| Cmd+T | New tab |
-| Cmd+W | Close tab |
-| Cmd+L | Focus address bar |
-| Cmd+Shift+T | Reopen closed tab |
-| Cmd+Option+I | Developer tools |
-
-[View all chrome shortcuts →](./chrome_shortcuts.md)
-```
-
-**Write to** `{REPO_ROOT}/README.md`
-
-### 6. Git Operations
+### 5. Git Operations
 
 ```bash
 cd "$REPO_ROOT" && \
-git add {app}_shortcuts.md README.md && \
-git commit -m "Add shortcut: {app} - {shortcut}" && \
-git push origin "$CURRENT_BRANCH"
+git add shortcuts/{app-id}.yaml && \
+git commit -m "Add shortcut: {App} - {Shortcut} ({Description})" && \
+git push
 ```
 
-### 7. Success Message
+### 6. Success Message
 
 ```
-✅ Shortcut added successfully!
+Added successfully!
 
-App: {app}
-Category: {category}
-Shortcut: {shortcut}
-Description: {description}
+App: {App}
+Section: {Section}
+Shortcut: {Shortcut}
+Description: {Description}
 
-Files updated:
-- {app}_shortcuts.md
-- README.md
+File: shortcuts/{app-id}.yaml
+Committed and pushed.
 
-Committed and pushed to origin/{branch}
+웹앱(Shortcut Pro)에서 dev 서버 실행 중이면 자동으로 반영됩니다.
 ```
 
 ## Error Handling
 
-- **Not in Git repository**: Display error, suggest `/shortcut:shortcut-init`
-- **Duplicate shortcut**: Display existing entry, stop execution
-- **Git push fails**: Show error, files are saved locally
-- **File permission error**: Display error, stop execution
+- **YAML 디렉토리 없음**: "shortcuts/ 디렉토리를 찾을 수 없습니다"
+- **중복 단축키**: 기존 항목 표시, 실행 중지
+- **Git push 실패**: "로컬에 저장되었습니다. 수동으로 push해주세요."
 
 ## Example
 
 ```
 User: /shortcut:shortcut-add
 
-App: vscode
-Category: Editing
-Shortcut: cmd+d
-Description: Select next occurrence
+→ App: Notion (10 shortcuts)
+→ Section: Editing
+→ Shortcut: cmd+shift+l
+→ Description: Toggle bulleted list
 
 Result:
-- Added to vscode_shortcuts.md
-- Updated README.md (25 shortcuts, Top 5 shown)
-- Committed: "Add shortcut: vscode - Cmd+D"
-- Pushed to origin/main
+- shortcuts/notion.yaml 업데이트
+- Committed: "Add shortcut: Notion - Cmd+Shift+L (Toggle bulleted list)"
+- 웹앱 자동 반영
 ```

@@ -1,7 +1,7 @@
 ---
 author: ''
 date: '2026-01-29'
-embedding_id: laude Code -> oh my -bea9a54f
+embedding_id: Claude Code -> oh my-cf25beec
 tags:
 - claude-code
 - development

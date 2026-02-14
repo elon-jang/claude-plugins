@@ -1,7 +1,7 @@
 ---
 author: ''
 date: '2026-01-29'
-embedding_id: attenstion-hook-6791d82f
+embedding_id: attenstion-hook-63cb1056
 tags:
 - hook
 - terminal

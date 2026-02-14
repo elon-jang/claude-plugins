@@ -36,6 +36,7 @@ python scripts/shorten_urls.py "긴 URL이 포함된 텍스트"
 python scripts/backfill.py --dry-run    # 미리보기
 python scripts/backfill.py --apply      # 자동 수정 적용 (태그/날짜/파일명)
 python scripts/backfill.py --report     # 수동 처리 필요 항목만
+python scripts/backfill.py --notes-report  # AI Notes 형식 현황
 ```
 
 ## 저장 위치

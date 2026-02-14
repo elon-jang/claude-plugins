@@ -1,7 +1,7 @@
 ---
 author: ''
 date: '2026-01-29'
-embedding_id: session-wrap 플러그인에 두-99feaf8c
+embedding_id: session-wrap 플러그인에 두-45d3e4db
 tags:
 - claude-code
 - ai-agent

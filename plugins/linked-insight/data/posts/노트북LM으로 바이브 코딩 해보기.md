@@ -1,7 +1,7 @@
 ---
 author: ''
 date: '2026-01-29'
-embedding_id: 노트북LM으로 바이브 코딩 해보기-e5b4a28a
+embedding_id: 노트북LM으로 바이브 코딩 해보기-ce95b11c
 tags:
 - notebooklm
 - development

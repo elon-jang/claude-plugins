@@ -1,7 +1,7 @@
 ---
 author: ''
 date: '2026-01-29'
-embedding_id: AI와 함께 신체를 다시 만들고 있습-5ed48648
+embedding_id: AI와 함께 신체를 다시 만들고 있습-4d5e8455
 tags:
 - llm
 - claude-code

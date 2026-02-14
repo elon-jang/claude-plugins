@@ -1,7 +1,7 @@
 ---
 author: ''
 date: '2026-01-29'
-embedding_id: super power skill-6fa65131
+embedding_id: super power skill-67a0648f
 tags:
 - claude-code
 - plugin

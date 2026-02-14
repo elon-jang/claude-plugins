@@ -1,7 +1,7 @@
 ---
 author: ''
 date: '2026-01-29'
-embedding_id: Clawdbot이 맥 미니를 품절시킨-16d6367b
+embedding_id: Clawdbot이 맥 미니를 품절시킨-b7e2cc2e
 tags:
 - clawdbot
 - ai-agent

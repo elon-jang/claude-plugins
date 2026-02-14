@@ -1,7 +1,7 @@
 ---
 author: ''
 date: '2026-01-29'
-embedding_id: CC headless mode-733e228e
+embedding_id: CC headless mode-a4c7cd14
 tags:
 - claude-code
 - ai-agent

@@ -1,7 +1,7 @@
 ---
 author: ''
 date: '2026-01-29'
-embedding_id: 구글 문서들을 로컬에 다운받아주는 C-cf719eef
+embedding_id: 구글 문서들을 로컬에 다운받아주는 C-0ca07e6d
 tags:
 - google
 - claude-code

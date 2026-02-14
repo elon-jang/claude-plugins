@@ -61,6 +61,9 @@ def get_stats() -> dict:
     # URL coverage
     posts_with_url = sum(1 for p in posts if p["metadata"].get("url"))
 
+    # Published date coverage
+    posts_with_published_date = sum(1 for p in posts if p["metadata"].get("published_date"))
+
     # Date distribution
     dates = [p["metadata"].get("date", "") for p in posts]
     dates = [d for d in dates if d]
@@ -88,6 +91,10 @@ def get_stats() -> dict:
         "urls": {
             "posts_with_url": posts_with_url,
             "coverage_pct": round(posts_with_url / total * 100, 1),
+        },
+        "published_dates": {
+            "posts_with_published_date": posts_with_published_date,
+            "coverage_pct": round(posts_with_published_date / total * 100, 1),
         },
         "dates": {
             "unique_dates": len(date_counts),
@@ -136,6 +143,12 @@ def format_stats(stats: dict) -> str:
     lines.append("### URL")
     u = stats["urls"]
     lines.append(f"- URL 있는 글: {u['posts_with_url']}개 ({u['coverage_pct']}%)")
+    lines.append("")
+
+    # Published dates
+    lines.append("### 게시일")
+    pd = stats["published_dates"]
+    lines.append(f"- 게시일 있는 글: {pd['posts_with_published_date']}개 ({pd['coverage_pct']}%)")
     lines.append("")
 
     # Content
