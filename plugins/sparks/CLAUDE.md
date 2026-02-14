@@ -10,16 +10,7 @@
 plugins/sparks/
 ├── .claude-plugin/plugin.json    # 플러그인 메타데이터
 ├── commands/
-│   └── spark.md                  # 통합 라우터 (단일 진입점)
-├── spark-commands/               # 서브커맨드 워크플로 (commands/ 밖에 배치)
-│   ├── add.md                    # 지식 저장
-│   ├── blog.md                   # 블로그 글 저장
-│   ├── log.md                    # 데일리 로그 (에피소드 누적)
-│   ├── learn.md                  # 학습 (3가지 모드)
-│   ├── search.md                 # 검색
-│   ├── list.md                   # 목록 조회
-│   ├── stats.md                  # 학습 통계 대시보드
-│   └── init.md                   # 저장소 초기화
+│   └── spark.md                  # 단일 파일 (라우터 + 모든 서브커맨드)
 ├── templates/
 │   ├── knowledge_template.md     # 지식 파일 템플릿
 │   └── repo_init/                # 저장소 초기화 템플릿
@@ -44,52 +35,9 @@ plugins/sparks/
 | `stats` | 학습 통계 대시보드 | |
 | `init` | 저장소 초기화 | `[directory]` |
 
-**Routing**: `spark.md`가 $ARGUMENTS 첫 단어를 파싱하여 플러그인 루트의 `spark-commands/{서브커맨드}.md`를 Read하고 실행.
+**Routing**: `spark.md` 단일 파일에 라우터 + 모든 서브커맨드가 요약 수준으로 포함됨. $ARGUMENTS 첫 단어로 분기.
 
 **Allowed Tools:** AskUserQuestion, Glob, Read, Write, Edit, Bash
-
-### Subcommand Details
-
-#### `add` - 지식 저장
-1. Git 저장소 감지
-2. 블로그 글 존재 여부 확인 (`blog/` 디렉토리)
-3. AskUserQuestion으로 입력 수집: Category, Title, Tags, Source, Content
-4. Claude가 Q&A 자동 생성 → 사용자 확인
-5. Markdown + YAML frontmatter 파일 생성
-6. README.md 업데이트 → Git commit, push
-
-#### `blog` - 블로그 글 저장
-1. Git 저장소 감지
-2. AskUserQuestion으로 Title, Tags, Content 수집
-3. `blog/YYYY-MM-DD-title.md` 파일 생성
-4. README.md 업데이트 → Git commit, push
-
-#### `log` - 데일리 로그
-1. Git 저장소 감지
-2. 스타일 결정 (`--style` 또는 config 또는 AskUserQuestion)
-3. AskUserQuestion으로 내용 입력
-4. Claude가 스타일에 맞게 다듬기
-5. `blog/YYYY-MM-DD-daily-log.md` 생성 또는 에피소드 append
-6. README.md 업데이트 → Git commit, push
-
-Styles: diary (일기체), bullet (간결 메모), devlog (Problem→Solution), narrative (서술형)
-
-#### `learn` - 학습 모드
-- **Socratic**: 5단계 Why/How 질문 (설명→중요성→적용→예외→연결)
-- **Flashcard**: Leitner 5-box (1일→3일→7일→14일→30일)
-- **Connect**: 태그 기반 유사 항목 연결, 새 인사이트 생성
-
-#### `search` - 검색
-키워드/태그/카테고리 필터 → 점수 기반 랭킹
-
-#### `list` - 목록
-카테고리별 목록 + `--stats` (통계) + `--due` (복습 예정)
-
-#### `stats` - 학습 통계 대시보드
-카테고리 분포, 신뢰도 분포, 복습 현황, 상위 태그, 블로그 통계
-
-#### `init` - 저장소 초기화
-템플릿 기반 디렉토리 구조 + config + README + Git init
 
 ## Knowledge File Format
 
