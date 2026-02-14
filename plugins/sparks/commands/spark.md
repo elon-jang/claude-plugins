@@ -32,7 +32,7 @@ $ARGUMENTS의 첫 번째 단어로 서브커맨드를 결정하고, 해당 워�
 
 1. $ARGUMENTS에서 첫 번째 단어를 서브커맨드로 추출한다
 2. 나머지 단어들은 서브커맨드의 옵션으로 전달한다
-3. 해당 워크플로 파일을 Read한다: `commands/spark-commands/{서브커맨드}.md`
+3. 해당 워크플로 파일을 Read한다: `spark-commands/{서브커맨드}.md`
 4. 파일 내용의 워크플로를 **그대로 실행**한다
 
 ## No Arguments

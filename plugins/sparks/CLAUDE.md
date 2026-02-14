@@ -10,16 +10,16 @@
 plugins/sparks/
 ├── .claude-plugin/plugin.json    # 플러그인 메타데이터
 ├── commands/
-│   ├── spark.md                  # 통합 라우터 (단일 진입점)
-│   └── spark-commands/           # 서브커맨드 워크플로
-│       ├── add.md                # 지식 저장
-│       ├── blog.md               # 블로그 글 저장
-│       ├── log.md                # 데일리 로그 (에피소드 누적)
-│       ├── learn.md              # 학습 (3가지 모드)
-│       ├── search.md             # 검색
-│       ├── list.md               # 목록 조회
-│       ├── stats.md              # 학습 통계 대시보드
-│       └── init.md               # 저장소 초기화
+│   └── spark.md                  # 통합 라우터 (단일 진입점)
+├── spark-commands/               # 서브커맨드 워크플로 (commands/ 밖에 배치)
+│   ├── add.md                    # 지식 저장
+│   ├── blog.md                   # 블로그 글 저장
+│   ├── log.md                    # 데일리 로그 (에피소드 누적)
+│   ├── learn.md                  # 학습 (3가지 모드)
+│   ├── search.md                 # 검색
+│   ├── list.md                   # 목록 조회
+│   ├── stats.md                  # 학습 통계 대시보드
+│   └── init.md                   # 저장소 초기화
 ├── templates/
 │   ├── knowledge_template.md     # 지식 파일 템플릿
 │   └── repo_init/                # 저장소 초기화 템플릿
@@ -44,7 +44,7 @@ plugins/sparks/
 | `stats` | 학습 통계 대시보드 | |
 | `init` | 저장소 초기화 | `[directory]` |
 
-**Routing**: `spark.md`가 $ARGUMENTS 첫 단어를 파싱하여 `spark-commands/{서브커맨드}.md`를 Read하고 실행.
+**Routing**: `spark.md`가 $ARGUMENTS 첫 단어를 파싱하여 플러그인 루트의 `spark-commands/{서브커맨드}.md`를 Read하고 실행.
 
 **Allowed Tools:** AskUserQuestion, Glob, Read, Write, Edit, Bash
 
