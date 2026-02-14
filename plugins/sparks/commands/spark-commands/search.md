@@ -1,18 +1,8 @@
----
-name: spark-search
-description: Search stored knowledge by keyword, tag, or category
-argument-hint: "<keyword> [--tag=<tag>] [--category=<cat>]"
-allowed-tools:
-  - Glob
-  - Read
-  - Bash
----
-
 # Spark Search - Knowledge Search
 
 Search through stored knowledge items by keyword, tag, or category.
 
-## Arguments
+## Options
 
 - `<keyword>` - Search term (searches title, content, tags)
 - `--tag=<tag>` - Filter by specific tag
@@ -68,75 +58,32 @@ Sort by score descending.
 ### 5. Display Results
 
 ```
-🔍 Search Results for "{keyword}"
+Search Results for "{keyword}"
 
 Found {count} items:
 
-1. 📌 {title} ({category})
+1. {title} ({category})
    Tags: {tags}
    Confidence: {confidence}/5 | Reviews: {review_count}
    Path: {category}/{filename}.md
    Match: {match_reason}
 
-2. 📌 {title} ({category})
+2. {title} ({category})
    ...
 
 ---
-Use `/spark-learn --category={category}` to study these topics.
+Use `/spark learn --category={category}` to study these topics.
 ```
 
 **If no results**:
 ```
-🔍 No results found for "{keyword}"
+No results found for "{keyword}"
 
 Suggestions:
 - Try different keywords
 - Check spelling
 - Use --tag or --category to filter
-- Run `/spark-list` to see all items
-```
-
-## Examples
-
-### Search by Keyword
-```
-/spark-search machine learning
-
-🔍 Search Results for "machine learning"
-
-Found 3 items:
-
-1. 📌 Machine Learning Basics (concepts)
-   Tags: ai, ml, neural-networks
-   Confidence: 4/5 | Reviews: 5
-   Path: concepts/machine-learning-basics.md
-   Match: Title, Tags
-
-2. 📌 Deep Learning Introduction (concepts)
-   Tags: ai, ml, deep-learning
-   Confidence: 3/5 | Reviews: 2
-   Path: concepts/deep-learning-intro.md
-   Match: Tags
-```
-
-### Search by Tag
-```
-/spark-search --tag=python
-
-🔍 Search Results for tag "python"
-
-Found 5 items:
-...
-```
-
-### Search with Multiple Filters
-```
-/spark-search debugging --category=skills --tag=python
-
-🔍 Search Results for "debugging" in skills (tag: python)
-
-Found 2 items:
-...
+- Run `/spark list` to see all items
 ```
 
 ## Error Handling

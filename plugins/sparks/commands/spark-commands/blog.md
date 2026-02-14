@@ -1,16 +1,3 @@
----
-name: spark-blog
-description: Save blog post to the repository and push to Github
-argument-hint: ""
-allowed-tools:
-  - AskUserQuestion
-  - Glob
-  - Read
-  - Write
-  - Edit
-  - Bash
----
-
 # Add Blog Post to Sparks Repository
 
 Save a blog post (original markdown) to the `blog/` directory, update README.md, and push to Github.
@@ -92,7 +79,7 @@ Use AskUserQuestion:
 - Replace spaces with hyphens
 - Remove special characters (keep only a-z, 0-9, hyphens, Korean characters)
 
-Example: "My First Post" → `2026-01-19-my-first-post.md`
+Example: "My First Post" -> `2026-01-19-my-first-post.md`
 
 ### 4. Check for Duplicate
 
@@ -166,14 +153,14 @@ git push origin {CURRENT_BRANCH}
 ### 8. Success Message
 
 ```
-✅ Blog post saved!
+Blog post saved!
 
 Repository: {REPO_ROOT}
 Created: blog/{filename}
 Title: {title}
 
-💡 To create a knowledge item from this blog, run:
-   /spark-add (select "From blog post" as source)
+To create a knowledge item from this blog, run:
+   /spark add (select "From blog post" as source)
 ```
 
 ## Error Handling
@@ -181,22 +168,3 @@ Title: {title}
 - **Not in Git repository**: Stop with error
 - **Git push fails**: Show error, suggest manual push
 - **Empty content**: Stop with error
-
-## Example
-
-```
-User: /spark-blog
-
-Title: Understanding React Hooks
-Tags: react, hooks, frontend
-Content:
-# Understanding React Hooks
-
-React Hooks are functions that let you use state...
-(full content)
-
-Result:
-- Created: blog/2026-01-19-understanding-react-hooks.md
-- Updated README.md
-- Committed and pushed
-```

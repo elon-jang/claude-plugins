@@ -1,19 +1,8 @@
----
-name: spark-init
-description: Initialize a new Sparks knowledge repository
-argument-hint: "[directory]"
-allowed-tools:
-  - AskUserQuestion
-  - Bash
-  - Write
-  - Read
----
-
 # Spark Init - Initialize Knowledge Repository
 
 Initialize a new directory as a Sparks knowledge repository with the recommended structure.
 
-## Arguments
+## Options
 
 - `[directory]` - Target directory (default: current directory)
 
@@ -51,7 +40,7 @@ ls -la .sparks 2>/dev/null
 
 If `.sparks` directory exists:
 ```
-⚠️ This directory already has a Sparks configuration.
+Warning: This directory already has a Sparks configuration.
 Do you want to reset it?
 ```
 
@@ -182,46 +171,24 @@ git commit -m "Initialize Sparks knowledge repository"
 ### 10. Success Message
 
 ```
-✅ Sparks repository initialized!
+Sparks repository initialized!
 
-📁 Structure created:
+Structure created:
 {directory}/
-├── .sparks/
-│   ├── config.json
-│   └── progress.json (gitignored)
-├── concepts/
-├── insights/
-├── skills/
-├── til/
-├── .gitignore
-└── README.md
+  .sparks/
+    config.json
+    progress.json (gitignored)
+  concepts/
+  insights/
+  skills/
+  til/
+  .gitignore
+  README.md
 
-🚀 Next steps:
-1. Add your first knowledge: /spark-add
-2. Start learning: /spark-learn
+Next steps:
+1. Add your first knowledge: /spark add
+2. Start learning: /spark learn
 3. Push to GitHub: git remote add origin <url> && git push -u origin main
-
-Happy learning! 🎓
-```
-
-## Examples
-
-### Initialize Current Directory
-```
-cd ~/my-knowledge
-/spark-init
-
-✅ Sparks repository initialized!
-...
-```
-
-### Initialize New Directory
-```
-/spark-init ~/projects/ai-notes
-
-Creating ~/projects/ai-notes...
-✅ Sparks repository initialized!
-...
 ```
 
 ## Error Handling

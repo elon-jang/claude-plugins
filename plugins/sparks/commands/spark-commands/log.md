@@ -1,19 +1,10 @@
----
-name: spark-log
-description: Append a daily log episode to the blog directory and push to Github
-argument-hint: "--style=diary|bullet|devlog|narrative"
-allowed-tools:
-  - AskUserQuestion
-  - Glob
-  - Read
-  - Write
-  - Edit
-  - Bash
----
-
 # Daily Log - Append Episode
 
 하루 단위로 에피소드를 누적하는 데일리 로그. 짧은 메모나 작업 기록을 가볍게 남긴다.
+
+## Options
+
+- `--style=diary|bullet|devlog|narrative` - 스타일 오버라이드
 
 ## Style Presets
 
@@ -21,7 +12,7 @@ allowed-tools:
 |-------|-------------|---------|
 | `diary` | 일기체 | "오늘 드디어 해결했다. 삽질 끝에..." |
 | `bullet` | 간결 메모 | "- 항목1\n- 항목2\n- 항목3" |
-| `devlog` | 개발 일지 | "**Problem**: X → **Solution**: Y → **Result**: Z" |
+| `devlog` | 개발 일지 | "**Problem**: X -> **Solution**: Y -> **Result**: Z" |
 | `narrative` | 서술형 | "오늘의 작업은 블로그 기능 확장이었다. 먼저..." |
 
 ## Workflow
@@ -48,18 +39,18 @@ mkdir -p "$REPO_ROOT/blog"
 ### 1. Determine Writing Style
 
 **Parse `--style` argument** (if provided):
-- `--style=diary` → use `diary` style for this session only
-- `--style=bullet` → use `bullet` style
-- `--style=devlog` → use `devlog` style
-- `--style=narrative` → use `narrative` style
+- `--style=diary` -> use `diary` style for this session only
+- `--style=bullet` -> use `bullet` style
+- `--style=devlog` -> use `devlog` style
+- `--style=narrative` -> use `narrative` style
 
 **If no `--style` argument**, read `.sparks/config.json`:
 ```bash
 # Read log.defaultStyle from config
 ```
 
-- If `log.defaultStyle` is set (not null) → use that style
-- If `log.defaultStyle` is null or missing → go to Step 1b
+- If `log.defaultStyle` is set (not null) -> use that style
+- If `log.defaultStyle` is null or missing -> go to Step 1b
 
 #### Step 1b. Ask Style Preference (first-time only)
 
@@ -73,10 +64,10 @@ Use AskUserQuestion:
       "header": "Style",
       "multiSelect": false,
       "options": [
-        {"label": "diary", "description": "일기체 — '오늘 드디어 해결했다...'"},
-        {"label": "bullet", "description": "간결 메모 — '- 항목1\\n- 항목2'"},
-        {"label": "devlog", "description": "개발 일지 — 'Problem → Solution → Result'"},
-        {"label": "narrative", "description": "서술형 — '오늘의 작업은...'"}
+        {"label": "diary", "description": "일기체 -- '오늘 드디어 해결했다...'"},
+        {"label": "bullet", "description": "간결 메모 -- '- 항목1\\n- 항목2'"},
+        {"label": "devlog", "description": "개발 일지 -- 'Problem -> Solution -> Result'"},
+        {"label": "narrative", "description": "서술형 -- '오늘의 작업은...'"}
       ]
     }
   ]
@@ -126,7 +117,7 @@ Claude rewrites the user's raw input according to the selected style:
 - **devlog**: `**Problem**:` / `**Solution**:` / `**Result**:` 구조. 기술적 내용 강조.
 - **narrative**: 3인칭 또는 관찰자 시점 서술. 맥락과 흐름 중심.
 
-Keep the polished content concise — a daily log episode should be short (3-10 lines).
+Keep the polished content concise -- a daily log episode should be short (3-10 lines).
 
 ### 4. Generate Episode
 
@@ -149,7 +140,7 @@ Keep the polished content concise — a daily log episode should be short (3-10 
 
 **Check if file exists**: Use Glob `blog/YYYY-MM-DD-daily-log.md`
 
-#### Case A: File does NOT exist — Create new file
+#### Case A: File does NOT exist -- Create new file
 
 Use Write to create:
 
@@ -169,14 +160,14 @@ episodes: 1
 {polished content}
 ```
 
-#### Case B: File EXISTS — Append episode
+#### Case B: File EXISTS -- Append episode
 
 1. Read the existing file
 2. Update frontmatter: increment `episodes` count by 1
 3. Append new episode at the end of the file with a `---` separator before it
 
 Use Edit to:
-- Update `episodes: N` → `episodes: N+1` in frontmatter
+- Update `episodes: N` -> `episodes: N+1` in frontmatter
 - Append at end of file:
 
 ```markdown
@@ -199,8 +190,8 @@ Use Edit to:
 
 **Check if today's daily log is already listed**: Search for `YYYY-MM-DD-daily-log.md` in README.
 
-- If already listed → **skip** README update (no duplicate entries)
-- If NOT listed → add entry (newest first, right after anchor comment):
+- If already listed -> **skip** README update (no duplicate entries)
+- If NOT listed -> add entry (newest first, right after anchor comment):
 
 ```markdown
 - [YYYY-MM-DD] [Daily Log](blog/YYYY-MM-DD-daily-log.md)
@@ -232,43 +223,3 @@ Episode: #{episode_number} - {episode title}
 - **Git push fails**: Show error, suggest manual push
 - **Empty content**: Stop with error
 - **Config file missing**: Proceed without config (ask style each time)
-
-## Examples
-
-```
-User: /spark-log
-
-[First time — style selection prompt appears]
-Style: diary
-Content: "오늘 spark-log 커맨드를 만들었다. 하루 단위 에피소드 누적이 핵심."
-
-Result:
-- Created: blog/2026-02-14-daily-log.md (Episode #1)
-- Style: diary
-- Updated README.md
-- Committed and pushed
-
----
-
-User: /spark-log
-
-[Same day — appends to existing file]
-Content: "스타일 프리셋 4개 정리 완료. devlog가 가장 실용적."
-
-Result:
-- Updated: blog/2026-02-14-daily-log.md (Episode #2)
-- Style: diary (from config)
-- README.md already has today's entry — skipped
-- Committed and pushed
-
----
-
-User: /spark-log --style=bullet
-
-Content: "API 설계, 테스트 작성, 배포"
-
-Result:
-- Updated: blog/2026-02-14-daily-log.md (Episode #3)
-- Style: bullet (override)
-- Committed and pushed
-```

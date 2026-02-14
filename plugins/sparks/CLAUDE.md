@@ -10,13 +10,16 @@
 plugins/sparks/
 ├── .claude-plugin/plugin.json    # 플러그인 메타데이터
 ├── commands/
-│   ├── spark-init.md             # 저장소 초기화
-│   ├── spark-add.md              # 지식 저장
-│   ├── spark-blog.md             # 블로그 글 저장
-│   ├── spark-learn.md            # 학습 (3가지 모드)
-│   ├── spark-search.md           # 검색
-│   ├── spark-list.md             # 목록 조회
-│   └── spark-stats.md            # 학습 통계 대시보드
+│   ├── spark.md                  # 통합 라우터 (단일 진입점)
+│   └── spark-commands/           # 서브커맨드 워크플로
+│       ├── add.md                # 지식 저장
+│       ├── blog.md               # 블로그 글 저장
+│       ├── log.md                # 데일리 로그 (에피소드 누적)
+│       ├── learn.md              # 학습 (3가지 모드)
+│       ├── search.md             # 검색
+│       ├── list.md               # 목록 조회
+│       ├── stats.md              # 학습 통계 대시보드
+│       └── init.md               # 저장소 초기화
 ├── templates/
 │   ├── knowledge_template.md     # 지식 파일 템플릿
 │   └── repo_init/                # 저장소 초기화 템플릿
@@ -24,99 +27,69 @@ plugins/sparks/
 └── README.md
 ```
 
-## Commands
+## Command
 
-### `/spark-add` - 지식 저장
+### `/spark <subcommand> [options]` - 통합 명령
 
-**Workflow:**
-1. Git 저장소 감지 (`git rev-parse --show-toplevel`)
+단일 `/spark` 명령으로 모든 기능에 접근. 서브커맨드로 분기.
+
+| 서브커맨드 | 설명 | 옵션 |
+|-----------|------|------|
+| `add` | 지식/인사이트 저장 | |
+| `blog` | 블로그 글 저장 | |
+| `log` | 데일리 로그 에피소드 | `--style=diary\|bullet\|devlog\|narrative` |
+| `learn` | 학습 (3가지 모드) | `--mode=socratic\|flashcard\|connect --category=<name>` |
+| `search` | 검색 | `<keyword> --tag=<tag> --category=<cat>` |
+| `list` | 목록 조회 | `--category=<name> --stats --due` |
+| `stats` | 학습 통계 대시보드 | |
+| `init` | 저장소 초기화 | `[directory]` |
+
+**Routing**: `spark.md`가 $ARGUMENTS 첫 단어를 파싱하여 `spark-commands/{서브커맨드}.md`를 Read하고 실행.
+
+**Allowed Tools:** AskUserQuestion, Glob, Read, Write, Edit, Bash
+
+### Subcommand Details
+
+#### `add` - 지식 저장
+1. Git 저장소 감지
 2. 블로그 글 존재 여부 확인 (`blog/` 디렉토리)
-3. AskUserQuestion으로 입력 수집:
-   - Category, Title, Tags, Source (블로그 링크 옵션 포함), Content
-4. 블로그에서 가져올 경우: 블로그 글 선택 → `blog_link` 필드에 저장
-5. Claude가 Q&A 자동 생성 → 사용자 확인
-6. Markdown + YAML frontmatter 파일 생성
-7. README.md 업데이트
-8. Git add, commit, push
+3. AskUserQuestion으로 입력 수집: Category, Title, Tags, Source, Content
+4. Claude가 Q&A 자동 생성 → 사용자 확인
+5. Markdown + YAML frontmatter 파일 생성
+6. README.md 업데이트 → Git commit, push
 
-**Allowed Tools:** AskUserQuestion, Glob, Read, Write, Edit, Bash
-
-### `/spark-blog` - 블로그 글 저장
-
-**Workflow:**
+#### `blog` - 블로그 글 저장
 1. Git 저장소 감지
-2. AskUserQuestion으로 입력 수집:
-   - Title, Tags (선택), Content
-3. `blog/YYYY-MM-DD-title.md` 파일 생성 (원문 그대로)
-4. README.md 업데이트 (Blog 섹션)
-5. Git add, commit, push
+2. AskUserQuestion으로 Title, Tags, Content 수집
+3. `blog/YYYY-MM-DD-title.md` 파일 생성
+4. README.md 업데이트 → Git commit, push
 
-**Allowed Tools:** AskUserQuestion, Glob, Read, Write, Edit, Bash
-
-### `/spark-learn` - 학습 모드
-
-**Arguments:**
-```
---mode=socratic    소크라틱 대화 (Why/How 질문)
---mode=flashcard   플래시카드 퀴즈 (Leitner 5-box)
---mode=connect     연결 탐색 (관련 지식 연결)
---category=<name>  특정 카테고리만 학습
---all              모든 항목 대상
-```
-
-#### Socratic Mode
-- Level 1: "이 개념을 자신의 말로 설명해보세요"
-- Level 2: "왜 이것이 중요한가요?"
-- Level 3: "실제로 어떻게 적용하나요?"
-- Level 4: "예외 상황은 어떻게 처리하나요?"
-- Level 5: "다른 개념과 어떻게 연결되나요?"
-
-#### Flashcard Mode
-- Leitner 5-box 알고리즘
-- 복습 간격: 1일 → 3일 → 7일 → 14일 → 30일
-- Q 표시 → 사용자 답변 → 정답 확인 → 자기 평가
-
-#### Connect Mode
-- 태그/키워드 기반 유사 항목 제안
-- 관계 유형: prerequisite, alternative, synthesis
-- 새 인사이트 도출 시 새 지식 항목 생성 제안
-
-### `/spark-search` - 검색
-
-**Arguments:**
-```
-<keyword>           키워드 검색
---tag=<tag>         태그 필터
---category=<name>   카테고리 필터
-```
-
-### `/spark-list` - 목록
-
-**Arguments:**
-```
---category=<name>   특정 카테고리만
---stats             통계 포함 (복습 횟수, confidence)
-```
-
-### `/spark-stats` - 학습 통계 대시보드
-
-**Workflow:**
+#### `log` - 데일리 로그
 1. Git 저장소 감지
-2. 모든 지식 파일 스캔 (blog/, .sparks/ 제외)
-3. YAML frontmatter 파싱하여 통계 수집
-4. 대시보드 형태로 출력:
-   - 카테고리별 분포 (막대 차트)
-   - 신뢰도 레벨 분포 (⭐ 1-5)
-   - 복습 현황 (미복습, 1-2회, 3-5회, 6회+)
-   - 복습 예정 항목 (Leitner 간격 기반)
-   - 상위 태그 (Top 10)
-   - 블로그 통계 (선택)
+2. 스타일 결정 (`--style` 또는 config 또는 AskUserQuestion)
+3. AskUserQuestion으로 내용 입력
+4. Claude가 스타일에 맞게 다듬기
+5. `blog/YYYY-MM-DD-daily-log.md` 생성 또는 에피소드 append
+6. README.md 업데이트 → Git commit, push
 
-**Allowed Tools:** Glob, Read, Bash
+Styles: diary (일기체), bullet (간결 메모), devlog (Problem→Solution), narrative (서술형)
 
-### `/spark-init` - 저장소 초기화
+#### `learn` - 학습 모드
+- **Socratic**: 5단계 Why/How 질문 (설명→중요성→적용→예외→연결)
+- **Flashcard**: Leitner 5-box (1일→3일→7일→14일→30일)
+- **Connect**: 태그 기반 유사 항목 연결, 새 인사이트 생성
 
-새 지식 저장소를 초기화. 템플릿 기반으로 디렉토리 구조와 설정 파일 생성.
+#### `search` - 검색
+키워드/태그/카테고리 필터 → 점수 기반 랭킹
+
+#### `list` - 목록
+카테고리별 목록 + `--stats` (통계) + `--due` (복습 예정)
+
+#### `stats` - 학습 통계 대시보드
+카테고리 분포, 신뢰도 분포, 복습 현황, 상위 태그, 블로그 통계
+
+#### `init` - 저장소 초기화
+템플릿 기반 디렉토리 구조 + config + README + Git init
 
 ## Knowledge File Format
 
@@ -165,7 +138,7 @@ my-sparks/
 ├── insights/             # 인사이트/깨달음
 ├── skills/               # 실용 기술
 ├── til/                  # Today I Learned
-├── blog/                 # 블로그 글 (원문)
+├── blog/                 # 블로그 글 (원문) + 데일리 로그
 ├── .gitignore
 └── README.md
 ```
@@ -178,7 +151,7 @@ my-sparks/
 | `insights` | 경험에서 얻은 깨달음 | 코드리뷰 교훈, 실패 복기 |
 | `skills` | 실용 기술, How-to | Git 명령어, 단축키 |
 | `til` | 오늘 배운 것 | 일일 학습 기록 |
-| `blog` | 블로그 글 원문 | 기술 블로그, 회고 글 |
+| `blog` | 블로그 글 원문 + 데일리 로그 | 기술 블로그, 회고 글, 일일 기록 |
 
 ## Testing
 
@@ -187,18 +160,22 @@ my-sparks/
 cd plugins/sparks
 
 # 블로그 저장 테스트
-/spark-blog
+/spark blog
 
 # 지식 저장 테스트 (블로그 연결 포함)
-/spark-add
+/spark add
 
 # 학습 테스트
-/spark-learn --mode=flashcard
-/spark-learn --mode=socratic
-/spark-learn --mode=connect
+/spark learn --mode=flashcard
+/spark learn --mode=socratic
+/spark learn --mode=connect
+
+# 데일리 로그 테스트
+/spark log
+/spark log --style=bullet
 
 # 통계 대시보드 테스트
-/spark-stats
+/spark stats
 ```
 
 ## Related Files

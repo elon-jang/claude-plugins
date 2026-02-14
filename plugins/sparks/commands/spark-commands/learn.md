@@ -1,21 +1,8 @@
----
-name: spark-learn
-description: Start interactive learning session with Socratic dialogue, flashcards, or connection exploration
-argument-hint: "[--mode=socratic|flashcard|connect] [--category=<name>]"
-allowed-tools:
-  - AskUserQuestion
-  - Glob
-  - Read
-  - Write
-  - Edit
-  - Bash
----
-
 # Spark Learn - Interactive Knowledge Learning
 
 Start an interactive learning session using one of three modes: Socratic dialogue, Flashcard quiz, or Connection exploration.
 
-## Arguments
+## Options
 
 - `--mode=socratic` - Socratic dialogue (Why/How questions)
 - `--mode=flashcard` - Flashcard quiz (Leitner 5-box system)
@@ -85,7 +72,7 @@ Path: {REPO_ROOT}/.sparks/progress.json
 {
   "questions": [
     {
-      "question": "📚 Topic: {title}\n\nCan you explain this concept in your own words?",
+      "question": "Topic: {title}\n\nCan you explain this concept in your own words?",
       "header": "Level 1: Explain",
       "multiSelect": false,
       "options": [
@@ -150,7 +137,7 @@ Claude evaluates user's response:
 
 **Show Question**:
 ```
-📝 Flashcard ({current}/{total})
+Flashcard ({current}/{total})
 Category: {category}
 Box: {box_number}
 
@@ -175,9 +162,9 @@ How did you do?
       "header": "Self-Assess",
       "multiSelect": false,
       "options": [
-        {"label": "✅ Correct", "description": "Move to next box"},
-        {"label": "❌ Incorrect", "description": "Move back to box 1"},
-        {"label": "⏭️ Skip", "description": "Skip this card"}
+        {"label": "Correct", "description": "Move to next box"},
+        {"label": "Incorrect", "description": "Move back to box 1"},
+        {"label": "Skip", "description": "Skip this card"}
       ]
     }
   ]
@@ -192,7 +179,7 @@ How did you do?
 ### Session Summary
 
 ```
-📊 Flashcard Session Complete!
+Flashcard Session Complete!
 
 Cards reviewed: {total}
 Correct: {correct} ({percentage}%)
@@ -222,17 +209,17 @@ Next review: {next_due_date}
 
 3. **Suggest connections**:
 ```
-🔗 Connection Explorer
+Connection Explorer
 
 Current: {title}
 
 I found potential connections:
 
-1. 📌 {related_title_1}
+1. {related_title_1}
    - Shared tags: {common_tags}
    - Relationship: May be related
 
-2. 📌 {related_title_2}
+2. {related_title_2}
    - Same category
    - Relationship: Similar concept
 
@@ -251,8 +238,7 @@ Would you like to explore any of these?
         {"label": "Prerequisite", "description": "A is required to understand B"},
         {"label": "Builds on", "description": "B extends or deepens A"},
         {"label": "Contrasts", "description": "Different approaches to same problem"},
-        {"label": "Synthesizes", "description": "Combining creates new insight"},
-        {"label": "No relationship", "description": "Not actually related"}
+        {"label": "Synthesizes", "description": "Combining creates new insight"}
       ]
     }
   ]
@@ -268,7 +254,7 @@ Would you like to explore any of these?
       "header": "New Insight",
       "multiSelect": false,
       "options": [
-        {"label": "Yes, create new item", "description": "Opens spark-add with context"},
+        {"label": "Yes, create new item", "description": "Opens /spark add with context"},
         {"label": "No, just save connection", "description": "Only update connection links"}
       ]
     }
@@ -299,32 +285,7 @@ Would you like to explore any of these?
 
 ## Error Handling
 
-- **No knowledge items**: Suggest running `/spark-add` first
+- **No knowledge items**: Suggest running `/spark add` first
 - **No due cards**: Show message "No cards due for review. Use --all to review anyway."
 - **Progress file missing**: Create empty progress.json
 - **Invalid mode**: Show mode selection prompt
-
-## Success Messages
-
-**Socratic**:
-```
-🎓 Socratic Session Complete!
-
-Topic: {title}
-Depth reached: Level {level}/5
-Confidence: {old} → {new}
-
-Keep questioning! 🤔
-```
-
-**Flashcard**:
-```
-📊 Session saved. Progress committed to repository.
-```
-
-**Connect**:
-```
-🔗 Connections updated!
-
-{item_a} ↔ {item_b}: {relationship}
-```

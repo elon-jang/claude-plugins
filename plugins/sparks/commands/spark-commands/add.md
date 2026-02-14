@@ -1,16 +1,3 @@
----
-name: spark-add
-description: Add knowledge/insight to the repository and push to Github
-argument-hint: ""
-allowed-tools:
-  - AskUserQuestion
-  - Glob
-  - Read
-  - Write
-  - Edit
-  - Bash
----
-
 # Add Knowledge to Sparks Repository
 
 Add a new knowledge item to the current Git repository, auto-generate Q&A, update README.md, and automatically commit and push to Github.
@@ -218,7 +205,7 @@ Format: {timestamp}-{random} e.g., 20260119-a1b2c3
 - Remove special characters (keep only a-z, 0-9, hyphens)
 - Ensure it ends with `.md`
 
-Example: "Machine Learning Basics" → `machine-learning-basics.md`
+Example: "Machine Learning Basics" -> `machine-learning-basics.md`
 
 ### 6. Check for Duplicate Filenames
 
@@ -252,7 +239,7 @@ last_reviewed: null
 # {title}
 
 > **Blog**: [{blog_title}](../{blog_link})
-<!-- ↑ Only include this line if blog_link exists -->
+<!-- Only include this line if blog_link exists -->
 
 ## Summary
 
@@ -301,7 +288,7 @@ git push origin {CURRENT_BRANCH}
 ### 10. Success Message
 
 ```
-✅ Knowledge added successfully!
+Knowledge added successfully!
 
 Repository: {REPO_ROOT}
 Created: {category}/{filename}.md
@@ -309,7 +296,7 @@ Title: {title}
 Tags: {tags}
 Q&A pairs: {count}
 
-Ready for learning with /spark-learn
+Ready for learning with /spark learn
 ```
 
 ## Error Handling
@@ -318,28 +305,3 @@ Ready for learning with /spark-learn
 - **Git push fails**: Show error, suggest manual push
 - **File creation fails**: Stop execution
 - **No categories**: Use default categories and create directories
-
-## Example
-
-```
-User: /spark-add
-
-Category: insights
-Title: Code Review Best Practices
-Tags: code-review, collaboration, quality
-Source: Team experience
-Content: Effective code review improves code quality and knowledge sharing...
-Key Points:
-- Review logic, not style
-- Ask questions instead of making demands
-- Limit review size to 400 lines
-
-Generated Q&A:
-- Q: Why should you ask questions instead of making demands in code review?
-- A: Questions encourage discussion and learning, while demands can create defensiveness.
-
-Result:
-- Created: insights/code-review-best-practices.md
-- Updated README.md
-- Committed and pushed
-```

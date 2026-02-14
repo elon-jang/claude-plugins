@@ -1,18 +1,8 @@
----
-name: spark-list
-description: List knowledge items by category with statistics
-argument-hint: "[--category=<name>] [--stats] [--due]"
-allowed-tools:
-  - Glob
-  - Read
-  - Bash
----
-
 # Spark List - Knowledge Inventory
 
 List all knowledge items organized by category with optional statistics.
 
-## Arguments
+## Options
 
 - `--category=<name>` - Show only specific category
 - `--stats` - Include learning statistics (confidence, reviews, box)
@@ -48,7 +38,7 @@ Path: {REPO_ROOT}/.sparks/progress.json
 
 **Basic List**:
 ```
-📚 Sparks Knowledge Base
+Sparks Knowledge Base
 
 ## Concepts (3 items)
 - machine-learning-basics.md - Machine Learning Basics
@@ -74,20 +64,17 @@ Total: 10 items across 4 categories
 
 **With Stats (--stats)**:
 ```
-📚 Sparks Knowledge Base (with stats)
+Sparks Knowledge Base (with stats)
 
 ## Concepts (3 items)
 | File | Title | Confidence | Reviews | Box | Last Review |
 |------|-------|------------|---------|-----|-------------|
-| machine-learning-basics.md | Machine Learning Basics | ⭐⭐⭐⭐ | 5 | 3 | 2 days ago |
-| deep-learning-intro.md | Deep Learning Introduction | ⭐⭐⭐ | 2 | 2 | 5 days ago |
-| design-patterns.md | Design Patterns Overview | ⭐⭐ | 0 | 1 | Never |
-
-## Insights (2 items)
-...
+| machine-learning-basics.md | Machine Learning Basics | 4/5 | 5 | 3 | 2 days ago |
+| deep-learning-intro.md | Deep Learning Introduction | 3/5 | 2 | 2 | 5 days ago |
+| design-patterns.md | Design Patterns Overview | 2/5 | 0 | 1 | Never |
 
 ---
-📊 Summary:
+Summary:
 - Total items: 10
 - Average confidence: 3.2/5
 - Items reviewed: 7
@@ -96,67 +83,22 @@ Total: 10 items across 4 categories
 
 **Due Items Only (--due)**:
 ```
-📅 Items Due for Review
+Items Due for Review
 
-1. 📌 Design Patterns Overview (concepts)
+1. Design Patterns Overview (concepts)
    Box 1 - Due: Today
    Last reviewed: Never
 
-2. 📌 Deep Learning Introduction (concepts)
+2. Deep Learning Introduction (concepts)
    Box 2 - Due: Yesterday
    Last reviewed: 5 days ago
 
-3. 📌 Docker Basics (skills)
-   Box 1 - Due: 2 days ago
-   Last reviewed: 3 days ago
-
 ---
-3 items due. Run `/spark-learn --mode=flashcard` to review.
-```
-
-**Single Category (--category=concepts)**:
-```
-📚 Category: Concepts
-
-3 items:
-
-1. machine-learning-basics.md
-   Title: Machine Learning Basics
-   Tags: ai, ml, neural-networks
-   Created: 2026-01-15
-
-2. deep-learning-intro.md
-   Title: Deep Learning Introduction
-   Tags: ai, ml, deep-learning
-   Created: 2026-01-16
-
-3. design-patterns.md
-   Title: Design Patterns Overview
-   Tags: software, architecture, patterns
-   Created: 2026-01-17
-```
-
-## Examples
-
-```bash
-# List all items
-/spark-list
-
-# List with statistics
-/spark-list --stats
-
-# List only due items
-/spark-list --due
-
-# List specific category
-/spark-list --category=skills
-
-# Combine flags
-/spark-list --category=concepts --stats
+3 items due. Run `/spark learn --mode=flashcard` to review.
 ```
 
 ## Error Handling
 
-- **No knowledge items**: "No knowledge items found. Run `/spark-add` to add your first item."
+- **No knowledge items**: "No knowledge items found. Run `/spark add` to add your first item."
 - **Invalid category**: "Category '{name}' not found. Available: concepts, insights, skills, til"
 - **No progress file**: Create empty stats (all items in box 1)
