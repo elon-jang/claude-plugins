@@ -27,7 +27,7 @@ plugins/sparks/
 | 서브커맨드 | 설명 | 옵션 |
 |-----------|------|------|
 | `add` | 지식/인사이트 저장 | |
-| `blog` | 블로그 글 저장 | |
+| `blog` | 블로그 글 저장/조회/수정 | `list`, `update` |
 | `log` | 데일리 로그 에피소드 | `--style=diary\|bullet\|devlog\|narrative` |
 | `learn` | 학습 (3가지 모드) | `--mode=socratic\|flashcard\|connect --category=<name>` |
 | `search` | 검색 | `<keyword> --tag=<tag> --category=<cat>` |

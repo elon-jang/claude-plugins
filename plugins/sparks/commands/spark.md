@@ -20,9 +20,35 @@ allowed-tools:
 
 ## Common Patterns
 
-**Git 저장소 감지** (모든 서브커맨드 공통):
-- `git rev-parse --show-toplevel` → REPO_ROOT, 실패 시 에러 종료
+### 저장소 경로 결정 (모든 서브커맨드 공통)
+
+1. `$ARGUMENTS`에 `> {path}` 가 있으면 해당 경로 사용
+2. 없으면 `~/.sparks/config.json`의 `defaultRepo` 읽기
+3. 없으면 현재 디렉토리에서 `git rev-parse --show-toplevel` 시도
+4. 모두 실패 → **첫 사용 설정 플로우**:
+   - AskUserQuestion: "Sparks 저장소 경로를 입력하세요" (예: ~/elon/ai/my-sparks)
+   - 입력된 경로에 `.sparks/config.json` 존재 확인
+     - 있으면 → `~/.sparks/config.json`에 `defaultRepo` 저장
+     - 없으면 → "저장소가 초기화되지 않았습니다. 초기화할까요?" → `/spark init {path}` 실행 후 `defaultRepo` 저장
+
+**`~/.sparks/config.json`** (유저 글로벌 설정):
+```json
+{ "defaultRepo": "~/elon/ai/my-sparks" }
+```
+
+경로 결정 후:
+- `REPO_ROOT` = 확정된 저장소 경로
 - `git branch --show-current` → CURRENT_BRANCH
+
+### 파일명 규칙
+
+- 제목을 그대로 파일명에 사용 (한글 유지)
+- 공백 → 하이픈(`-`), 특수문자(`/\:*?"<>|`) 제거
+- 예: "플러그인 커맨드 작성 원칙" → `플러그인-커맨드-작성-원칙.md`
+- blog: `YYYY-MM-DD-{title}.md` (예: `2026-02-14-플러그인-커맨드-작성-원칙.md`)
+- 중복 시 `-2`, `-3` 부여
+
+### 기타 공통
 
 **카테고리**: concepts(이론), insights(깨달음), skills(실용), til(오늘 배운 것), blog(블로그+로그)
 
@@ -60,23 +86,58 @@ last_reviewed: null
    - 1차: Category, Title, Tags, Source
    - 2차: Content, Key Points
 4. Claude가 Q&A 2-3개 자동 생성 → 사용자 확인
-5. 파일명: title을 kebab-case 변환, 중복 시 `-2`, `-3` 부여
-6. `{category}/{filename}.md` 생성 (위 frontmatter 템플릿 사용)
+5. `{category}/{filename}.md` 생성 (Common 파일명 규칙 + frontmatter 템플릿 사용)
    - blog_link 있으면 제목 아래 `> **Blog**: [{title}](../{blog_link})` 추가
-7. README.md 업데이트 → Git commit & push
+6. README.md 업데이트 → Git commit & push
 
 ---
 
-## blog - 블로그 글 저장
+## blog - 블로그 글 저장/조회/수정
+
+`/spark blog` → 새 글 작성 (기본)
+`/spark blog list` → 블로그 목록 조회
+`/spark blog update` → 기존 글 수정
+
+### 새 글 작성 (기본)
 
 1. `mkdir -p blog`
 2. AskUserQuestion: Title, Tags → Content (2회)
-3. 파일: `blog/YYYY-MM-DD-{kebab-title}.md`
+3. 파일: `blog/YYYY-MM-DD-{title}.md` (Common 파일명 규칙 적용)
    - 태그 있으면 YAML frontmatter 포함, 없으면 `# {title}` + 본문
 4. README.md Blog 섹션에 `- [{date}] [{title}](blog/{filename})` 추가 (최신순)
    - Blog 섹션 없으면 TIL 섹션 뒤에 생성
 5. Git commit & push
 6. 성공 메시지에 `/spark add`로 지식 연결 안내
+
+### 목록 조회 (`blog list`)
+
+1. `blog/*.md` Glob → frontmatter의 title, date, tags 파싱
+2. 날짜 역순으로 번호 매겨 표시:
+   ```
+   Blog Posts (3 posts today, 38 total)
+
+   [Today]
+   1. 플러그인 커맨드 작성 원칙 (claude-code, plugin)
+   2. 로컬에서 다 잡고 배포하자 (devops, docker)
+
+   [2026-02-13]
+   3. AI 네이티브 시대, 개발자에게 진짜 필요한 것 (ai, career)
+   ...
+   ```
+3. `--date=YYYY-MM-DD` 또는 `--date=today` 로 날짜 필터 가능
+
+### 기존 글 수정 (`blog update`)
+
+1. `blog list` 와 동일하게 번호 매긴 목록 표시
+2. AskUserQuestion: "수정할 글 번호를 선택하세요" (최근 4개 옵션)
+3. 선택된 파일 Read → 현재 내용 표시
+4. AskUserQuestion: "어떻게 수정할까요?"
+   - "내용 추가" → 기존 내용 끝에 append
+   - "내용 교체" → 새 내용으로 대체
+   - "Claude에게 맡기기" → 사용자 지시사항 입력받아 Claude가 수정
+5. Edit로 파일 수정 → Git commit & push
+
+**자연어 지원**: "오늘 블로그 조회해줘" → `blog list --date=today`, "2번 글 업데이트해줘" → `blog update` (2번 자동 선택)
 
 ---
 
@@ -197,3 +258,4 @@ due 카드 필터 → Q 표시 → A 공개 → 자기 평가(Correct: box+1, In
    - `.gitignore`: progress.json, .DS_Store, editor files
    - `README.md`: 카테고리별 섹션 + `<!-- spark-index:{cat} -->` 앵커
 4. Git init (아직 아니면) → 초기 커밋 여부 확인
+5. `~/.sparks/config.json`에 `defaultRepo` 저장
