@@ -30,7 +30,7 @@
 
 ### Blog
 
-블로그 글
+블로그 글 & 데일리 로그 (`/spark-blog`, `/spark-log`)
 
 <!-- spark-index:blog -->
 

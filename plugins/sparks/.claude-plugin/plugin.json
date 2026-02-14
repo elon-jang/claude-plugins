@@ -1,6 +1,6 @@
 {
   "name": "sparks",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "지식과 인사이트를 Github에 저장하고, 소크라틱 대화/플래시카드/연결 탐색을 통해 학습하는 플러그인",
   "author": {
     "name": "Elon Jang"
