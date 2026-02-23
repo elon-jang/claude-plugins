@@ -8,5 +8,10 @@
   "log": {
     "defaultStyle": null,
     "tags": ["daily"]
+  },
+  "publish": {
+    "projectName": null,
+    "branch": "master",
+    "url": null
   }
 }

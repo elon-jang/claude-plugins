@@ -248,32 +248,38 @@ due 카드 필터 → Q 표시 → A 공개 → 자기 평가(Correct: box+1, In
 
 ## publish - 블로그 배포
 
-blog/ 디렉토리의 MD 파일을 HTML로 빌드하여 Cloudflare Pages(mungeun.pages.dev)에 배포.
+blog/ 디렉토리의 MD 파일을 HTML로 빌드하여 Cloudflare Pages에 배포.
 
 **Manifest**: `.sparks/published.json` — 발행된 파일명 배열. publish 할 때마다 선택한 파일이 추가됨.
 
 **플로우**:
 
 1. 저장소 경로 결정 (Common Patterns) → `REPO_ROOT`
-2. 의존성 설치 (최초 1회):
+2. 배포 설정 읽기:
+   - `{REPO_ROOT}/.sparks/config.json`의 `publish` 섹션 읽기
+   - `publish.projectName`이 null이면 → AskUserQuestion: "Cloudflare Pages 프로젝트 이름을 입력하세요" → config에 저장
+   - `publish.branch`: 기본 "master" (Cloudflare Pages production 브랜치)
+   - `publish.url`: 배포 후 표시할 URL (null이면 wrangler 출력에서 URL 추출)
+3. 의존성 설치 (최초 1회):
    ```bash
    cd {PLUGIN_DIR} && npm install --silent
    ```
    - `PLUGIN_DIR` = 이 플러그인의 디렉토리 (`plugins/sparks/`)
-3. 빌드 실행 (manifest 기반 — 발행된 글만 빌드+인덱스):
+4. 빌드 실행 (manifest 기반 — 발행된 글만 빌드+인덱스):
    ```bash
    node {PLUGIN_DIR}/scripts/build-blog.mjs --source {REPO_ROOT}/blog --output {REPO_ROOT}/.sparks/_build --manifest {REPO_ROOT}/.sparks/published.json --files {files}|--all
    ```
    - `--files`: 선택한 파일을 manifest에 추가 후 전체 manifest 빌드
    - `--all`: 모든 blog/*.md를 manifest에 등록 후 빌드
-4. Cloudflare Pages 배포:
+5. Cloudflare Pages 배포:
    ```bash
-   wrangler pages deploy {REPO_ROOT}/.sparks/_build --project-name mungeun --branch master --commit-dirty=true
+   wrangler pages deploy {REPO_ROOT}/.sparks/_build --project-name {publish.projectName} --branch {publish.branch} --commit-dirty=true
    ```
-5. 성공 메시지 표시:
-   - 배포 URL: `https://mungeun.pages.dev`
+   - wrangler 출력에서 Environment 확인 → "Preview"가 포함되면 경고: "⚠ Preview 환경에 배포되었습니다. Production 배포를 위해 config의 publish.branch를 확인하세요."
+6. 성공 메시지 표시:
+   - `publish.url`이 설정되어 있으면 해당 URL 표시, 없으면 wrangler 출력에서 URL 추출하여 표시
    - 발행된 글 수
-6. 빌드 디렉토리 정리:
+7. 빌드 디렉토리 정리:
    ```bash
    rm -rf {REPO_ROOT}/.sparks/_build
    ```

@@ -103,32 +103,43 @@ const CSS = `/* Mungeun's Blog */
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
 :root {
-  --bg: #ffffff;
-  --bg-secondary: #f8f9fa;
-  --text: #1a1a2e;
-  --text-secondary: #555;
-  --accent: #4361ee;
-  --accent-light: #eef0ff;
-  --border: #e0e0e0;
-  --code-bg: #f5f5f5;
-  --tag-bg: #e8ecff;
-  --tag-text: #3a50c2;
-  --shadow: rgba(0,0,0,0.06);
+  --bg: #fafafa;
+  --bg-secondary: #ffffff;
+  --text: #1a1a1a;
+  --text-secondary: #6b7280;
+  --text-tertiary: #9ca3af;
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --border: #e5e7eb;
+  --border-light: #f3f4f6;
+  --code-bg: #f3f4f6;
+  --tag-bg: #eff6ff;
+  --tag-text: #2563eb;
+  --shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06);
+  --shadow-hover: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+  --radius: 12px;
+  --search-bg: #ffffff;
+  --search-focus: #2563eb;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #0d1117;
-    --bg-secondary: #161b22;
-    --text: #e6edf3;
-    --text-secondary: #8b949e;
-    --accent: #6d8cff;
-    --accent-light: #1c2541;
-    --border: #30363d;
-    --code-bg: #1c2333;
-    --tag-bg: #1c2541;
-    --tag-text: #8da6ff;
-    --shadow: rgba(0,0,0,0.3);
+    --bg: #0f0f0f;
+    --bg-secondary: #1a1a1a;
+    --text: #f0f0f0;
+    --text-secondary: #9ca3af;
+    --text-tertiary: #6b7280;
+    --accent: #60a5fa;
+    --accent-hover: #93bbfd;
+    --border: #2a2a2a;
+    --border-light: #222222;
+    --code-bg: #1e1e1e;
+    --tag-bg: #1e293b;
+    --tag-text: #60a5fa;
+    --shadow: 0 1px 3px rgba(0,0,0,0.2);
+    --shadow-hover: 0 4px 12px rgba(0,0,0,0.3);
+    --search-bg: #1a1a1a;
+    --search-focus: #60a5fa;
   }
 }
 
@@ -144,7 +155,7 @@ body {
 }
 
 .container {
-  max-width: 720px;
+  max-width: 680px;
   margin: 0 auto;
   padding: 2rem 1.5rem 4rem;
 }
@@ -152,63 +163,134 @@ body {
 /* Header */
 .site-header {
   text-align: center;
-  padding: 3rem 0 2rem;
-  border-bottom: 1px solid var(--border);
-  margin-bottom: 2.5rem;
+  padding: 3.5rem 0 2.5rem;
+  margin-bottom: 2rem;
 }
 .site-header h1 {
-  font-size: 1.8rem;
+  font-size: 1.6rem;
   font-weight: 700;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
+  color: var(--text);
 }
 .site-header p {
-  color: var(--text-secondary);
-  margin-top: 0.4rem;
-  font-size: 0.95rem;
+  color: var(--text-tertiary);
+  margin-top: 0.5rem;
+  font-size: 0.88rem;
+  font-weight: 300;
+  letter-spacing: 0.02em;
 }
 
+/* Search */
+.search-wrap {
+  position: relative;
+  margin-bottom: 2rem;
+}
+.search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-tertiary);
+  pointer-events: none;
+  width: 16px;
+  height: 16px;
+}
+.search-input {
+  width: 100%;
+  padding: 0.7rem 1rem 0.7rem 2.5rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--search-bg);
+  color: var(--text);
+  font-size: 0.9rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.search-input::placeholder {
+  color: var(--text-tertiary);
+}
+.search-input:focus {
+  border-color: var(--search-focus);
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+}
+.search-clear {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  font-size: 1.1rem;
+  line-height: 1;
+  display: none;
+  padding: 2px;
+}
+.search-clear:hover { color: var(--text-secondary); }
+.search-empty {
+  text-align: center;
+  color: var(--text-tertiary);
+  padding: 3rem 1rem;
+  font-size: 0.9rem;
+  display: none;
+}
+
+/* Stats bar */
+.stats-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--text-tertiary);
+  font-size: 0.8rem;
+  margin-bottom: 1.5rem;
+  padding: 0 0.25rem;
+}
+.stats-count { font-variant-numeric: tabular-nums; }
+
 /* Index */
-.month-group { margin-bottom: 2rem; }
+.month-group { margin-bottom: 1.5rem; }
 .month-label {
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   font-weight: 500;
-  color: var(--text-secondary);
+  color: var(--text-tertiary);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-bottom: 0.8rem;
-  padding-bottom: 0.4rem;
-  border-bottom: 1px solid var(--border);
+  letter-spacing: 0.08em;
+  margin-bottom: 0.6rem;
+  padding: 0 0.25rem;
 }
 .post-item {
   display: flex;
   align-items: baseline;
   gap: 1rem;
-  padding: 0.6rem 0;
+  padding: 0.75rem 1rem;
+  margin: 0 -0.25rem;
+  border-radius: 10px;
+  transition: background 0.15s;
+  cursor: pointer;
+  text-decoration: none;
+}
+.post-item:hover {
+  background: var(--bg-secondary);
 }
 .post-date {
-  font-size: 0.82rem;
-  color: var(--text-secondary);
+  font-size: 0.78rem;
+  color: var(--text-tertiary);
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
+  min-width: 4.5em;
+  flex-shrink: 0;
 }
-.post-title a {
-  color: var(--text);
-  text-decoration: none;
+.post-title {
   font-weight: 400;
-  transition: color 0.15s;
+  font-size: 0.95rem;
+  color: var(--text);
+  line-height: 1.5;
 }
-.post-title a:hover { color: var(--accent); }
-.post-tags { display: inline-flex; gap: 0.3rem; margin-left: 0.5rem; }
-.tag {
-  font-size: 0.7rem;
-  padding: 0.1rem 0.5rem;
-  background: var(--tag-bg);
-  color: var(--tag-text);
-  border-radius: 99px;
-  font-weight: 500;
-}
+.post-item:hover .post-title { color: var(--accent); }
 
-/* Post */
+/* Post page */
 .post-header { margin-bottom: 2rem; }
 .post-header h1 {
   font-size: 1.6rem;
@@ -224,14 +306,26 @@ body {
   color: var(--text-secondary);
   font-size: 0.85rem;
 }
-.back-link {
-  display: inline-block;
-  margin-bottom: 1.5rem;
-  color: var(--accent);
-  text-decoration: none;
-  font-size: 0.9rem;
+.post-tags { display: inline-flex; gap: 0.3rem; }
+.tag {
+  font-size: 0.7rem;
+  padding: 0.15rem 0.55rem;
+  background: var(--tag-bg);
+  color: var(--tag-text);
+  border-radius: 99px;
+  font-weight: 500;
 }
-.back-link:hover { text-decoration: underline; }
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-bottom: 1.5rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.85rem;
+  transition: color 0.15s;
+}
+.back-link:hover { color: var(--accent); }
 
 /* Content */
 .post-content h1 { font-size: 1.5rem; margin: 2rem 0 1rem; font-weight: 700; }
@@ -301,24 +395,18 @@ body {
   text-align: center;
   padding: 2rem 0;
   margin-top: 3rem;
-  border-top: 1px solid var(--border);
-  color: var(--text-secondary);
-  font-size: 0.8rem;
-}
-
-/* Stats */
-.stats {
-  text-align: center;
-  color: var(--text-secondary);
-  font-size: 0.9rem;
-  margin-bottom: 2rem;
+  border-top: 1px solid var(--border-light);
+  color: var(--text-tertiary);
+  font-size: 0.75rem;
+  letter-spacing: 0.02em;
 }
 
 @media (max-width: 600px) {
   .container { padding: 1rem 1rem 3rem; }
-  .site-header { padding: 2rem 0 1.5rem; }
-  .site-header h1 { font-size: 1.4rem; }
-  .post-item { flex-direction: column; gap: 0.2rem; }
+  .site-header { padding: 2.5rem 0 1.5rem; }
+  .site-header h1 { font-size: 1.3rem; }
+  .post-item { flex-direction: column; gap: 0.15rem; padding: 0.6rem 0.75rem; }
+  .post-date { font-size: 0.72rem; }
   .post-header h1 { font-size: 1.3rem; }
 }
 `;
@@ -362,6 +450,13 @@ function postHtml(post) {
 </html>`;
 }
 
+function shortDate(dateStr) {
+  if (!dateStr) return '';
+  const parts = dateStr.split('-');
+  if (parts.length < 3) return dateStr;
+  return `${parts[1]}.${parts[2]}`;
+}
+
 function indexHtml(posts) {
   // Group by month
   const groups = new Map();
@@ -375,19 +470,25 @@ function indexHtml(posts) {
   for (const [month, monthPosts] of groups) {
     const d = new Date(month + '-01T00:00:00');
     const label = isNaN(d.getTime()) ? month : d.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long' });
-    postsHtml += `<div class="month-group">
+    postsHtml += `<div class="month-group" data-month="${month}">
   <div class="month-label">${label}</div>`;
     for (const post of monthPosts) {
-      const tagsHtml = post.tags.slice(0, 3).map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('');
+      const tagsData = post.tags.map(t => escapeHtml(t)).join(',');
       postsHtml += `
-  <div class="post-item">
-    <span class="post-date">${formatDate(post.date)}</span>
-    <span class="post-title"><a href="posts/${encodeURIComponent(post.slug)}/index.html">${escapeHtml(post.title)}</a></span>
-    <span class="post-tags">${tagsHtml}</span>
-  </div>`;
+  <a class="post-item" href="posts/${encodeURIComponent(post.slug)}/index.html" data-title="${escapeHtml(post.title).toLowerCase()}" data-tags="${tagsData.toLowerCase()}">
+    <span class="post-date">${shortDate(post.date)}</span>
+    <span class="post-title">${escapeHtml(post.title)}</span>
+  </a>`;
     }
     postsHtml += `\n</div>\n`;
   }
+
+  // Search data for content search
+  const searchData = JSON.stringify(posts.map(p => ({
+    s: p.slug,
+    t: p.title,
+    g: p.tags,
+  })));
 
   return `<!DOCTYPE html>
 <html lang="ko">
@@ -403,10 +504,68 @@ function indexHtml(posts) {
     <h1>Mungeun's Blog</h1>
     <p>Knowledge & Insights</p>
   </header>
-  <div class="stats">${posts.length}개의 글</div>
+  <div class="search-wrap">
+    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="text" class="search-input" placeholder="Search posts..." autocomplete="off" spellcheck="false">
+    <button class="search-clear" aria-label="Clear">&times;</button>
+  </div>
+  <div class="search-empty">No posts found.</div>
+  <div class="stats-bar">
+    <span class="stats-count">${posts.length} posts</span>
+  </div>
+  <div id="posts-list">
   ${postsHtml}
+  </div>
   <footer class="site-footer">Built with Sparks</footer>
 </div>
+<script>
+(function(){
+  const input = document.querySelector('.search-input');
+  const clearBtn = document.querySelector('.search-clear');
+  const emptyMsg = document.querySelector('.search-empty');
+  const groups = document.querySelectorAll('.month-group');
+  const items = document.querySelectorAll('.post-item');
+  const statsCount = document.querySelector('.stats-count');
+  const total = items.length;
+
+  function doSearch() {
+    const q = input.value.trim().toLowerCase();
+    clearBtn.style.display = q ? 'block' : 'none';
+    let shown = 0;
+    groups.forEach(g => {
+      const posts = g.querySelectorAll('.post-item');
+      let groupVisible = 0;
+      posts.forEach(p => {
+        const title = p.dataset.title || '';
+        const tags = p.dataset.tags || '';
+        const match = !q || title.includes(q) || tags.includes(q);
+        p.style.display = match ? '' : 'none';
+        if (match) { groupVisible++; shown++; }
+      });
+      g.style.display = groupVisible ? '' : 'none';
+    });
+    emptyMsg.style.display = (q && shown === 0) ? 'block' : 'none';
+    statsCount.textContent = q ? shown + ' / ' + total + ' posts' : total + ' posts';
+  }
+
+  input.addEventListener('input', doSearch);
+  clearBtn.addEventListener('click', function() {
+    input.value = '';
+    doSearch();
+    input.focus();
+  });
+  input.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') { input.value = ''; doSearch(); }
+  });
+  // Keyboard shortcut: / to focus search
+  document.addEventListener('keydown', function(e) {
+    if (e.key === '/' && document.activeElement !== input) {
+      e.preventDefault();
+      input.focus();
+    }
+  });
+})();
+</script>
 </body>
 </html>`;
 }
