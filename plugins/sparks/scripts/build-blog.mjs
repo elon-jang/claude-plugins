@@ -11,6 +11,7 @@ const { values } = parseArgs({
   options: {
     source: { type: 'string', short: 's' },
     output: { type: 'string', short: 'o' },
+    manifest: { type: 'string', short: 'm' },
     files: { type: 'string', short: 'f' },
     all: { type: 'boolean', default: false },
   },
@@ -18,11 +19,12 @@ const { values } = parseArgs({
 
 const SOURCE_DIR = values.source;
 const OUTPUT_DIR = values.output;
+const MANIFEST_PATH = values.manifest;
 const selectedFiles = values.files ? values.files.split(',').map(f => f.trim()) : null;
 const buildAll = values.all || false;
 
-if (!SOURCE_DIR || !OUTPUT_DIR) {
-  console.error('Usage: node build-blog.mjs --source <blog-dir> --output <build-dir> [--files f1.md,f2.md | --all]');
+if (!SOURCE_DIR || !OUTPUT_DIR || !MANIFEST_PATH) {
+  console.error('Usage: node build-blog.mjs --source <blog-dir> --output <build-dir> --manifest <published.json> [--files f1.md,f2.md | --all]');
   process.exit(1);
 }
 
@@ -30,44 +32,51 @@ if (!SOURCE_DIR || !OUTPUT_DIR) {
 marked.setOptions({ gfm: true, breaks: true });
 
 // --- Helpers ---
-function readAllPosts() {
-  const files = fs.readdirSync(SOURCE_DIR).filter(f => f.endsWith('.md'));
-  return files.map(filename => {
-    const raw = fs.readFileSync(path.join(SOURCE_DIR, filename), 'utf-8');
-    const dateMatch = filename.match(/^(\d{4}-\d{2}-\d{2})/);
-    let data = {}, content = raw;
-    try {
-      const parsed = matter(raw);
-      data = parsed.data;
-      content = parsed.content;
-    } catch {
-      // Malformed frontmatter (e.g. unquoted colons) - strip it manually
-      const fmMatch = raw.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
-      if (fmMatch) {
-        content = fmMatch[2];
-        // Extract what we can with regex
-        const titleMatch = fmMatch[1].match(/^title:\s*"?(.+?)"?\s*$/m);
-        const dateM = fmMatch[1].match(/^date:\s*"?(\d{4}-\d{2}-\d{2})"?\s*$/m);
-        const tagsMatch = fmMatch[1].match(/^tags:\s*\[(.+)\]\s*$/m);
-        if (titleMatch) data.title = titleMatch[1];
-        if (dateM) data.date = dateM[1];
-        if (tagsMatch) data.tags = tagsMatch[1].split(',').map(t => t.trim());
-      }
+function toDateStr(val, fallback) {
+  if (!val) return fallback || '';
+  if (val instanceof Date) {
+    return val.toISOString().substring(0, 10);
+  }
+  const s = String(val);
+  const m = s.match(/\d{4}-\d{2}-\d{2}/);
+  return m ? m[0] : fallback || '';
+}
+
+function parsePost(filename) {
+  const raw = fs.readFileSync(path.join(SOURCE_DIR, filename), 'utf-8');
+  const dateMatch = filename.match(/^(\d{4}-\d{2}-\d{2})/);
+  const dateFallback = dateMatch ? dateMatch[1] : '';
+  let data = {}, content = raw;
+  try {
+    const parsed = matter(raw);
+    data = parsed.data;
+    content = parsed.content;
+  } catch {
+    const fmMatch = raw.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
+    if (fmMatch) {
+      content = fmMatch[2];
+      const titleMatch = fmMatch[1].match(/^title:\s*"?(.+?)"?\s*$/m);
+      const dateM = fmMatch[1].match(/^date:\s*"?(\d{4}-\d{2}-\d{2})"?\s*$/m);
+      const tagsMatch = fmMatch[1].match(/^tags:\s*\[(.+)\]\s*$/m);
+      if (titleMatch) data.title = titleMatch[1];
+      if (dateM) data.date = dateM[1];
+      if (tagsMatch) data.tags = tagsMatch[1].split(',').map(t => t.trim());
     }
-    return {
-      filename,
-      slug: filename.replace(/\.md$/, ''),
-      title: data.title || filename.replace(/\.md$/, '').replace(/^\d{4}-\d{2}-\d{2}-/, '').replace(/-/g, ' '),
-      date: String(data.date || (dateMatch ? dateMatch[1] : '')).substring(0, 10),
-      tags: data.tags || [],
-      content,
-    };
-  }).sort((a, b) => b.date.localeCompare(a.date));
+  }
+  return {
+    filename,
+    slug: filename.replace(/\.md$/, ''),
+    title: data.title || filename.replace(/\.md$/, '').replace(/^\d{4}-\d{2}-\d{2}-/, '').replace(/-/g, ' '),
+    date: toDateStr(data.date, dateFallback),
+    tags: data.tags || [],
+    content,
+  };
 }
 
 function formatDate(dateStr) {
   if (!dateStr) return '';
   const d = new Date(dateStr + 'T00:00:00');
+  if (isNaN(d.getTime())) return dateStr;
   return d.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
 }
 
@@ -75,8 +84,22 @@ function escapeHtml(str) {
   return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
+// --- Manifest ---
+function loadManifest() {
+  if (fs.existsSync(MANIFEST_PATH)) {
+    return JSON.parse(fs.readFileSync(MANIFEST_PATH, 'utf-8'));
+  }
+  return [];
+}
+
+function saveManifest(files) {
+  const dir = path.dirname(MANIFEST_PATH);
+  fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(MANIFEST_PATH, JSON.stringify([...new Set(files)].sort(), null, 2) + '\n');
+}
+
 // --- CSS ---
-const CSS = `/* Sparks Blog */
+const CSS = `/* Mungeun's Blog */
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
 :root {
@@ -302,7 +325,13 @@ body {
 
 // --- Templates ---
 function postHtml(post) {
-  const html = marked(post.content);
+  // Remove leading h1 if it duplicates the frontmatter title
+  let content = post.content.trimStart();
+  const h1Match = content.match(/^#\s+(.+)\n*/);
+  if (h1Match) {
+    content = content.slice(h1Match[0].length);
+  }
+  const html = marked(content);
   const tagsHtml = post.tags.length
     ? `<div class="post-tags">${post.tags.map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('')}</div>`
     : '';
@@ -345,14 +374,14 @@ function indexHtml(posts) {
   let postsHtml = '';
   for (const [month, monthPosts] of groups) {
     const d = new Date(month + '-01T00:00:00');
-    const label = d.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long' });
+    const label = isNaN(d.getTime()) ? month : d.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long' });
     postsHtml += `<div class="month-group">
   <div class="month-label">${label}</div>`;
     for (const post of monthPosts) {
       const tagsHtml = post.tags.slice(0, 3).map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('');
       postsHtml += `
   <div class="post-item">
-    <span class="post-date">${post.date}</span>
+    <span class="post-date">${formatDate(post.date)}</span>
     <span class="post-title"><a href="posts/${encodeURIComponent(post.slug)}/index.html">${escapeHtml(post.title)}</a></span>
     <span class="post-tags">${tagsHtml}</span>
   </div>`;
@@ -365,13 +394,13 @@ function indexHtml(posts) {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sparks Blog</title>
+<title>Mungeun's Blog</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class="container">
   <header class="site-header">
-    <h1>Sparks Blog</h1>
+    <h1>Mungeun's Blog</h1>
     <p>Knowledge & Insights</p>
   </header>
   <div class="stats">${posts.length}개의 글</div>
@@ -384,30 +413,37 @@ function indexHtml(posts) {
 
 // --- Build ---
 function build() {
-  const allPosts = readAllPosts();
-  const postsToBuild = buildAll || !selectedFiles
-    ? allPosts
-    : allPosts.filter(p => selectedFiles.includes(p.filename));
+  const allSourceFiles = fs.readdirSync(SOURCE_DIR).filter(f => f.endsWith('.md'));
 
-  // Create output dirs
+  // 1. Load manifest and determine which files to add
+  let manifest = loadManifest();
+  if (buildAll) {
+    manifest = allSourceFiles;
+  } else if (selectedFiles) {
+    manifest = [...manifest, ...selectedFiles];
+  }
+  // Remove files that no longer exist in source
+  manifest = manifest.filter(f => allSourceFiles.includes(f));
+  saveManifest(manifest);
+
+  // 2. Parse only manifested posts
+  const publishedPosts = manifest.map(f => parsePost(f)).sort((a, b) => b.date.localeCompare(a.date));
+
+  // 3. Create output dirs
   fs.mkdirSync(path.join(OUTPUT_DIR, 'posts'), { recursive: true });
-
-  // Write style.css
   fs.writeFileSync(path.join(OUTPUT_DIR, 'style.css'), CSS);
 
-  // Build individual posts
-  let built = 0;
-  for (const post of postsToBuild) {
+  // 4. Build post HTML for each published post
+  for (const post of publishedPosts) {
     const postDir = path.join(OUTPUT_DIR, 'posts', post.slug);
     fs.mkdirSync(postDir, { recursive: true });
     fs.writeFileSync(path.join(postDir, 'index.html'), postHtml(post));
-    built++;
   }
 
-  // Always rebuild index from ALL posts
-  fs.writeFileSync(path.join(OUTPUT_DIR, 'index.html'), indexHtml(allPosts));
+  // 5. Generate index from published posts only
+  fs.writeFileSync(path.join(OUTPUT_DIR, 'index.html'), indexHtml(publishedPosts));
 
-  console.log(`Built ${built} post(s), index updated (${allPosts.length} total)`);
+  console.log(`Published ${publishedPosts.length} post(s) in manifest, all built`);
 }
 
 build();
