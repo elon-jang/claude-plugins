@@ -1,5 +1,6 @@
 # Sparks local files
 .sparks/progress.json
+.sparks/_build/
 
 # OS
 .DS_Store

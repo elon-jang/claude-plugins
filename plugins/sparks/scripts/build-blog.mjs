@@ -14,6 +14,7 @@ const { values } = parseArgs({
     manifest: { type: 'string', short: 'm' },
     files: { type: 'string', short: 'f' },
     all: { type: 'boolean', default: false },
+    config: { type: 'string', short: 'c' },
   },
 });
 
@@ -24,8 +25,18 @@ const selectedFiles = values.files ? values.files.split(',').map(f => f.trim()) 
 const buildAll = values.all || false;
 
 if (!SOURCE_DIR || !OUTPUT_DIR || !MANIFEST_PATH) {
-  console.error('Usage: node build-blog.mjs --source <blog-dir> --output <build-dir> --manifest <published.json> [--files f1.md,f2.md | --all]');
+  console.error('Usage: node build-blog.mjs --source <blog-dir> --output <build-dir> --manifest <published.json> [--files f1.md,f2.md | --all] [--config <config.json>]');
   process.exit(1);
+}
+
+// --- Site config (from .sparks/config.json) ---
+let siteConfig = { title: 'Blog', description: '' };
+if (values.config && fs.existsSync(values.config)) {
+  try {
+    const cfg = JSON.parse(fs.readFileSync(values.config, 'utf-8'));
+    if (cfg.publish?.title) siteConfig.title = cfg.publish.title;
+    if (cfg.publish?.description) siteConfig.description = cfg.publish.description;
+  } catch { /* ignore parse errors */ }
 }
 
 // --- Marked config (GFM) ---
@@ -99,7 +110,7 @@ function saveManifest(files) {
 }
 
 // --- CSS ---
-const CSS = `/* Mungeun's Blog */
+const CSS = `/* Sparks Blog */
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
 :root {
@@ -495,14 +506,14 @@ function indexHtml(posts) {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mungeun's Blog</title>
+<title>${escapeHtml(siteConfig.title)}</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class="container">
   <header class="site-header">
-    <h1>Mungeun's Blog</h1>
-    <p>Knowledge & Insights</p>
+    <h1>${escapeHtml(siteConfig.title)}</h1>
+    ${siteConfig.description ? `<p>${escapeHtml(siteConfig.description)}</p>` : ''}
   </header>
   <div class="search-wrap">
     <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>

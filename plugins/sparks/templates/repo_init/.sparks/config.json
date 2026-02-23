@@ -12,6 +12,8 @@
   "publish": {
     "projectName": null,
     "branch": "master",
-    "url": null
+    "url": null,
+    "title": "Blog",
+    "description": ""
   }
 }

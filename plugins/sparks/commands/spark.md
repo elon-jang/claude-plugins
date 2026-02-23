@@ -267,7 +267,7 @@ blog/ 디렉토리의 MD 파일을 HTML로 빌드하여 Cloudflare Pages에 배�
    - `PLUGIN_DIR` = 이 플러그인의 디렉토리 (`plugins/sparks/`)
 4. 빌드 실행 (manifest 기반 — 발행된 글만 빌드+인덱스):
    ```bash
-   node {PLUGIN_DIR}/scripts/build-blog.mjs --source {REPO_ROOT}/blog --output {REPO_ROOT}/.sparks/_build --manifest {REPO_ROOT}/.sparks/published.json --files {files}|--all
+   node {PLUGIN_DIR}/scripts/build-blog.mjs --source {REPO_ROOT}/blog --output {REPO_ROOT}/.sparks/_build --manifest {REPO_ROOT}/.sparks/published.json --config {REPO_ROOT}/.sparks/config.json --files {files}|--all
    ```
    - `--files`: 선택한 파일을 manifest에 추가 후 전체 manifest 빌드
    - `--all`: 모든 blog/*.md를 manifest에 등록 후 빌드
@@ -295,7 +295,7 @@ blog/ 디렉토리의 MD 파일을 HTML로 빌드하여 Cloudflare Pages에 배�
 1. 확인 질문 → 이미 `.sparks/` 있으면 리셋 여부 확인
 2. 디렉토리 생성: `concepts/ insights/ skills/ til/ blog/ .sparks/`
 3. 파일 생성:
-   - `.sparks/config.json`: version, categories, defaultCategory, leitnerIntervals, socraticLevels
+   - `.sparks/config.json`: version, categories, defaultCategory, leitnerIntervals, socraticLevels, publish (projectName, branch, url, title, description)
    - `.sparks/progress.json`: `{}`
    - `.gitignore`: progress.json, .DS_Store, editor files
    - `README.md`: 카테고리별 섹션 + `<!-- spark-index:{cat} -->` 앵커
