@@ -11,9 +11,12 @@ plugins/sparks/
 ├── .claude-plugin/plugin.json    # 플러그인 메타데이터
 ├── commands/
 │   └── spark.md                  # 단일 파일 (라우터 + 모든 서브커맨드)
+├── scripts/
+│   └── build-blog.mjs            # MD→HTML 블로그 빌드 스크립트
 ├── templates/
 │   ├── knowledge_template.md     # 지식 파일 템플릿
 │   └── repo_init/                # 저장소 초기화 템플릿
+├── package.json                  # 빌드 의존성 (marked, gray-matter)
 ├── CLAUDE.md
 └── README.md
 ```
@@ -33,6 +36,7 @@ plugins/sparks/
 | `search` | 검색 | `<keyword> --tag=<tag> --category=<cat>` |
 | `list` | 목록 조회 | `--category=<name> --stats --due` |
 | `stats` | 학습 통계 대시보드 | |
+| `publish` | 블로그 HTML 빌드 + Cloudflare 배포 | `--all`, `<filename>` |
 | `init` | 저장소 초기화 | `[directory]` |
 
 **Routing**: `spark.md` 단일 파일에 라우터 + 모든 서브커맨드가 요약 수준으로 포함됨. $ARGUMENTS 첫 단어로 분기.
@@ -124,6 +128,11 @@ cd plugins/sparks
 
 # 통계 대시보드 테스트
 /spark stats
+
+# 블로그 배포 테스트
+/spark publish --all
+/spark publish 2026-02-23-특정글.md
+/spark publish  # 인터랙티브
 ```
 
 ## Related Files

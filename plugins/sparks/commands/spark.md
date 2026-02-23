@@ -1,7 +1,7 @@
 ---
 name: spark
-description: 지식 저장/학습/검색 통합 명령 (add, blog, log, learn, search, list, stats, init)
-argument-hint: "<add|blog|log|learn|search|list|stats|init> [options]"
+description: 지식 저장/학습/검색 통합 명령 (add, blog, log, learn, search, list, stats, publish, init)
+argument-hint: "<add|blog|log|learn|search|list|stats|publish|init> [options]"
 allowed-tools:
   - AskUserQuestion
   - Glob
@@ -16,7 +16,7 @@ allowed-tools:
 ## Routing
 
 1. $ARGUMENTS 첫 단어 → 서브커맨드, 나머지 → 옵션
-2. 서브커맨드 없으면 AskUserQuestion으로 선택 (add/blog/log/learn 우선 표시, 나머지는 "Other" 선택 시)
+2. 서브커맨드 없으면 AskUserQuestion으로 선택 (add/blog/log/learn/publish 우선 표시, 나머지는 "Other" 선택 시)
 
 ## Common Patterns
 
@@ -243,6 +243,46 @@ due 카드 필터 → Q 표시 → A 공개 → 자기 평가(Correct: box+1, In
 - **Due for Review**: Overdue / Due today / Due this week
 - **Top Tags**: 빈도순 상위 10개
 - **Blog 통계** (blog/ 존재 시): 총 포스트, knowledge 연결 비율, 이번 달 포스트 수
+
+---
+
+## publish - 블로그 배포
+
+blog/ 디렉토리의 MD 파일을 HTML로 빌드하여 Cloudflare Pages(mungeun.pages.dev)에 배포.
+
+**호출 방식**:
+- `publish` → AskUserQuestion으로 배포할 글 선택 (최근 10개 표시, 전체 배포 옵션 포함)
+- `publish --all` → 전체 배포
+- `publish <filename>` → 특정 파일만 배포 (인덱스는 전체 기반 재생성)
+
+**플로우**:
+
+1. 저장소 경로 결정 (Common Patterns) → `REPO_ROOT`
+2. 빌드할 파일 결정:
+   - `--all` 또는 파일 미지정(인터랙티브 선택) → 빌드 옵션 구성
+   - 특정 파일 → `--files {filename}` 옵션
+3. 의존성 설치 (최초 1회):
+   ```bash
+   cd {PLUGIN_DIR} && npm install --silent
+   ```
+   - `PLUGIN_DIR` = 이 플러그인의 디렉토리 (`plugins/sparks/`)
+4. 빌드 실행:
+   ```bash
+   node {PLUGIN_DIR}/scripts/build-blog.mjs --source {REPO_ROOT}/blog --output {REPO_ROOT}/.sparks/_build --all|--files {files}
+   ```
+5. Cloudflare Pages 배포:
+   ```bash
+   wrangler pages deploy {REPO_ROOT}/.sparks/_build --project-name mungeun --commit-dirty=true
+   ```
+6. 성공 메시지 표시:
+   - 배포 URL: `https://mungeun.pages.dev`
+   - 빌드된 파일 수
+7. 빌드 디렉토리 정리:
+   ```bash
+   rm -rf {REPO_ROOT}/.sparks/_build
+   ```
+
+**에러 처리**: wrangler 미설치 시 `npm install -g wrangler` 안내. 인증 실패 시 `wrangler login` 안내.
 
 ---
 
