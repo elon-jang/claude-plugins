@@ -15,7 +15,7 @@ allowed-tools:
 
 ## Routing
 
-1. $ARGUMENTS 첫 단어 → 서브커맨드, 나머지 → 옵션
+1. $ARGUMENTS 첫 단어 → 서브커맨드, 나머지 → 옵션 (예: `blog --publish` → 서브커맨드 `blog`, 옵션 `--publish`)
 2. 서브커맨드 없으면 AskUserQuestion으로 선택 (add/blog/log/learn/publish 우선 표시, 나머지는 "Other" 선택 시)
 
 ## Common Patterns
@@ -69,11 +69,6 @@ last_reviewed: null
 ---
 ```
 
-**README.md 업데이트 패턴**:
-- `<!-- spark-index:{category} -->` 앵커 검색 → 없으면 `## {Category}` 검색
-- 섹션 없으면 새로 생성
-- 항목 추가: `- [{title}]({category}/{filename}.md)` (알파벳순 or 최신순)
-
 **Git commit & push**: `git add {files} && git commit -m "{msg}" && git push origin {CURRENT_BRANCH}`
 
 ---
@@ -88,26 +83,47 @@ last_reviewed: null
 4. Claude가 Q&A 2-3개 자동 생성 → 사용자 확인
 5. `{category}/{filename}.md` 생성 (Common 파일명 규칙 + frontmatter 템플릿 사용)
    - blog_link 있으면 제목 아래 `> **Blog**: [{title}](../{blog_link})` 추가
-6. README.md 업데이트 → Git commit & push
+6. Git commit & push
 
 ---
 
 ## blog - 블로그 글 저장/조회/수정
 
 `/spark blog` → 새 글 작성 (기본)
+`/spark blog --publish` → 새 글 작성 + 즉시 발행
 `/spark blog list` → 블로그 목록 조회
 `/spark blog update` → 기존 글 수정
+
+### 블로그 스타일
+
+| Style | 톤 | Claude 다듬기 가이드 |
+|-------|----|--------------------|
+| essay | 생각의 흐름, 1인칭 서술 | 자연스러운 문체, 단락 구분, 도입-전개-마무리 |
+| tutorial | 단계별 설명, 코드 예시 중심 | 번호 매긴 단계, 코드 블록, 명확한 지시문 |
+| opinion | 논점 명확, 근거 제시 | 주장-근거-반론-결론 구조, 강한 어조 |
+| til | 짧고 핵심만, 오늘 배운 것 | 3~10줄, 배운 것 + 왜 중요한지 |
+| linkedin | 짧고 임팩트, 훅→스토리→교훈 | 첫 줄 훅, 짧은 문단, 줄바꿈 많이, CTA나 질문으로 마무리 |
+| x-post | 280자 압축, 날카로운 한 줄 | 핵심 한 문장 + 부연 1~2줄, thread 형식 가능 |
+| free | 톤 조정 없이 원문 그대로 | Claude가 내용을 다듬지 않고 그대로 저장 |
+
+**스타일 결정 순서**: `--style` 인자 → `.sparks/config.json`의 `blog.defaultStyle` → AskUserQuestion (선택 후 config에 저장)
 
 ### 새 글 작성 (기본)
 
 1. `mkdir -p blog`
-2. AskUserQuestion: Title, Tags → Content (2회)
+2. AskUserQuestion 2회:
+   - 1차: Style(위 표 선택지), Title, Tags
+   - 2차: Content (핵심 내용, 키워드, 메모 수준 OK — `free` 외에는 Claude가 스타일에 맞게 다듬음)
 3. 파일: `blog/YYYY-MM-DD-{title}.md` (Common 파일명 규칙 적용)
-   - 태그 있으면 YAML frontmatter 포함, 없으면 `# {title}` + 본문
-4. README.md Blog 섹션에 `- [{date}] [{title}](blog/{filename})` 추가 (최신순)
-   - Blog 섹션 없으면 TIL 섹션 뒤에 생성
-5. Git commit & push
-6. 성공 메시지에 `/spark add`로 지식 연결 안내
+   - frontmatter: `title, date, style, tags` 포함
+4. Git commit & push
+5. 성공 메시지에 `/spark add`로 지식 연결 안내
+
+### 새 글 작성 + 즉시 발행 (`--publish`)
+
+1~4는 새 글 작성과 동일
+5. Git commit & push 완료 후, 방금 저장한 파일명으로 **publish 플로우 자동 실행** (`--files {filename}`)
+6. 성공 메시지에 배포 URL 포함
 
 ### 목록 조회 (`blog list`)
 
@@ -166,7 +182,7 @@ last_reviewed: null
 {스타일에 맞게 다듬은 내용, 3-10줄}
 ```
 
-README.md에 오늘 로그 이미 있으면 skip, 없으면 추가. Git commit & push.
+Git commit & push.
 
 ---
 
@@ -327,6 +343,6 @@ blog/ 디렉토리의 MD 파일을 HTML로 빌드하여 Cloudflare Pages에 배�
    - `.sparks/config.json`: version, categories, defaultCategory, leitnerIntervals, socraticLevels, publish (projectName, branch, url, title, description)
    - `.sparks/progress.json`: `{}`
    - `.gitignore`: progress.json, .DS_Store, editor files
-   - `README.md`: 카테고리별 섹션 + `<!-- spark-index:{cat} -->` 앵커
+   - `README.md`: 저장소 소개 (제목, 설명)
 4. Git init (아직 아니면) → 초기 커밋 여부 확인
 5. `~/.sparks/config.json`에 `defaultRepo` 저장

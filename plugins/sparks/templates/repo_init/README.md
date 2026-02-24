@@ -4,40 +4,13 @@
 
 ## Categories
 
-### Concepts
-
-이론, 원리, 개념
-
-<!-- spark-index:concepts -->
-
-### Insights
-
-경험에서 얻은 깨달음
-
-<!-- spark-index:insights -->
-
-### Skills
-
-실용 기술, How-to
-
-<!-- spark-index:skills -->
-
-### TIL (Today I Learned)
-
-일일 학습 기록
-
-<!-- spark-index:til -->
-
-### Blog
-
-블로그 글 & 데일리 로그 (`/spark-blog`, `/spark-log`)
-
-<!-- spark-index:blog -->
-
-## Stats
-
-- Total items: 0
-- Last updated: -
+| 카테고리 | 용도 |
+|---------|------|
+| `concepts/` | 이론, 원리, 개념 |
+| `insights/` | 경험에서 얻은 깨달음 |
+| `skills/` | 실용 기술, How-to |
+| `til/` | 일일 학습 기록 |
+| `blog/` | 블로그 글 & 데일리 로그 |
 
 ---
 
