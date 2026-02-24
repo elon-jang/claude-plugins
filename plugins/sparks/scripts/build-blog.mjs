@@ -15,6 +15,7 @@ const { values } = parseArgs({
     files: { type: 'string', short: 'f' },
     all: { type: 'boolean', default: false },
     config: { type: 'string', short: 'c' },
+    draft: { type: 'string', short: 'd' },
   },
 });
 
@@ -23,6 +24,7 @@ const OUTPUT_DIR = values.output;
 const MANIFEST_PATH = values.manifest;
 const selectedFiles = values.files ? values.files.split(',').map(f => f.trim()) : null;
 const buildAll = values.all || false;
+const draftFile = values.draft || null;
 
 if (!SOURCE_DIR || !OUTPUT_DIR || !MANIFEST_PATH) {
   console.error('Usage: node build-blog.mjs --source <blog-dir> --output <build-dir> --manifest <published.json> [--files f1.md,f2.md | --all] [--config <config.json>]');
@@ -53,8 +55,9 @@ function toDateStr(val, fallback) {
   return m ? m[0] : fallback || '';
 }
 
-function parsePost(filename) {
-  const raw = fs.readFileSync(path.join(SOURCE_DIR, filename), 'utf-8');
+function parsePost(filename, baseDir) {
+  const dir = baseDir || SOURCE_DIR;
+  const raw = fs.readFileSync(path.join(dir, filename), 'utf-8');
   const dateMatch = filename.match(/^(\d{4}-\d{2}-\d{2})/);
   const dateFallback = dateMatch ? dateMatch[1] : '';
   let data = {}, content = raw;
@@ -594,26 +597,38 @@ function build() {
   }
   // Remove files that no longer exist in source, and deduplicate
   manifest = [...new Set(manifest.filter(f => allSourceFiles.includes(f)))];
-  saveManifest(manifest);
 
-  // 2. Parse only manifested posts
+  // 2. Parse manifested posts from source dir
   const publishedPosts = manifest.map(f => parsePost(f)).sort((a, b) => b.date.localeCompare(a.date));
 
-  // 3. Create output dirs
+  // 3. If --draft, parse draft file and merge (without saving to manifest)
+  if (draftFile) {
+    const draftDir = path.dirname(draftFile);
+    const draftFilename = path.basename(draftFile);
+    const draftPost = parsePost(draftFilename, draftDir);
+    publishedPosts.unshift(draftPost);
+    publishedPosts.sort((a, b) => b.date.localeCompare(a.date));
+    console.log(`Draft included: ${draftPost.title}`);
+  } else {
+    // Only save manifest when not in draft mode
+    saveManifest(manifest);
+  }
+
+  // 4. Create output dirs
   fs.mkdirSync(path.join(OUTPUT_DIR, 'posts'), { recursive: true });
   fs.writeFileSync(path.join(OUTPUT_DIR, 'style.css'), CSS);
 
-  // 4. Build post HTML for each published post
+  // 5. Build post HTML for each published post
   for (const post of publishedPosts) {
     const postDir = path.join(OUTPUT_DIR, 'posts', post.slug);
     fs.mkdirSync(postDir, { recursive: true });
     fs.writeFileSync(path.join(postDir, 'index.html'), postHtml(post));
   }
 
-  // 5. Generate index from published posts only
+  // 6. Generate index from published posts only
   fs.writeFileSync(path.join(OUTPUT_DIR, 'index.html'), indexHtml(publishedPosts));
 
-  console.log(`Published ${publishedPosts.length} post(s) in manifest, all built`);
+  console.log(`Published ${publishedPosts.length} post(s), all built`);
 }
 
 build();

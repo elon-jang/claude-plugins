@@ -250,9 +250,13 @@ due 카드 필터 → Q 표시 → A 공개 → 자기 평가(Correct: box+1, In
 
 blog/ 디렉토리의 MD 파일을 HTML로 빌드하여 Cloudflare Pages에 배포.
 
-**Manifest**: `.sparks/published.json` — 발행된 파일명 배열. publish 할 때마다 선택한 파일이 추가됨.
+`/spark publish` → 저장된 글 중 선택하여 배포 (기본)
+`/spark publish --all` → 모든 blog/*.md 배포
+`/spark publish --draft` → 대화 내용을 저장 없이 바로 배포
 
-**플로우**:
+**Manifest**: `.sparks/published.json` — 발행된 파일명 배열. publish 할 때마다 선택한 파일이 추가됨. (`--draft`는 manifest에 추가하지 않음)
+
+**공통 플로우** (1~2단계는 모든 모드 공통):
 
 1. 저장소 경로 결정 (Common Patterns) → `REPO_ROOT`
 2. 배포 설정 읽기:
@@ -265,6 +269,9 @@ blog/ 디렉토리의 MD 파일을 HTML로 빌드하여 Cloudflare Pages에 배�
    cd {PLUGIN_DIR} && npm install --silent
    ```
    - `PLUGIN_DIR` = 이 플러그인의 디렉토리 (`plugins/sparks/`)
+
+### 기본 모드 (저장된 글 배포)
+
 4. 빌드 실행 (manifest 기반 — 발행된 글만 빌드+인덱스):
    ```bash
    node {PLUGIN_DIR}/scripts/build-blog.mjs --source {REPO_ROOT}/blog --output {REPO_ROOT}/.sparks/_build --manifest {REPO_ROOT}/.sparks/published.json --config {REPO_ROOT}/.sparks/config.json --files {files}|--all
@@ -283,6 +290,28 @@ blog/ 디렉토리의 MD 파일을 HTML로 빌드하여 Cloudflare Pages에 배�
    ```bash
    rm -rf {REPO_ROOT}/.sparks/_build
    ```
+
+### --draft 모드 (대화 내용 → 저장 없이 배포)
+
+대화에서 작성한 블로그 글을 `blog/`에 저장하지 않고 바로 배포. manifest(`published.json`)에도 추가하지 않음.
+
+4. 대화에서 블로그 글 내용 추출 (가장 최근 작성한 블로그 형식의 텍스트)
+5. AskUserQuestion: "제목을 입력하세요" (대화에서 제목 추론 가능하면 기본값 제시)
+6. 임시 파일 생성:
+   ```
+   {REPO_ROOT}/.sparks/_draft/YYYY-MM-DD-{title}.md
+   ```
+7. 빌드 실행 (임시 파일 + 기존 manifest 합산):
+   ```bash
+   node {PLUGIN_DIR}/scripts/build-blog.mjs --source {REPO_ROOT}/blog --output {REPO_ROOT}/.sparks/_build --manifest {REPO_ROOT}/.sparks/published.json --config {REPO_ROOT}/.sparks/config.json --draft {REPO_ROOT}/.sparks/_draft/YYYY-MM-DD-{title}.md
+   ```
+   - `--draft`: manifest에 추가하지 않고 임시 파일을 포함하여 빌드
+8. Cloudflare Pages 배포 (기본 모드와 동일)
+9. 정리:
+   ```bash
+   rm -rf {REPO_ROOT}/.sparks/_draft {REPO_ROOT}/.sparks/_build
+   ```
+10. 성공 메시지 + 안내: "영구 저장하려면 `/spark blog`로 저장하세요"
 
 **에러 처리**: wrangler 미설치 시 `npm install -g wrangler` 안내. 인증 실패 시 `wrangler login` 안내.
 
