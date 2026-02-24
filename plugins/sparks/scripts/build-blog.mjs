@@ -592,8 +592,8 @@ function build() {
   } else if (selectedFiles) {
     manifest = [...manifest, ...selectedFiles];
   }
-  // Remove files that no longer exist in source
-  manifest = manifest.filter(f => allSourceFiles.includes(f));
+  // Remove files that no longer exist in source, and deduplicate
+  manifest = [...new Set(manifest.filter(f => allSourceFiles.includes(f)))];
   saveManifest(manifest);
 
   // 2. Parse only manifested posts
