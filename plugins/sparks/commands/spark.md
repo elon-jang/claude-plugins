@@ -122,8 +122,9 @@ last_reviewed: null
 ### 새 글 작성 + 즉시 발행 (`--publish`)
 
 1~4는 새 글 작성과 동일
-5. Git commit & push 완료 후, 방금 저장한 파일명으로 **publish 플로우 자동 실행** (`--files {filename}`)
-6. 성공 메시지에 배포 URL 포함
+5. AskUserQuestion: "공개/비공개?" (1. 공개 2. 비공개)
+6. Git commit & push 완료 후, publish 플로우 자동 실행 (`--files {filename}` 또는 `--files {filename}:private`)
+7. 성공 메시지에 배포 URL 포함
 
 ### 목록 조회 (`blog list`)
 
@@ -270,9 +271,14 @@ blog/ 디렉토리의 MD 파일을 HTML로 빌드하여 Cloudflare Pages에 배�
 `/spark publish --all` → 모든 blog/*.md 배포
 `/spark publish --draft` → 대화 내용을 저장 없이 바로 배포
 
-**Manifest**: `.sparks/published.json` — 발행된 파일명 배열. publish 할 때마다 선택한 파일이 추가됨. (`--draft`는 manifest에 추가하지 않음)
+**Manifest**: `.sparks/published.json` — 발행 항목 배열. 각 항목은 `{ "file": "name.md", "access": "public"|"private" }`. (`--draft`는 manifest에 추가하지 않음)
 
-**공통 플로우** (1~2단계는 모든 모드 공통):
+**접근 제어**:
+- `public`: 누구나 접근 가능 (`/posts/` 경로)
+- `private`: Cloudflare Access 인증 필요 (`/private/posts/` 경로)
+- 파일 선택 시 AskUserQuestion으로 공개/비공개 선택
+
+**공통 플로우** (1~3단계는 모든 모드 공통):
 
 1. 저장소 경로 결정 (Common Patterns) → `REPO_ROOT`
 2. 배포 설정 읽기:
@@ -288,21 +294,25 @@ blog/ 디렉토리의 MD 파일을 HTML로 빌드하여 Cloudflare Pages에 배�
 
 ### 기본 모드 (저장된 글 배포)
 
-4. 빌드 실행 (manifest 기반 — 발행된 글만 빌드+인덱스):
+4. 파일 선택 + 접근 권한:
+   - `--all`: 모든 blog/*.md (기존 manifest의 access 유지, 새 파일은 public)
+   - `--files {file}`: 특정 파일 (`:private` 접미사로 비공개 지정, 예: `글.md:private`)
+   - 인자 없음: AskUserQuestion으로 파일 선택 후 "공개/비공개" 선택
+5. 빌드 실행 (manifest 기반 — public/private 경로 분리):
    ```bash
    node {PLUGIN_DIR}/scripts/build-blog.mjs --source {REPO_ROOT}/blog --output {REPO_ROOT}/.sparks/_build --manifest {REPO_ROOT}/.sparks/published.json --config {REPO_ROOT}/.sparks/config.json --files {files}|--all
    ```
-   - `--files`: 선택한 파일을 manifest에 추가 후 전체 manifest 빌드
-   - `--all`: 모든 blog/*.md를 manifest에 등록 후 빌드
-5. Cloudflare Pages 배포:
+   - 빌드 결과: `/posts/` (공개) + `/private/posts/` (비공개) + 인덱스 각 1개
+6. Cloudflare Pages 배포:
    ```bash
    wrangler pages deploy {REPO_ROOT}/.sparks/_build --project-name {publish.projectName} --branch {publish.branch} --commit-dirty=true
    ```
    - wrangler 출력에서 Environment 확인 → "Preview"가 포함되면 경고: "⚠ Preview 환경에 배포되었습니다. Production 배포를 위해 config의 publish.branch를 확인하세요."
-6. 성공 메시지 표시:
+7. 성공 메시지 표시:
    - `publish.url`이 설정되어 있으면 해당 URL 표시, 없으면 wrangler 출력에서 URL 추출하여 표시
-   - 발행된 글 수
-7. 빌드 디렉토리 정리:
+   - 공개/비공개 글 수 각각 표시
+   - 비공개 글 있으면: "비공개 글은 {url}/private/ 에서 접근 (Cloudflare Access 설정 필요)"
+8. 빌드 디렉토리 정리:
    ```bash
    rm -rf {REPO_ROOT}/.sparks/_build
    ```
@@ -330,6 +340,11 @@ blog/ 디렉토리의 MD 파일을 HTML로 빌드하여 Cloudflare Pages에 배�
 10. 성공 메시지 + 안내: "영구 저장하려면 `/spark blog`로 저장하세요"
 
 **에러 처리**: wrangler 미설치 시 `npm install -g wrangler` 안내. 인증 실패 시 `wrangler login` 안내.
+
+**Cloudflare Access 설정 (최초 1회, 수동)**:
+Dashboard > Zero Trust > Access > Applications > Add > Self-hosted
+- Application URL: `{publish.url}/private/*`
+- Policy: 본인 이메일 허용
 
 ---
 

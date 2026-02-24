@@ -27,7 +27,7 @@ const buildAll = values.all || false;
 const draftFile = values.draft || null;
 
 if (!SOURCE_DIR || !OUTPUT_DIR || !MANIFEST_PATH) {
-  console.error('Usage: node build-blog.mjs --source <blog-dir> --output <build-dir> --manifest <published.json> [--files f1.md,f2.md | --all] [--config <config.json>]');
+  console.error('Usage: node build-blog.mjs --source <blog-dir> --output <build-dir> --manifest <published.json> [--files f1.md,f2.md:private | --all] [--config <config.json>]');
   process.exit(1);
 }
 
@@ -55,7 +55,7 @@ function toDateStr(val, fallback) {
   return m ? m[0] : fallback || '';
 }
 
-function parsePost(filename, baseDir) {
+function parsePost(filename, { access = 'public', baseDir } = {}) {
   const dir = baseDir || SOURCE_DIR;
   const raw = fs.readFileSync(path.join(dir, filename), 'utf-8');
   const dateMatch = filename.match(/^(\d{4}-\d{2}-\d{2})/);
@@ -83,6 +83,7 @@ function parsePost(filename, baseDir) {
     title: data.title || filename.replace(/\.md$/, '').replace(/^\d{4}-\d{2}-\d{2}-/, '').replace(/-/g, ' '),
     date: toDateStr(data.date, dateFallback),
     tags: data.tags || [],
+    access: access || 'public',
     content,
   };
 }
@@ -99,17 +100,25 @@ function escapeHtml(str) {
 }
 
 // --- Manifest ---
+// Format: [{ file: "name.md", access: "public"|"private" }, ...]
+// Legacy format (string array) is auto-migrated to public
 function loadManifest() {
   if (fs.existsSync(MANIFEST_PATH)) {
-    return JSON.parse(fs.readFileSync(MANIFEST_PATH, 'utf-8'));
+    const raw = JSON.parse(fs.readFileSync(MANIFEST_PATH, 'utf-8'));
+    if (!Array.isArray(raw)) return [];
+    return raw.map(entry =>
+      typeof entry === 'string' ? { file: entry, access: 'public' } : entry
+    );
   }
   return [];
 }
 
-function saveManifest(files) {
+function saveManifest(entries) {
   const dir = path.dirname(MANIFEST_PATH);
   fs.mkdirSync(dir, { recursive: true });
-  fs.writeFileSync(MANIFEST_PATH, JSON.stringify([...new Set(files)].sort(), null, 2) + '\n');
+  const unique = [...new Map(entries.map(e => [e.file, e])).values()]
+    .sort((a, b) => a.file.localeCompare(b.file));
+  fs.writeFileSync(MANIFEST_PATH, JSON.stringify(unique, null, 2) + '\n');
 }
 
 // --- CSS ---
@@ -437,6 +446,9 @@ function postHtml(post) {
   const tagsHtml = post.tags.length
     ? `<div class="post-tags">${post.tags.map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('')}</div>`
     : '';
+  const isPrivate = post.access === 'private';
+  const cssPath = isPrivate ? '../../../style.css' : '../../style.css';
+  const backPath = isPrivate ? '../../../private/' : '../../';
 
   return `<!DOCTYPE html>
 <html lang="ko">
@@ -444,11 +456,11 @@ function postHtml(post) {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>${escapeHtml(post.title)}</title>
-<link rel="stylesheet" href="../../style.css">
+<link rel="stylesheet" href="${cssPath}">
 </head>
 <body>
 <div class="container">
-  <a href="../../" class="back-link">&larr; 목록으로</a>
+  <a href="${backPath}" class="back-link">&larr; 목록으로</a>
   <article>
     <div class="post-header">
       <h1>${escapeHtml(post.title)}</h1>
@@ -471,7 +483,7 @@ function shortDate(dateStr) {
   return `${parts[1]}.${parts[2]}`;
 }
 
-function indexHtml(posts) {
+function indexHtml(posts, { isPrivate = false } = {}) {
   // Group by month
   const groups = new Map();
   for (const post of posts) {
@@ -479,6 +491,9 @@ function indexHtml(posts) {
     if (!groups.has(month)) groups.set(month, []);
     groups.get(month).push(post);
   }
+
+  const cssPath = isPrivate ? '../style.css' : 'style.css';
+  const titleSuffix = isPrivate ? ' (Private)' : '';
 
   let postsHtml = '';
   for (const [month, monthPosts] of groups) {
@@ -509,8 +524,8 @@ function indexHtml(posts) {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>${escapeHtml(siteConfig.title)}</title>
-<link rel="stylesheet" href="style.css">
+<title>${escapeHtml(siteConfig.title + titleSuffix)}</title>
+<link rel="stylesheet" href="${cssPath}">
 </head>
 <body>
 <div class="container">
@@ -591,44 +606,65 @@ function build() {
   // 1. Load manifest and determine which files to add
   let manifest = loadManifest();
   if (buildAll) {
-    manifest = allSourceFiles;
+    // Preserve existing access settings, default new files to public
+    const existing = new Map(manifest.map(e => [e.file, e.access]));
+    manifest = allSourceFiles.map(f => ({ file: f, access: existing.get(f) || 'public' }));
   } else if (selectedFiles) {
-    manifest = [...manifest, ...selectedFiles];
+    // --files format: "file1.md:private,file2.md" or "file1.md,file2.md"
+    const newEntries = selectedFiles.map(f => {
+      const [name, access] = f.split(':');
+      return { file: name, access: access || 'public' };
+    });
+    // New entries override existing access for the same file
+    const overrides = new Map(newEntries.map(e => [e.file, e.access]));
+    manifest = manifest.filter(e => !overrides.has(e.file)).concat(newEntries);
   }
-  // Remove files that no longer exist in source, and deduplicate
-  manifest = [...new Set(manifest.filter(f => allSourceFiles.includes(f)))];
+  // Remove files that no longer exist in source
+  manifest = manifest.filter(e => allSourceFiles.includes(e.file));
 
-  // 2. Parse manifested posts from source dir
-  const publishedPosts = manifest.map(f => parsePost(f)).sort((a, b) => b.date.localeCompare(a.date));
+  // 2. Parse posts and split by access
+  let allPosts = manifest.map(e => parsePost(e.file, { access: e.access }));
 
   // 3. If --draft, parse draft file and merge (without saving to manifest)
   if (draftFile) {
     const draftDir = path.dirname(draftFile);
     const draftFilename = path.basename(draftFile);
-    const draftPost = parsePost(draftFilename, draftDir);
-    publishedPosts.unshift(draftPost);
-    publishedPosts.sort((a, b) => b.date.localeCompare(a.date));
+    const draftPost = parsePost(draftFilename, { baseDir: draftDir });
+    allPosts.push(draftPost);
     console.log(`Draft included: ${draftPost.title}`);
   } else {
     // Only save manifest when not in draft mode
     saveManifest(manifest);
   }
 
-  // 4. Create output dirs
+  allPosts.sort((a, b) => b.date.localeCompare(a.date));
+  const publicPosts = allPosts.filter(p => p.access !== 'private');
+  const privatePosts = allPosts.filter(p => p.access === 'private');
+
+  // 4. Create output dirs + shared CSS
   fs.mkdirSync(path.join(OUTPUT_DIR, 'posts'), { recursive: true });
   fs.writeFileSync(path.join(OUTPUT_DIR, 'style.css'), CSS);
 
-  // 5. Build post HTML for each published post
-  for (const post of publishedPosts) {
+  // 5. Build public posts
+  for (const post of publicPosts) {
     const postDir = path.join(OUTPUT_DIR, 'posts', post.slug);
     fs.mkdirSync(postDir, { recursive: true });
     fs.writeFileSync(path.join(postDir, 'index.html'), postHtml(post));
   }
+  fs.writeFileSync(path.join(OUTPUT_DIR, 'index.html'), indexHtml(publicPosts));
 
-  // 6. Generate index from published posts only
-  fs.writeFileSync(path.join(OUTPUT_DIR, 'index.html'), indexHtml(publishedPosts));
+  // 6. Build private posts (under /private/)
+  if (privatePosts.length > 0) {
+    fs.mkdirSync(path.join(OUTPUT_DIR, 'private', 'posts'), { recursive: true });
+    for (const post of privatePosts) {
+      const postDir = path.join(OUTPUT_DIR, 'private', 'posts', post.slug);
+      fs.mkdirSync(postDir, { recursive: true });
+      fs.writeFileSync(path.join(postDir, 'index.html'), postHtml(post));
+    }
+    fs.writeFileSync(path.join(OUTPUT_DIR, 'private', 'index.html'), indexHtml(privatePosts, { isPrivate: true }));
+  }
 
-  console.log(`Published ${publishedPosts.length} post(s), all built`);
+  console.log(`Published ${publicPosts.length} public + ${privatePosts.length} private post(s)`);
 }
 
 build();
