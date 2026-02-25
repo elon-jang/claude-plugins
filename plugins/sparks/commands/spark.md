@@ -297,10 +297,11 @@ blog/ 디렉토리의 MD 파일을 HTML로 빌드하여 Cloudflare Pages에 배�
 4. 파일 선택 + 접근 권한:
    - `--all`: 모든 blog/*.md (기존 manifest의 access 유지, 새 파일은 public)
    - `--files {file}`: 특정 파일 (`:private` 접미사로 비공개 지정, 예: `글.md:private`)
+   - 파일명만 지정 (예: `publish 글.md`): AskUserQuestion으로 "공개/비공개" 선택
    - 인자 없음: AskUserQuestion으로 파일 선택 후 "공개/비공개" 선택
-5. 빌드 실행 (manifest 기반 — public/private 경로 분리):
+5. 빌드 실행 (**published.json을 직접 편집하지 않음** — `--files` 플래그가 manifest 추가를 자동 처리):
    ```bash
-   node {PLUGIN_DIR}/scripts/build-blog.mjs --source {REPO_ROOT}/blog --output {REPO_ROOT}/.sparks/_build --manifest {REPO_ROOT}/.sparks/published.json --config {REPO_ROOT}/.sparks/config.json --files {files}|--all
+   node {PLUGIN_DIR}/scripts/build-blog.mjs --source {REPO_ROOT}/blog --output {REPO_ROOT}/.sparks/_build --manifest {REPO_ROOT}/.sparks/published.json --config {REPO_ROOT}/.sparks/config.json --files {file}:{access}|--all
    ```
    - 빌드 결과: `/posts/` (공개) + `/private/posts/` (비공개) + 인덱스 각 1개
 6. Cloudflare Pages 배포:
@@ -315,6 +316,10 @@ blog/ 디렉토리의 MD 파일을 HTML로 빌드하여 Cloudflare Pages에 배�
 8. 빌드 디렉토리 정리:
    ```bash
    rm -rf {REPO_ROOT}/.sparks/_build
+   ```
+9. Git commit & push (manifest 변경 반영):
+   ```bash
+   cd {REPO_ROOT} && git add .sparks/published.json && git commit -m "publish: {title} 발행" && git push origin {CURRENT_BRANCH}
    ```
 
 ### --draft 모드 (대화 내용 → 저장 없이 배포)
