@@ -442,6 +442,9 @@ function postHtml(post) {
   if (h1Match) {
     content = content.slice(h1Match[0].length);
   }
+  // Pre-process bold markers before marked: **text** → <strong>text</strong>
+  // (marked occasionally misses ** in certain positions; this ensures consistent rendering)
+  content = content.replace(/\*\*(.+?)\*\*/gs, '<strong>$1</strong>');
   const html = marked(content);
   const tagsHtml = post.tags.length
     ? `<div class="post-tags">${post.tags.map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('')}</div>`
