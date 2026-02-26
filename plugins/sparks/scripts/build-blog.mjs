@@ -604,6 +604,10 @@ function indexHtml(posts, { isPrivate = false } = {}) {
 
 // --- Build ---
 function build() {
+  if (!fs.existsSync(SOURCE_DIR)) {
+    console.error(`Error: source directory not found: ${SOURCE_DIR}`);
+    process.exit(1);
+  }
   const allSourceFiles = fs.readdirSync(SOURCE_DIR).filter(f => f.endsWith('.md'));
 
   // 1. Load manifest and determine which files to add
@@ -623,6 +627,11 @@ function build() {
     manifest = manifest.filter(e => !overrides.has(e.file)).concat(newEntries);
   }
   // Remove files that no longer exist in source
+  // Guard: empty source dir must not silently wipe the manifest
+  if (allSourceFiles.length === 0 && manifest.length > 0) {
+    console.error(`Error: source directory is empty but manifest has ${manifest.length} entries. Aborting to prevent data loss.`);
+    process.exit(1);
+  }
   manifest = manifest.filter(e => allSourceFiles.includes(e.file));
 
   // 2. Parse posts and split by access
