@@ -74,8 +74,28 @@ Knowledge file format과 카테고리 상세는 `commands/spark.md` 참조.
 /spark stats                       # 통계
 /spark publish 특정글.md            # 특정 글 배포
 /spark publish --all               # 전체 배포
-/spark publish --all               # 전체 재배포
 ```
+
+## Deployment Notes
+
+### Cloudflare Pages 브랜치 주의사항
+
+wrangler 수동 배포 시 반드시 `config.json`의 `publish.branch` 값을 사용한다.
+
+```bash
+# ✅ 올바른 방법 — config에서 브랜치 읽기
+BRANCH=$(cat .sparks/config.json | python3 -c "import json,sys; print(json.load(sys.stdin)['publish']['branch'])")
+wrangler pages deploy .sparks/_build --project-name munguen --branch $BRANCH --commit-dirty=true --commit-message "deploy: blog update"
+
+# ❌ 잘못된 방법 — 브랜치 하드코딩
+wrangler pages deploy .sparks/_build --project-name munguen --branch main ...
+```
+
+**배경**: `munguen.pages.dev` production 브랜치는 `master`. `--branch main`으로 배포하면
+`main.munguen.pages.dev` (Preview)에만 반영되고 실제 프로덕션(`munguen.pages.dev`)은 구버전 유지.
+
+`/spark publish` 커맨드는 `{publish.branch}`로 config에서 자동 참조하므로 문제 없음.
+직접 wrangler 명령 실행 시에만 주의 필요.
 
 ## Related Files
 

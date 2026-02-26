@@ -350,7 +350,7 @@ body {
 
 /* Content */
 .post-content h1 { font-size: 1.5rem; margin: 2rem 0 1rem; font-weight: 700; }
-.post-content h2 { font-size: 1.25rem; margin: 1.8rem 0 0.8rem; font-weight: 700; }
+.post-content h2 { font-size: 1.15rem; margin: 2.5rem 0 0.9rem; font-weight: 700; }
 .post-content h3 { font-size: 1.1rem; margin: 1.5rem 0 0.6rem; font-weight: 500; }
 .post-content p { margin-bottom: 1rem; }
 .post-content ul, .post-content ol { margin: 0.5rem 0 1rem 1.5rem; }
@@ -443,6 +443,13 @@ function postHtml(post) {
   // Pre-process bold markers before marked: **text** → <strong>text</strong>
   // (marked occasionally misses ** in certain positions; this ensures consistent rendering)
   content = content.replace(/\*\*(.+?)\*\*/gs, '<strong>$1</strong>');
+  // Auto-detect section titles: standalone short lines (2–35 chars) surrounded by blank lines
+  // that don't start with markdown special chars and don't end with sentence punctuation.
+  // Handles essay-style posts where section headings are written as plain text.
+  content = content.replace(
+    /\n{2,}([^#>*\-`\d\n][^\n]{0,32}[^\n.!?。,:])\n{2,}/g,
+    '\n\n## $1\n\n'
+  );
   const html = marked(content);
   const tagsHtml = post.tags.length
     ? `<div class="post-tags">${post.tags.map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('')}</div>`
@@ -458,6 +465,8 @@ function postHtml(post) {
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>${escapeHtml(post.title)}</title>
 <link rel="stylesheet" href="${cssPath}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="(prefers-color-scheme: light)">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark-dimmed.min.css" media="(prefers-color-scheme: dark)">
 </head>
 <body>
 <div class="container">
@@ -473,6 +482,8 @@ function postHtml(post) {
     <div class="post-content">${html}</div>
   </article>
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
 </body>
 </html>`;
 }
