@@ -269,9 +269,8 @@ blog/ 디렉토리의 MD 파일을 HTML로 빌드하여 Cloudflare Pages에 배�
 
 `/spark publish` → 저장된 글 중 선택하여 배포 (기본)
 `/spark publish --all` → 모든 blog/*.md 배포
-`/spark publish --draft` → 대화 내용을 저장 없이 바로 배포
 
-**Manifest**: `.sparks/published.json` — 발행 항목 배열. 각 항목은 `{ "file": "name.md", "access": "public"|"private" }`. (`--draft`는 manifest에 추가하지 않음)
+**Manifest**: `.sparks/published.json` — 발행 항목 배열. 각 항목은 `{ "file": "name.md", "access": "public"|"private" }`.
 
 **접근 제어**:
 - `public`: 누구나 접근 가능 (`/posts/` 경로)
@@ -306,7 +305,7 @@ blog/ 디렉토리의 MD 파일을 HTML로 빌드하여 Cloudflare Pages에 배�
    - 빌드 결과: `/posts/` (공개) + `/private/posts/` (비공개) + 인덱스 각 1개
 6. Cloudflare Pages 배포:
    ```bash
-   wrangler pages deploy {REPO_ROOT}/.sparks/_build --project-name {publish.projectName} --branch {publish.branch} --commit-dirty=true
+   wrangler pages deploy {REPO_ROOT}/.sparks/_build --project-name {publish.projectName} --branch {publish.branch} --commit-dirty=true --commit-message "deploy: blog update"
    ```
    - wrangler 출력에서 Environment 확인 → "Preview"가 포함되면 경고: "⚠ Preview 환경에 배포되었습니다. Production 배포를 위해 config의 publish.branch를 확인하세요."
 7. 성공 메시지 표시:
@@ -321,28 +320,6 @@ blog/ 디렉토리의 MD 파일을 HTML로 빌드하여 Cloudflare Pages에 배�
    ```bash
    cd {REPO_ROOT} && git add .sparks/published.json && git commit -m "publish: {title} 발행" && git push origin {CURRENT_BRANCH}
    ```
-
-### --draft 모드 (대화 내용 → 저장 없이 배포)
-
-대화에서 작성한 블로그 글을 `blog/`에 저장하지 않고 바로 배포. manifest(`published.json`)에도 추가하지 않음.
-
-4. 대화에서 블로그 글 내용 추출 (가장 최근 작성한 블로그 형식의 텍스트)
-5. AskUserQuestion: "제목을 입력하세요" (대화에서 제목 추론 가능하면 기본값 제시)
-6. 임시 파일 생성:
-   ```
-   {REPO_ROOT}/.sparks/_draft/YYYY-MM-DD-{title}.md
-   ```
-7. 빌드 실행 (임시 파일 + 기존 manifest 합산):
-   ```bash
-   node {PLUGIN_DIR}/scripts/build-blog.mjs --source {REPO_ROOT}/blog --output {REPO_ROOT}/.sparks/_build --manifest {REPO_ROOT}/.sparks/published.json --config {REPO_ROOT}/.sparks/config.json --draft {REPO_ROOT}/.sparks/_draft/YYYY-MM-DD-{title}.md
-   ```
-   - `--draft`: manifest에 추가하지 않고 임시 파일을 포함하여 빌드
-8. Cloudflare Pages 배포 (기본 모드와 동일)
-9. 정리:
-   ```bash
-   rm -rf {REPO_ROOT}/.sparks/_draft {REPO_ROOT}/.sparks/_build
-   ```
-10. 성공 메시지 + 안내: "영구 저장하려면 `/spark blog`로 저장하세요"
 
 **에러 처리**: wrangler 미설치 시 `npm install -g wrangler` 안내. 인증 실패 시 `wrangler login` 안내.
 

@@ -15,7 +15,6 @@ const { values } = parseArgs({
     files: { type: 'string', short: 'f' },
     all: { type: 'boolean', default: false },
     config: { type: 'string', short: 'c' },
-    draft: { type: 'string', short: 'd' },
   },
 });
 
@@ -24,7 +23,6 @@ const OUTPUT_DIR = values.output;
 const MANIFEST_PATH = values.manifest;
 const selectedFiles = values.files ? values.files.split(',').map(f => f.trim()) : null;
 const buildAll = values.all || false;
-const draftFile = values.draft || null;
 
 if (!SOURCE_DIR || !OUTPUT_DIR || !MANIFEST_PATH) {
   console.error('Usage: node build-blog.mjs --source <blog-dir> --output <build-dir> --manifest <published.json> [--files f1.md,f2.md:private | --all] [--config <config.json>]');
@@ -635,19 +633,8 @@ function build() {
   manifest = manifest.filter(e => allSourceFiles.includes(e.file));
 
   // 2. Parse posts and split by access
-  let allPosts = manifest.map(e => parsePost(e.file, { access: e.access }));
-
-  // 3. If --draft, parse draft file and merge (without saving to manifest)
-  if (draftFile) {
-    const draftDir = path.dirname(draftFile);
-    const draftFilename = path.basename(draftFile);
-    const draftPost = parsePost(draftFilename, { baseDir: draftDir });
-    allPosts.push(draftPost);
-    console.log(`Draft included: ${draftPost.title}`);
-  } else {
-    // Only save manifest when not in draft mode
-    saveManifest(manifest);
-  }
+  const allPosts = manifest.map(e => parsePost(e.file, { access: e.access }));
+  saveManifest(manifest);
 
   allPosts.sort((a, b) => b.date.localeCompare(a.date));
   const publicPosts = allPosts.filter(p => p.access !== 'private');

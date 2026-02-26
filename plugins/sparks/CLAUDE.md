@@ -36,7 +36,7 @@ plugins/sparks/
 | `search` | 검색 | `<keyword> --tag=<tag> --category=<cat>` |
 | `list` | 목록 조회 | `--category=<name> --stats --due` |
 | `stats` | 학습 통계 대시보드 | |
-| `publish` | 블로그 HTML 빌드 + Cloudflare 배포 | `--all`, `--draft`, `<filename>`, `<filename>:private` |
+| `publish` | 블로그 HTML 빌드 + Cloudflare 배포 | `--all`, `<filename>`, `<filename>:private` |
 | `init` | 저장소 초기화 | `[directory]` |
 
 **Routing**: `spark.md`에 라우터 + 모든 서브커맨드 전체 스펙 포함. $ARGUMENTS 첫 단어로 분기.
@@ -74,7 +74,7 @@ Knowledge file format과 카테고리 상세는 `commands/spark.md` 참조.
 /spark stats                       # 통계
 /spark publish 특정글.md            # 특정 글 배포
 /spark publish --all               # 전체 배포
-/spark publish --draft             # 저장 없이 배포
+/spark publish --all               # 전체 재배포
 ```
 
 ## Related Files
