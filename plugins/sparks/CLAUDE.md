@@ -112,13 +112,12 @@ wrangler pages deploy .sparks/_build --project-name munguen --branch main ...
 ### Last Sync
 
 - **Date**: 2026-02-27
-- **Session**: blog 기본 모드 개선 — Title/Tags 자동 추론, 공개 기본값
+- **Session**: 블로그 CSS 에디토리얼 리디자인 + 전체 배포 (82개 글)
 
 ### Active Work
 
-- **완료**: blog 새 글 작성 — AskUserQuestion 2회 → 1회 (Content만, Title/Tags 자동 추론)
-- **완료**: blog --publish — 공개/비공개 질문 제거, 기본 public (`--private`으로 오버라이드)
-- **완료**: publish 기본 모드 — 파일 선택 후 기본 public, 질문 없음
+- **완료**: build-blog.mjs CSS 전면 리디자인 — 파란색(#2563eb) → 따뜻한 Stone 팔레트, 에디토리얼 스타일
+- **완료**: `/spark publish --all` → 82개 글 Cloudflare Pages 배포 완료
 
 ### Blockers
 
@@ -131,13 +130,13 @@ No blockers.
 
 ### Recent Changes
 
-- `commands/spark.md` — blog/publish 기본 모드 개선 (자동 추론, 공개 기본값)
+- `scripts/build-blog.mjs` — CSS 팔레트 교체 (Stone 계열 뉴트럴, 에디토리얼)
 - `CLAUDE.md` — Session Context 최신화
 
 ### Key Files
 
 - `commands/spark.md` — 모든 서브커맨드 전체 스펙
-- `scripts/build-blog.mjs` — 블로그 빌드 (manifest 자동 관리)
+- `scripts/build-blog.mjs` — 블로그 빌드 + CSS 스타일 (에디토리얼 Stone 팔레트)
 - `templates/knowledge_template.md` — 지식 파일 템플릿
 
 <!-- SNAPKIN:SESSION_CONTEXT_END -->
