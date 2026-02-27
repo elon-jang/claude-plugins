@@ -30,7 +30,7 @@ plugins/sparks/
 | 서브커맨드 | 설명 | 옵션 |
 |-----------|------|------|
 | `add` | 지식/인사이트 저장 | |
-| `blog` | 블로그 글 저장/조회/수정 | `list`, `update`, `--publish`, `--style=<style>` |
+| `blog` | 블로그 글 저장/조회/수정 | `list`, `update`, `--publish`, `--publish --private`, `--style=<style>` |
 | `log` | 데일리 로그 에피소드 | `--style=diary\|bullet\|devlog\|narrative` |
 | `learn` | 학습 (3가지 모드) | `--mode=socratic\|flashcard\|connect --category=<name>` |
 | `search` | 검색 | `<keyword> --tag=<tag> --category=<cat>` |
@@ -111,13 +111,14 @@ wrangler pages deploy .sparks/_build --project-name munguen --branch main ...
 
 ### Last Sync
 
-- **Date**: 2026-02-25
-- **Session**: publish 플로우 개선 + CLAUDE.md 정리
+- **Date**: 2026-02-27
+- **Session**: blog 기본 모드 개선 — Title/Tags 자동 추론, 공개 기본값
 
 ### Active Work
 
-- **완료**: publish 플로우 개선 (manifest 자동 처리, git commit 단계 추가, 접근 제어 확인)
-- **완료**: CLAUDE.md 중복 제거 및 최신화
+- **완료**: blog 새 글 작성 — AskUserQuestion 2회 → 1회 (Content만, Title/Tags 자동 추론)
+- **완료**: blog --publish — 공개/비공개 질문 제거, 기본 public (`--private`으로 오버라이드)
+- **완료**: publish 기본 모드 — 파일 선택 후 기본 public, 질문 없음
 
 ### Blockers
 
@@ -130,8 +131,8 @@ No blockers.
 
 ### Recent Changes
 
-- `commands/spark.md` — publish 플로우 3가지 개선 (manifest 자동화, git commit, 접근 제어)
-- `CLAUDE.md` — 중복 제거, 오래된 정보 수정, Session Context 최신화
+- `commands/spark.md` — blog/publish 기본 모드 개선 (자동 추론, 공개 기본값)
+- `CLAUDE.md` — Session Context 최신화
 
 ### Key Files
 

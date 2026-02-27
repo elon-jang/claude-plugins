@@ -111,20 +111,23 @@ last_reviewed: null
 ### 새 글 작성 (기본)
 
 1. `mkdir -p blog`
-2. AskUserQuestion 2회:
-   - 1차: Style(위 표 선택지), Title, Tags
-   - 2차: Content (핵심 내용, 키워드, 메모 수준 OK — `free` 외에는 Claude가 스타일에 맞게 다듬음)
-3. 파일: `blog/YYYY-MM-DD-{title}.md` (Common 파일명 규칙 적용)
+2. Style 결정 (스타일 결정 순서 적용)
+3. AskUserQuestion 1회: Content (핵심 내용, 키워드, 메모 수준 OK — `free` 외에는 Claude가 스타일에 맞게 다듬음)
+4. Claude가 Content에서 자동 추론:
+   - **Title**: 내용을 잘 요약하는 제목 생성
+   - **Tags**: 관련 키워드 2~4개 추출
+   - 추론 결과를 사용자에게 한 줄로 보여줌 (예: `제목: "..." / 태그: [...]`)
+5. 파일: `blog/YYYY-MM-DD-{title}.md` (Common 파일명 규칙 적용)
    - frontmatter: `title, date, style, tags` 포함
-4. Git commit & push
-5. 성공 메시지에 `/spark add`로 지식 연결 안내
+6. Git commit & push
+7. 성공 메시지에 `/spark add`로 지식 연결 안내
 
 ### 새 글 작성 + 즉시 발행 (`--publish`)
 
-1~4는 새 글 작성과 동일
-5. AskUserQuestion: "공개/비공개?" (1. 공개 2. 비공개)
-6. Git commit & push 완료 후, publish 플로우 자동 실행 (`--files {filename}` 또는 `--files {filename}:private`)
-7. 성공 메시지에 배포 URL 포함
+1~6은 새 글 작성과 동일
+7. 접근 권한: `--private` 인자 있으면 비공개, 없으면 기본 **공개(public)**
+8. Git commit & push 완료 후, publish 플로우 자동 실행 (`--files {filename}` 또는 `--files {filename}:private`)
+9. 성공 메시지에 배포 URL 포함
 
 ### 목록 조회 (`blog list`)
 
@@ -296,8 +299,8 @@ blog/ 디렉토리의 MD 파일을 HTML로 빌드하여 Cloudflare Pages에 배�
 4. 파일 선택 + 접근 권한:
    - `--all`: 모든 blog/*.md (기존 manifest의 access 유지, 새 파일은 public)
    - `--files {file}`: 특정 파일 (`:private` 접미사로 비공개 지정, 예: `글.md:private`)
-   - 파일명만 지정 (예: `publish 글.md`): AskUserQuestion으로 "공개/비공개" 선택
-   - 인자 없음: AskUserQuestion으로 파일 선택 후 "공개/비공개" 선택
+   - 파일명만 지정 (예: `publish 글.md`): 기본 **공개(public)** (`publish 글.md:private`이면 비공개)
+   - 인자 없음: AskUserQuestion으로 파일 선택, 접근 권한은 기본 **공개(public)**
 5. 빌드 실행 (**published.json을 직접 편집하지 않음** — `--files` 플래그가 manifest 추가를 자동 처리):
    ```bash
    node {PLUGIN_DIR}/scripts/build-blog.mjs --source {REPO_ROOT}/blog --output {REPO_ROOT}/.sparks/_build --manifest {REPO_ROOT}/.sparks/published.json --config {REPO_ROOT}/.sparks/config.json --files {file}:{access}|--all
