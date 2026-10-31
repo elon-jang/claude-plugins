@@ -1,5 +1,17 @@
 # Sparks
 
+## 안전한 블로그 발행
+
+발행은 `scripts/publish-blog.mjs`를 사용합니다. 정본 저장소의 전체 manifest를 빌드하고 운영 사이트의 기존 글 경로가 모두 남는지 검사합니다. 기본 동작은 검증이며 `--deploy`로 배포합니다.
+
+```bash
+node scripts/publish-blog.mjs --repo /path/to/my-sparks --files "새글.md"
+node scripts/publish-blog.mjs --repo /path/to/my-sparks --files "새글.md" --deploy
+npm test
+```
+
+공용 CI, 정적 자산, 오류 처리와 최초 전환 제약은 [공용 발행 가이드](docs/publishing.md)를 참고하세요.
+
 지식과 인사이트를 Github에 저장하고, 소크라틱 대화/플래시카드/연결 탐색을 통해 학습하는 Claude Code 플러그인입니다.
 
 ## 설치

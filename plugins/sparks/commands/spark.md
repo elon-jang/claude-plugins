@@ -268,6 +268,17 @@ due 카드 필터 → Q 표시 → A 공개 → 자기 평가(Correct: box+1, In
 
 ## publish - 블로그 배포
 
+**필수 실행 경로 (아래 구형 수동 플로우보다 우선)**:
+
+- 정본 저장소는 `--repo`로 지정하거나 `~/.sparks/config.json`의 `defaultRepo`를 사용한다. 플러그인 캐시나 현재 작업 디렉터리의 임시 manifest로 production을 배포하지 않는다.
+- 새 글과 자산을 정본 저장소 `blog/`, `.sparks/static/`에 먼저 저장한다.
+- 검증: `node {PLUGIN_DIR}/scripts/publish-blog.mjs --repo {REPO_ROOT} --files "글.md"`
+- 발행: 동일 명령에 `--deploy`를 추가한다. `--all`은 미발행 글까지 공개 대상으로 추가하므로 사용자가 전체 발행을 요청했을 때만 사용한다.
+- 원본 누락, 잘못된 manifest, 깨진 로컬 링크, 운영 경로 누락 시 중단한다. 임시 manifest, 이전 HTML 수집, Wrangler 직접 호출로 검증을 우회하지 않는다.
+- 기본 검증은 manifest를 변경하지 않는다. 배포 명령 성공 후 정본 manifest를 갱신하고 검증 빌드를 `.sparks/publish-*/site`에 보관한다.
+- 공용 CI는 프로젝트별 `concurrency`를 설정한다. 구체적인 운영 방법은 `docs/publishing.md`를 따른다.
+- 이 명령의 범위에 Git commit/push는 포함되지 않는다. 별도 사용자 요청 또는 저장소의 명시적 정책을 따른다.
+
 blog/ 디렉토리의 MD 파일을 HTML로 빌드하여 Cloudflare Pages에 배포.
 
 `/spark publish` → 저장된 글 중 선택하여 배포 (기본)
@@ -294,7 +305,7 @@ blog/ 디렉토리의 MD 파일을 HTML로 빌드하여 Cloudflare Pages에 배�
    ```
    - `PLUGIN_DIR` = 이 플러그인의 디렉토리 (`plugins/sparks/`)
 
-### 기본 모드 (저장된 글 배포)
+### 구형 플로우 참고 (직접 실행 금지 — 위 공용 CLI 사용)
 
 4. 파일 선택 + 접근 권한:
    - `--all`: 모든 blog/*.md (기존 manifest의 access 유지, 새 파일은 public)

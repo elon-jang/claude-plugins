@@ -78,6 +78,11 @@ Knowledge file format과 카테고리 상세는 `commands/spark.md` 참조.
 
 ## Deployment Notes
 
+모든 production 발행은 `scripts/publish-blog.mjs --repo <정본저장소> --files "글.md" --deploy`로 수행한다.
+`wrangler pages deploy` 직접 호출 및 임시 manifest로 production 발행을 금지한다.
+기본 명령(`--deploy` 없음)으로 검증한 뒤 발행하며 공용 CI는 프로젝트별로 직렬화한다.
+상세 규칙과 CI 예시는 `docs/publishing.md` 참조. 아래 Wrangler 예시는 브랜치 설명용이며 직접 실행하지 않는다.
+
 ### Cloudflare Pages 브랜치 주의사항
 
 wrangler 수동 배포 시 반드시 `config.json`의 `publish.branch` 값을 사용한다.

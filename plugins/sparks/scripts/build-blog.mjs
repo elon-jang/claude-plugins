@@ -644,7 +644,7 @@ function build() {
   if (buildAll) {
     // Preserve existing access settings, default new files to public
     const existing = new Map(manifest.map(e => [e.file, e.access]));
-    manifest = allSourceFiles.map(f => ({ file: f, access: existing.get(f) || 'public' }));
+    manifest = manifest.concat(allSourceFiles.filter(f => !existing.has(f)).map(file => ({ file, access: 'public' })));
   } else if (selectedFiles) {
     // --files format: "file1.md:private,file2.md" or "file1.md,file2.md"
     const newEntries = selectedFiles.map(f => {
@@ -661,11 +661,13 @@ function build() {
     console.error(`Error: source directory is empty but manifest has ${manifest.length} entries. Aborting to prevent data loss.`);
     process.exit(1);
   }
-  manifest = manifest.filter(e => allSourceFiles.includes(e.file));
+  const missingSources = manifest.filter(e => !allSourceFiles.includes(e.file));
+  if (missingSources.length) {
+    throw new Error(`Published source missing: ${missingSources.map(e => e.file).join(', ')}`);
+  }
 
   // 2. Parse posts and split by access
   const allPosts = manifest.map(e => parsePost(e.file, { access: e.access }));
-  saveManifest(manifest);
 
   allPosts.sort((a, b) => b.date.localeCompare(a.date));
   const publicPosts = allPosts.filter(p => p.access !== 'private');
@@ -694,7 +696,28 @@ function build() {
     fs.writeFileSync(path.join(OUTPUT_DIR, 'private', 'index.html'), indexHtml(privatePosts, { isPrivate: true }));
   }
 
-  console.log(`Published ${publicPosts.length} public + ${privatePosts.length} private post(s)`);
+  // 7. Copy static/ directory if it exists (e.g. .sparks/static/ch/index.html → _build/ch/index.html)
+  const staticDir = path.join(path.dirname(MANIFEST_PATH), 'static');
+  if (fs.existsSync(staticDir)) {
+    copyDirRecursive(staticDir, OUTPUT_DIR);
+    console.log(`Copied static/ assets from ${staticDir}`);
+  }
+
+  saveManifest(manifest);
+  console.log(`Built ${publicPosts.length} public + ${privatePosts.length} private post(s)`);
+}
+
+function copyDirRecursive(src, dest) {
+  for (const entry of fs.readdirSync(src, { withFileTypes: true })) {
+    const srcPath = path.join(src, entry.name);
+    const destPath = path.join(dest, entry.name);
+    if (entry.isDirectory()) {
+      fs.mkdirSync(destPath, { recursive: true });
+      copyDirRecursive(srcPath, destPath);
+    } else {
+      fs.copyFileSync(srcPath, destPath);
+    }
+  }
 }
 
 build();
